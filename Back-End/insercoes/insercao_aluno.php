@@ -5,32 +5,28 @@ require_once '../conexao.php';
 // Verifica se a requisição é do tipo POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    // Recebe os dados do formulário de aluno
-    $nome  = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
-    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    $senha = filter_input(INPUT_POST, 'senha', FILTER_DEFAULT); 
-    // Exemplo de campo específico para aluno:
-    $matricula = filter_input(INPUT_POST, 'matricula', FILTER_SANITIZE_STRING);
+    // Recebe os dados obrigatórios do formulário de aluno
+    $matricula       = filter_input(INPUT_POST, 'matricula', FILTER_SANITIZE_NUMBER_INT);
+    $nome            = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
+    $data_nascimento = filter_input(INPUT_POST, 'data_nascimento', FILTER_SANITIZE_STRING);
+    $instituicoes_id = filter_input(INPUT_POST, 'instituicoes_id', FILTER_SANITIZE_NUMBER_INT);
 
-    // Validação básica
-    if (empty($nome) || empty($email) || empty($senha)) {
-        $response = ["status" => "error", "message" => "Por favor, preencha todos os campos obrigatórios."];
+    // Validação básica dos campos obrigatórios
+    if (empty($matricula) || empty($nome) || empty($data_nascimento) || empty($instituicoes_id)) {
+        $response = ["status" => "error", "message" => "Por favor, preencha todos os campos obrigatórios (matrícula, nome, data de nascimento e instituição)."];
     } else {
-        // Criptografar a senha
-        $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
-
         if ($pdo) {
             try {
                 // Prepara a query SQL para inserção na tabela de alunos
-                $sql = "INSERT INTO alunos (nome, email, senha, matricula) VALUES (:nome, :email, :senha, :matricula)";
+                $sql = "INSERT INTO alunos (matricula, nome, data_nascimento, instituicoes_id) VALUES (:matricula, :nome, :data_nascimento, :instituicoes_id)";
                 $stmt = $pdo->prepare($sql);
                 
                 // Vincula os parâmetros e executa
                 $stmt->execute([
-                    ':nome'      => $nome,
-                    ':email'     => $email,
-                    ':senha'     => $senhaHash,
-                    ':matricula' => $matricula
+                    ':matricula'       => $matricula,
+                    ':nome'            => $nome,
+                    ':data_nascimento' => $data_nascimento,
+                    ':instituicoes_id' => $instituicoes_id
                 ]);
 
                 $response = ["status" => "success", "message" => "Aluno cadastrado com sucesso!"];

@@ -5,32 +5,28 @@ require_once '../conexao.php';
 // Verifica se a requisição é do tipo POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    // Recebe os dados do formulário de responsável
-    $nome  = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
-    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    $senha = filter_input(INPUT_POST, 'senha', FILTER_DEFAULT); 
-    // Exemplo de campos específicos para responsável:
-    $telefone = filter_input(INPUT_POST, 'telefone', FILTER_SANITIZE_STRING);
+    // Recebe os dados obrigatórios do formulário de responsável
+    $nome            = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
+    $cpf             = filter_input(INPUT_POST, 'cpf', FILTER_SANITIZE_STRING);
+    $telefone        = filter_input(INPUT_POST, 'telefone', FILTER_SANITIZE_STRING);
+    $data_nascimento = filter_input(INPUT_POST, 'data_nascimento', FILTER_SANITIZE_STRING);
 
-    // Validação básica
-    if (empty($nome) || empty($email) || empty($senha)) {
-        $response = ["status" => "error", "message" => "Por favor, preencha todos os campos obrigatórios."];
+    // Validação básica dos campos obrigatórios
+    if (empty($nome) || empty($cpf) || empty($telefone) || empty($data_nascimento)) {
+        $response = ["status" => "error", "message" => "Por favor, preencha todos os campos obrigatórios (nome, CPF, telefone e data de nascimento)."];
     } else {
-        // Criptografar a senha
-        $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
-
         if ($pdo) {
             try {
                 // Prepara a query SQL para inserção na tabela de responsáveis
-                $sql = "INSERT INTO responsaveis (nome, email, senha, telefone) VALUES (:nome, :email, :senha, :telefone)";
+                $sql = "INSERT INTO responsaveis (nome, CPF, telefone, data_nascimento) VALUES (:nome, :cpf, :telefone, :data_nascimento)";
                 $stmt = $pdo->prepare($sql);
                 
                 // Vincula os parâmetros e executa
                 $stmt->execute([
-                    ':nome'     => $nome,
-                    ':email'    => $email,
-                    ':senha'    => $senhaHash,
-                    ':telefone' => $telefone
+                    ':nome'            => $nome,
+                    ':cpf'             => $cpf,
+                    ':telefone'        => $telefone,
+                    ':data_nascimento' => $data_nascimento
                 ]);
 
                 $response = ["status" => "success", "message" => "Responsável cadastrado com sucesso!"];
