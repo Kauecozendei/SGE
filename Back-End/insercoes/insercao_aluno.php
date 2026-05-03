@@ -9,11 +9,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $matricula       = filter_input(INPUT_POST, 'matricula', FILTER_SANITIZE_NUMBER_INT);
     $nome            = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
     $data_nascimento = filter_input(INPUT_POST, 'data_nascimento', FILTER_SANITIZE_STRING);
-    $instituicoes_id = filter_input(INPUT_POST, 'instituicoes_id', FILTER_SANITIZE_NUMBER_INT);
+    // Como o usuário não digita mais o ID da instituição, definimos como 1 (ou futuramente pegamos da sessão de quem está logado)
+    $instituicoes_id = 1;
 
     // Validação básica dos campos obrigatórios
-    if (empty($matricula) || empty($nome) || empty($data_nascimento) || empty($instituicoes_id)) {
-        $response = ["status" => "error", "message" => "Por favor, preencha todos os campos obrigatórios (matrícula, nome, data de nascimento e instituição)."];
+    if (empty($matricula) || empty($nome) || empty($data_nascimento)) {
+        $response = ["status" => "error", "message" => "Por favor, preencha todos os campos obrigatórios (matrícula, nome e data de nascimento)."];
     } else {
         if ($pdo) {
             try {

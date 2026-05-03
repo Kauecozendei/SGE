@@ -10,13 +10,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $cpf             = filter_input(INPUT_POST, 'cpf', FILTER_SANITIZE_STRING);
     $data_nascimento = filter_input(INPUT_POST, 'data_nascimento', FILTER_SANITIZE_STRING);
     $cargos_id       = filter_input(INPUT_POST, 'cargos_id', FILTER_SANITIZE_NUMBER_INT);
-    $instituicoes_id = filter_input(INPUT_POST, 'instituicoes_id', FILTER_SANITIZE_NUMBER_INT);
+    
+    // O ID da instituição passa a ser automático (ex: ID 1 padrão, ou pego da sessão futuramente)
+    $instituicoes_id = 1;
+
     $telefone        = filter_input(INPUT_POST, 'telefone', FILTER_SANITIZE_STRING);
     $email           = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $senha           = filter_input(INPUT_POST, 'senha', FILTER_DEFAULT); 
 
     // Validação básica dos campos obrigatórios
-    if (empty($nome) || empty($cpf) || empty($data_nascimento) || empty($cargos_id) || empty($instituicoes_id) || empty($telefone) || empty($email) || empty($senha)) {
+    if (empty($nome) || empty($cpf) || empty($data_nascimento) || empty($cargos_id) || empty($telefone) || empty($email) || empty($senha)) {
         $response = ["status" => "error", "message" => "Por favor, preencha todos os campos obrigatórios."];
     } else {
         // Criptografar a senha
