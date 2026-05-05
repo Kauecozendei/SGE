@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $instituicoes_id = 1;
 
     $telefone        = filter_input(INPUT_POST, 'telefone', FILTER_SANITIZE_STRING);
-    $email           = filter_input(INPUT_POST, 'email', FILTER_SANITIZEgitEMAIL);
+    $email           = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $senha           = filter_input(INPUT_POST, 'senha', FILTER_DEFAULT); 
 
     // Validação básica dos campos obrigatórios
