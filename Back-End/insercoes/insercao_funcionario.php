@@ -2,20 +2,17 @@
 // Inclui a conexão com o banco de dados (que está na pasta pai Back-End)
 require_once '../conexao.php';
 
-// Verifica se a requisição é do tipo POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    // Recebe os dados obrigatórios do formulário de funcionário
     $nome            = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
     $cpf             = filter_input(INPUT_POST, 'cpf', FILTER_SANITIZE_STRING);
     $data_nascimento = filter_input(INPUT_POST, 'data_nascimento', FILTER_SANITIZE_STRING);
     $cargos_id       = filter_input(INPUT_POST, 'cargos_id', FILTER_SANITIZE_NUMBER_INT);
     
-    // O ID da instituição passa a ser automático (ex: ID 1 padrão, ou pego da sessão futuramente)
     $instituicoes_id = 1;
 
     $telefone        = filter_input(INPUT_POST, 'telefone', FILTER_SANITIZE_STRING);
-    $email           = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $email           = filter_input(INPUT_POST, 'email', FILTER_SANITIZEgitEMAIL);
     $senha           = filter_input(INPUT_POST, 'senha', FILTER_DEFAULT); 
 
     // Validação básica dos campos obrigatórios
