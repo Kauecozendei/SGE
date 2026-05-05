@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $data_nascimento = filter_input(INPUT_POST, 'data_nascimento', FILTER_SANITIZE_STRING);
     $cargos_id       = filter_input(INPUT_POST, 'cargos_id', FILTER_SANITIZE_NUMBER_INT);
     
-    $instituicoes_id = 1;
+    $instituicoes_id = 1; // Padrão 
 
     $telefone        = filter_input(INPUT_POST, 'telefone', FILTER_SANITIZE_STRING);
     $email           = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);

@@ -7,7 +7,7 @@ define("DB_HOST", "localhost");
 define("DB_PORT", "3308"); 
 define("DB_NAME", "BancoSGE");
 define("DB_USER", "fatec");
-define("DB_PASS", "SUA_SENHA_AQUI"); // Substitua pela senha que você configurou no ${MYSQL_PASSWORD} do Docker
+define("DB_PASS", "MYSQL_PASSWORD");
 
 try {
     // Criação da conexão com o banco de dados usando PDO
