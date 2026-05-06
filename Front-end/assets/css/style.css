@@ -1,0 +1,204 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+    /* Cores Principais */
+    --cor-fundo: #fdf5eb; /* Fundo bege clarinho geral */
+    --cor-fundo-card: #f7ecd7; /* Fundo dos cards e sidebar */
+    
+    /* Cores de Status e Bordas */
+    --cor-primaria: #2b61a6;
+    --cor-secundaria: #3b82f6;
+    --cor-sucesso: #22c55e;
+    --cor-aviso: #f59e0b;
+    --cor-erro: #ef4444; 
+    
+    /* Tons Neutros & Textos */
+    --cor-texto-principal: #222222;
+    --cor-texto-secundario: #555555;
+    --cor-borda: #d4c8b0;
+    
+    /* Espaçamentos e Formas */
+    --border-radius-sm: 12px;
+    --border-radius-md: 20px;
+    --border-radius-lg: 24px;
+    
+    /* Sombras */
+    --sombra-suave: 0 4px 15px rgba(0, 0, 0, 0.05);
+    --transition-padrao: all 0.2s ease-in-out;
+}
+
+/* Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto-principal);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Tipografia */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 800;
+    color: var(--cor-texto-principal);
+}
+
+/* Cards Padrão */
+.card-padrao {
+    background: var(--cor-fundo-card);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--sombra-suave);
+    padding: 2rem;
+    transition: var(--transition-padrao);
+}
+
+.card-padrao:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Botões Padrão (Estilo do Menu Lateral / Ações) */
+.btn-acao {
+    background-color: #fdfdfa;
+    border-radius: var(--border-radius-sm);
+    padding: 0.8rem 1.5rem;
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--cor-texto-principal);
+    transition: var(--transition-padrao);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 0.8rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.btn-acao.azul { border: 2px solid var(--cor-secundaria); }
+.btn-acao.verde { border: 2px solid var(--cor-sucesso); }
+.btn-acao.laranja { border: 2px solid var(--cor-aviso); }
+.btn-acao.vermelho { border: 2px solid var(--cor-erro); }
+
+.btn-acao:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Botão Primário Genérico */
+.btn-primario {
+    background-color: #ebf3fc;
+    color: #111;
+    border: 2px solid var(--cor-primaria);
+    border-radius: var(--border-radius-sm);
+    padding: 0.75rem 1.5rem;
+    font-weight: 800;
+    font-size: 1rem;
+    transition: var(--transition-padrao);
+}
+
+.btn-primario:hover {
+    background-color: #d7e6f8;
+}
+
+/* Inputs e Formulários */
+.form-label {
+    font-weight: 800;
+    color: var(--cor-texto-principal);
+    margin-bottom: 0.4rem;
+    font-size: 0.85rem;
+}
+
+.form-control-custom {
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--border-radius-sm);
+    background-color: #fdfcf9;
+    font-family: 'Nunito', sans-serif;
+    color: var(--cor-texto-principal);
+    font-size: 1rem;
+    transition: var(--transition-padrao);
+}
+
+.form-control-custom:focus {
+    outline: none;
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 0 3px rgba(43, 97, 166, 0.15);
+}
+
+.form-control-custom::placeholder {
+    color: #888;
+    font-weight: 700;
+}
+
+/* Badges Status */
+.badge-status {
+    padding: 0.3rem 1rem;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 0.8rem;
+    border: 2px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.badge-azul { border-color: var(--cor-secundaria); color: var(--cor-secundaria); background: transparent; }
+.badge-verde { border-color: var(--cor-sucesso); color: var(--cor-sucesso); background: transparent; }
+.badge-laranja { border-color: var(--cor-aviso); color: var(--cor-aviso); background: transparent; }
+.badge-vermelho { border-color: var(--cor-erro); color: var(--cor-erro); background: transparent; }
+
+/* Containers e Grids Globais */
+.main-wrapper {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.content-area {
+    flex: 1;
+    padding: 2rem;
+    transition: var(--transition-padrao);
+    width: 100%;
+}
+
+/* Loading Spinner Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(253, 245, 235, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition-padrao);
+}
+
+.loading-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.spinner-custom {
+    width: 3rem;
+    height: 3rem;
+    color: var(--cor-primaria);
+}
+
+/* Utilitários Visuais */
+.text-primaria { color: var(--cor-primaria); }
+
+/* Responsividade Global */
+@media (max-width: 991.98px) {
+    .content-area { padding: 1.5rem; }
+}
+
+@media (max-width: 767.98px) {
+    .content-area { padding: 1rem; }
+    .card-padrao { padding: 1.5rem; }
+}
