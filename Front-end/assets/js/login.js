@@ -51,16 +51,34 @@ document.addEventListener('DOMContentLoaded', () => {
             Entrando...
         `;
 
-        setTimeout(() => {
-            if (emailValue === 'admin@gmail.com' && passwordValue === '123456') {
-                showToast('Login realizado com sucesso!', 'success');
-                showLoading();
+        setTimeout(async () => {
+            try {
+                const formData = new FormData();
+                formData.append('email', emailValue);
+                formData.append('senha', passwordValue);
 
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1200);
-            } else {
-                showError('E-mail ou senha inválidos.');
+                const response = await fetch('../../Back-End/login_funcionario.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showToast(data.message, 'success');
+                    showLoading();
+
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1200);
+                } else {
+                    showError(data.message || 'E-mail ou senha inválidos.');
+                    btnLogin.disabled = false;
+                    btnLogin.innerHTML = 'Entrar no Sistema';
+                }
+            } catch (error) {
+                console.error("Erro no login:", error);
+                showError('Erro de conexão. Tente novamente mais tarde.');
                 btnLogin.disabled = false;
                 btnLogin.innerHTML = 'Entrar no Sistema';
             }

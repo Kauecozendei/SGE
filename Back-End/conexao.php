@@ -4,10 +4,10 @@
 // Se você estiver rodando o PHP pelo XAMPP, use 'localhost' e a porta '3308'.
 // Se estiver rodando o PHP de dentro do container Docker 'php-SGE', use o host 'mariadb-SGE' e a porta '3306'.
 define("DB_HOST", "localhost"); 
-define("DB_PORT", "3308"); 
+define("DB_PORT", "3306"); // XAMPP default port
 define("DB_NAME", "BancoSGE");
-define("DB_USER", "fatec");
-define("DB_PASS", "MYSQL_PASSWORD");
+define("DB_USER", "root"); // XAMPP default user
+define("DB_PASS", ""); // XAMPP default pass
 
 try {
     // Criação da conexão com o banco de dados usando PDO
