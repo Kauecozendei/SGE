@@ -1,201 +1,177 @@
 
+/* ── 1. WRAPPER — apenas o que é único (bg image + color) ── */
 .login-wrapper {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #fdf5eb; 
-    
-    /* Imagem de Fundo */
-    background-image: url('../img/Fundo-login.png'); 
-    
-    /* Usando cover e no-repeat para remover as duplicatas/cortes secos da imagem */
-    background-size: cover; 
+    background-image: url('../img/Fundo-login.png');
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    
-    position: relative;
-    padding: 2rem;
-    overflow: hidden; /* Evita que a onda do mobile cause scroll horizontal */
+    background-color: #fdf5eb;
 }
 
+/* CONTAINER */
 .login-container {
-    width: 100%;
-    max-width: 400px;
-    z-index: 2;
+    max-width: 420px;
+    animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* CARD */
 .login-card {
-    background-color: #f7ecd7; 
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    background: #f7ecd7;
     border-radius: 24px;
-    padding: 3rem 2.5rem;
-    position: relative;
-    text-align: center;
+    padding: 3rem 2.5rem 2.5rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
 }
 
-/* Logo */
+/* SHAKE animação */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    15%, 45%, 75% { transform: translateX(-8px); }
+    30%, 60%, 90% { transform: translateX(8px);  }
+}
+.shake-animation {
+    animation: shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* LOGO */
 .logo-placeholder {
     width: 130px;
     height: 130px;
-    margin: 0 auto;
     border-radius: 24px;
     overflow: hidden;
     background: #fff;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.08);
-}
-
-.logo-placeholder img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-.logo-fallback {
-    width: 100%;
-    height: 100%;
-    background-color: #73c2fb;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-weight: bold;
-    font-size: 1.5rem;
+    transition: transform 0.3s ease;
 }
+.logo-placeholder:hover { transform: scale(1.04); }
+.logo-placeholder img   { width: 100%; height: 100%; object-fit: contain; display: block; }
+.logo-fallback-icon     { font-size: 3.5rem; color: #2b61a6; }
 
-/* Campos de entrada específicos do login */
-.form-group label {
-    font-size: 0.75rem;
-    color: #111;
-    margin-left: 0.2rem;
-}
+/* TÍTULO  */
+.login-card h1 { color: #1a1a2e; font-weight: 900; }
 
+/* INPUT */
 .form-control-custom {
-    background-color: #fdfcf9;
+    background: #fdfcf9;
     border: 1px solid #e2d6c1;
     border-radius: 12px;
     padding: 0.8rem 1rem;
+    font-family: 'Nunito', sans-serif;
     font-weight: 600;
-}
-
-.form-control-custom::placeholder {
-    color: #333;
-    font-weight: 800;
-    opacity: 0.8;
-}
-
-/* Container de Senha e Botão de Visualização */
-.password-container .form-control-custom {
-    padding-right: 45px; /* Espaço para o botão do olho */
-}
-
-.btn-toggle-password {
-    position: absolute;
-    top: 50%;
-    right: 12px;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: #6c757d;
-    padding: 0;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.2s ease;
-    z-index: 10;
-}
-
-.btn-toggle-password i {
-    font-size: 1.15rem;
-    pointer-events: none;
-}
-
-.btn-toggle-password:hover {
-    color: #343a40;
-}
-
-.btn-toggle-password:focus {
+    font-size: 0.92rem;
+    color: #1a1a2e;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
     outline: none;
+    appearance: none;
 }
+.form-control-custom::placeholder { color: #b0a898; font-weight: 600; }
+.form-control-custom:hover  { border-color: #c8b89a; }
+.form-control-custom:focus  { border-color: #2b61a6; box-shadow: 0 0 0 3px rgba(43,97,166,0.12); }
+.form-control-custom.error  { border-color: #e05c5c; box-shadow: 0 0 0 3px rgba(224,92,92,0.12); }
 
-/* Botão Entrar */
+/* BOTÃO OLHO */
+.password-container .form-control-custom { padding-right: 44px; }
+.btn-eye {
+    position: absolute;
+    top: 50%; right: 12px;
+    transform: translateY(-50%);
+    background: none; border: none;
+    color: #a09888; cursor: pointer; padding: 0;
+    font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px;
+    transition: color 0.2s ease;
+}
+.btn-eye:hover  { color: #2b61a6; }
+.btn-eye:focus  { outline: none; }
+
+/* BOTÃO LOGIN */
 .btn-login {
-    background-color: #ebf3fc;
+    background: #ebf3fc;
     border: 2px solid #2b61a6;
-    color: #111;
-    font-weight: 800;
-    font-size: 0.9rem;
     border-radius: 12px;
-    transition: all 0.2s ease;
-    box-shadow: none; /* Remover sombra externa */
+    padding: 0.8rem 1.5rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    transition: all 0.22s ease;
 }
-
-.btn-login:hover {
-    background-color: #d7e6f8;
+.btn-login:hover:not(:disabled) {
+    background: #d4e9f9; border-color: #1e4f8f;
     transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(43,97,166,0.18);
 }
+.btn-login:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
+.btn-login:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+.btn-login.sucesso  { background: #e8f9ee; border-color: #22c55e; color: #15803d; }
 
-/* Alerta de Erro na borda inferior do card */
+/* LINK ESQUECI SENHA */
+.login-link {
+    font-weight: 700;
+    color: #64748b;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+.login-link:hover { color: #2b61a6; }
+
+/* ALERTA */
 .login-alert {
     position: absolute;
-    bottom: -16px; /* Para sobrepor a borda inferior */
-    left: 50%;
+    bottom: -18px; left: 50%;
     transform: translateX(-50%);
-    background-color: #fae1e1; /* Rosa claro */
-    border: 1px solid #d9a9a9;
-    color: #111;
-    font-size: 0.7rem;
-    font-weight: 800;
-    padding: 0.5rem 1.5rem;
+    background: #fae1e1;
+    border: 1px solid #f5c6c6;
     border-radius: 30px;
+    padding: 0.45rem 1.25rem;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #c0392b;
     white-space: nowrap;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    animation: alertPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both;
     z-index: 10;
 }
+.login-alert.info { background: #e8f0fb; border-color: #bfcfe8; color: #1d4ed8; }
 
-/* Animação de Shake */
-@keyframes shakeError {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-    20%, 40%, 60%, 80% { transform: translateX(5px); }
-}
-.shake-animation {
-    animation: shakeError 0.4s cubic-bezier(.36,.07,.19,.97) both;
+@keyframes alertPop {
+    from { opacity: 0; transform: translateX(-50%) scale(0.88) translateY(4px); }
+    to   { opacity: 1; transform: translateX(-50%) scale(1)    translateY(0);   }
 }
 
-/* Ajustes Responsivos */
-@media (max-width: 992px) {
-
+/* RESPONSIVO */
+@media (max-width: 768px) {
+    .login-card        { padding: 2.5rem 2rem 2.25rem; }
+    .logo-placeholder  { width: 110px; height: 110px; }
 }
 
-@media (max-width: 576px) {
-    .login-wrapper {
-        align-items: flex-start; /* Sobe o card na tela mobile */
-        padding-top: 15vh;
-    }
-    
-    /* Criando a onda laranja decorativa na base do mobile usando CSS Puro */
+@media (max-width: 480px) {
+    .login-wrapper     { align-items: flex-start !important; padding-top: max(6vh, 2.5rem) !important; padding-bottom: 4rem !important; }
+    .login-card        { padding: 2rem 1.5rem 1.75rem; border-radius: 20px; }
+    .logo-placeholder  { width: 95px; height: 95px; border-radius: 18px; }
+    .login-card h1     { font-size: 1.25rem; }
+    .login-container   { position: relative; z-index: 1; }
+    .login-alert       { font-size: 0.73rem; white-space: normal; text-align: center; bottom: -22px; width: 90%; }
+
     .login-wrapper::after {
         content: '';
-        position: absolute;
-        bottom: 0;
-        left: -15%;
-        width: 130%;
-        height: 25vh;
-        background-color: #ffb85a; 
-        border-radius: 100% 100% 0 0 / 60% 60% 0 0; 
-        z-index: 1;
+        position: fixed;
+        bottom: 0; left: -5%;
+        width: 110%; height: 18vh;
+        background: linear-gradient(180deg, transparent, rgba(43,97,166,0.08));
+        border-radius: 100% 100% 0 0;
+        pointer-events: none; z-index: 0;
     }
-    
-    .login-container {
-        position: relative;
-        z-index: 2; /* Garante que o formulário de login fique por cima da onda */
-    }
-    
-    .login-card {
-        padding: 2rem 1.5rem;
-    }
+}
+
+@media (max-width: 360px) {
+    .login-card  { padding: 1.75rem 1.25rem 1.5rem; }
+    .btn-login   { font-size: 0.88rem; }
 }
