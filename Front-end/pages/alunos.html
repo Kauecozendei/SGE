@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alunos - Mundo Encantado</title>
+    <meta name="description" content="Cadastro e gestão de alunos - Sistema de Gestão Escolar">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/dashboard.css" rel="stylesheet">
+    <link href="../assets/css/alunos.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="main-wrapper">
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header d-flex align-items-center gap-3">
+                <img src="../assets/img/Logo.jpg" alt="Mundo Encantado" class="sidebar-logo" onerror="this.style.display='none'">
+                <span class="sidebar-title">Mundo Encantado</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html"    class="sidebar-link"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></a>
+                <a href="alunos.html"       class="sidebar-link active"><i class="bi bi-people-fill"></i><span>Alunos</span></a>
+                <a href="professores.html"  class="sidebar-link"><i class="bi bi-person-video3"></i><span>Professores</span></a>
+                <a href="funcionarios.html" class="sidebar-link"><i class="bi bi-person-workspace"></i><span>Funcionários</span></a>
+                <a href="turmas.html"       class="sidebar-link"><i class="bi bi-bookmark-star-fill"></i><span>Turmas</span></a>
+                <a href="entrada-saida.html" class="sidebar-link"><i class="bi bi-door-open-fill"></i><span>Entrada / Saída</span></a>
+                <a href="agenda.html"       class="sidebar-link"><i class="bi bi-calendar-event-fill"></i><span>Agenda</span></a>
+                <a href="financeiro.html"   class="sidebar-link"><i class="bi bi-cash-coin"></i><span>Financeiro</span></a>
+                <a href="relatorios.html"   class="sidebar-link"><i class="bi bi-file-earmark-bar-graph-fill"></i><span>Relatórios</span></a>
+                <a href="perfil.html"       class="sidebar-link"><i class="bi bi-gear-fill"></i><span>Configurações</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" class="sidebar-link text-danger" id="btnSair">
+                    <i class="bi bi-box-arrow-left"></i><span>Sair</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="content-area">
+
+            <!-- Topbar -->
+            <header class="topbar d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+                <div class="d-flex align-items-center gap-3 min-width-0">
+                    <button class="btn-menu" id="btnMenu" onclick="toggleSidebar()">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div class="overflow-hidden">
+                        <h1 class="topbar-title mb-0">Alunos</h1>
+                        <small class="topbar-date text-muted" id="dataAtual"></small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3 flex-shrink-0">
+                    <span class="topbar-greeting d-none d-md-block">Olá, Administrador 👋</span>
+                    <div class="topbar-avatar"><i class="bi bi-person-fill"></i></div>
+                </div>
+            </header>
+
+            <!-- Toolbar -->
+            <div class="alunos-toolbar d-flex flex-wrap gap-3 mb-3">
+                <input type="text" class="alunos-search" id="searchAlunos" placeholder="Buscar por nome, CPF ou dados vinculados...">
+                <select class="alunos-filter" id="filterTurmaAlunos">
+                    <option value="">Todas as Turmas</option>
+                    <option value="turma-a">Turma A - Manhã</option>
+                    <option value="turma-b">Turma B - Tarde</option>
+                    <option value="turma-c">Turma C - Integral</option>
+                </select>
+                <select class="alunos-filter" id="filterStatusAlunos">
+                    <option value="">Todos os Status</option>
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                    <option value="pendente">Pendente</option>
+                </select>
+                <button class="btn-novo-aluno" id="btnNovoAluno" data-bs-toggle="modal" data-bs-target="#modalAluno">
+                    <i class="bi bi-plus-lg"></i> Novo Aluno
+                </button>
+            </div>
+
+            <!-- Tabela de Alunos -->
+            <section class="card-padrao">
+                <div class="table-responsive">
+                    <table class="table-alunos table-hover align-middle w-100" id="tabelaAlunos">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>CPF</th>
+                                <th>Turma</th>
+                                <th>Responsável</th>
+                                <th>Matrícula</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyAlunos">
+                            <tr>
+                                <td>
+                                    <div class="aluno-nome-cell d-flex align-items-center gap-2">
+                                        <div class="aluno-avatar">ME</div>
+                                        Maria Eduarda Silva
+                                    </div>
+                                </td>
+                                <td>123.456.789-00</td>
+                                <td>Turma A - Manhã</td>
+                                <td>Ana Paula Silva</td>
+                                <td>MAT-2024-001</td>
+                                <td><span class="badge-status badge-verde">Ativo</span></td>
+                                <td>
+                                    <div class="aluno-actions d-flex gap-2">
+                                        <button class="btn-action-sm" title="Editar" onclick="editarAluno(1)"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn-action-sm" title="Visualizar" onclick="abrirDetalhesAluno(1)"><i class="bi bi-eye"></i></button>
+                                        <button class="btn-action-sm danger" title="Excluir" onclick="excluirAluno(1)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="aluno-nome-cell d-flex align-items-center gap-2">
+                                        <div class="aluno-avatar">PH</div>
+                                        Pedro Henrique Costa
+                                    </div>
+                                </td>
+                                <td>987.654.321-00</td>
+                                <td>Turma B - Tarde</td>
+                                <td>Fernanda Costa</td>
+                                <td>MAT-2024-002</td>
+                                <td><span class="badge-status badge-verde">Ativo</span></td>
+                                <td>
+                                    <div class="aluno-actions d-flex gap-2">
+                                        <button class="btn-action-sm" title="Editar" onclick="editarAluno(2)"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn-action-sm" title="Visualizar" onclick="abrirDetalhesAluno(2)"><i class="bi bi-eye"></i></button>
+                                        <button class="btn-action-sm danger" title="Excluir" onclick="excluirAluno(2)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="aluno-nome-cell d-flex align-items-center gap-2">
+                                        <div class="aluno-avatar">LG</div>
+                                        Lucas Gabriel Oliveira
+                                    </div>
+                                </td>
+                                <td>456.789.123-00</td>
+                                <td>Turma C - Integral</td>
+                                <td>Mariana Oliveira</td>
+                                <td>MAT-2024-003</td>
+                                <td><span class="badge-status badge-laranja">Pendente</span></td>
+                                <td>
+                                    <div class="aluno-actions d-flex gap-2">
+                                        <button class="btn-action-sm" title="Editar" onclick="editarAluno(3)"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn-action-sm" title="Visualizar" onclick="abrirDetalhesAluno(3)"><i class="bi bi-eye"></i></button>
+                                        <button class="btn-action-sm danger" title="Excluir" onclick="excluirAluno(3)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="aluno-nome-cell d-flex align-items-center gap-2">
+                                        <div class="aluno-avatar">IS</div>
+                                        Isabela Santos Ferreira
+                                    </div>
+                                </td>
+                                <td>321.654.987-00</td>
+                                <td>Turma A - Manhã</td>
+                                <td>Roberto Ferreira</td>
+                                <td>MAT-2024-004</td>
+                                <td><span class="badge-status badge-verde">Ativo</span></td>
+                                <td>
+                                    <div class="aluno-actions d-flex gap-2">
+                                        <button class="btn-action-sm" title="Editar" onclick="editarAluno(4)"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn-action-sm" title="Visualizar" onclick="abrirDetalhesAluno(4)"><i class="bi bi-eye"></i></button>
+                                        <button class="btn-action-sm danger" title="Excluir" onclick="excluirAluno(4)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="aluno-nome-cell d-flex align-items-center gap-2">
+                                        <div class="aluno-avatar">JM</div>
+                                        João Miguel Almeida
+                                    </div>
+                                </td>
+                                <td>654.321.987-00</td>
+                                <td>Turma B - Tarde</td>
+                                <td>Carla Almeida</td>
+                                <td>MAT-2024-005</td>
+                                <td><span class="badge-status badge-vermelho">Inativo</span></td>
+                                <td>
+                                    <div class="aluno-actions d-flex gap-2">
+                                        <button class="btn-action-sm" title="Editar" onclick="editarAluno(5)"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn-action-sm" title="Visualizar" onclick="abrirDetalhesAluno(5)"><i class="bi bi-eye"></i></button>
+                                        <button class="btn-action-sm danger" title="Excluir" onclick="excluirAluno(5)"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginação -->
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
+                    <span class="pagination-info">Exibindo 1 de 92 resultados</span>
+                    <div class="pagination-btns d-flex gap-1" id="paginationAlunos">
+                        <button><i class="bi bi-chevron-left"></i></button>
+                        <button class="active">1</button>
+                        <button>2</button>
+                        <button>3</button>
+                        <button>...</button>
+                        <button><i class="bi bi-chevron-right"></i></button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modal Cadastro de Aluno -->
+    <div class="modal fade modal-aluno" id="modalAluno" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAlunoTitle">
+                        <i class="bi bi-person-plus-fill me-2"></i>Formulário — Novo / Editar aluno
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formAluno">
+                        <div class="form-section-title">
+                            <i class="bi bi-person-fill"></i> Dados do Aluno
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label" for="inputNomeAluno">Nome Completo *</label>
+                                <input type="text" class="form-control-custom" id="inputNomeAluno" name="nome_aluno" placeholder="Nome completo do aluno" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="inputCpfAluno">CPF</label>
+                                <input type="text" class="form-control-custom" id="inputCpfAluno" name="cpf_aluno" placeholder="000.000.000-00">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="inputDataNasc">Data de Nascimento *</label>
+                                <input type="date" class="form-control-custom" id="inputDataNasc" name="data_nascimento" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="selectTurmaAluno">Turma *</label>
+                                <select class="form-control-custom" id="selectTurmaAluno" name="turma_id" required>
+                                    <option value="">Selecionar turma</option>
+                                    <option>Turma A - Manhã</option>
+                                    <option>Turma B - Tarde</option>
+                                    <option>Turma C - Integral</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="selectPeriodo">Período *</label>
+                                <select class="form-control-custom" id="selectPeriodo" name="periodo" required>
+                                    <option value="">Selecionar</option>
+                                    <option>Manhã</option>
+                                    <option>Tarde</option>
+                                    <option>Integral</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="inputEnderecoAluno">Endereço completo</label>
+                                <input type="text" class="form-control-custom" id="inputEnderecoAluno" name="endereco" placeholder="Rua, número, bairro, cidade, CEP">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="inputObsAluno">Observações</label>
+                                <textarea class="form-control-custom" id="inputObsAluno" name="observacoes" rows="2" placeholder="Alergias, restrições, informações adicionais..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section-title">
+                            <i class="bi bi-people-fill"></i> Vincular Responsável
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label" for="inputNomeResp">Nome do Responsável *</label>
+                                <input type="text" class="form-control-custom" id="inputNomeResp" name="nome_responsavel" placeholder="Nome do responsável" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="inputCpfResp">CPF</label>
+                                <input type="text" class="form-control-custom" id="inputCpfResp" name="cpf_responsavel" placeholder="000.000.000-00">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="inputTelResp">Telefone *</label>
+                                <input type="tel" class="form-control-custom" id="inputTelResp" name="telefone_responsavel" placeholder="(00) 00000-0000" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="inputEmailResp">E-mail</label>
+                                <input type="email" class="form-control-custom" id="inputEmailResp" name="email_responsavel" placeholder="email@exemplo.com">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="selectParentesco">Parentesco / Relação com o aluno</label>
+                                <select class="form-control-custom" id="selectParentesco" name="parentesco">
+                                    <option value="">Selecionar</option>
+                                    <option>Mãe</option>
+                                    <option>Pai</option>
+                                    <option>Avó/Avô</option>
+                                    <option>Tio/Tia</option>
+                                    <option>Outro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-cancelar" data-bs-dismiss="modal">CANCELAR</button>
+                    <button class="btn-salvar" id="btnSalvarAluno">
+                        <i class="bi bi-check-lg me-1"></i>SALVAR CADASTRO
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/alunos.js"></script>
+</body>
+</html>
