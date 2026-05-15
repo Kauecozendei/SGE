@@ -1,13 +1,12 @@
 <?php
 // Configurações do Banco de Dados
 // Baseado nas configurações do docker-compose.yml na pasta db:
-// Se você estiver rodando o PHP pelo XAMPP, use 'localhost' e a porta '3308'.
 // Se estiver rodando o PHP de dentro do container Docker 'php-SGE', use o host 'mariadb-SGE' e a porta '3306'.
-define("DB_HOST", "localhost"); 
-define("DB_PORT", "3306"); // XAMPP default port
+define("DB_HOST", "mariadb"); 
 define("DB_NAME", "BancoSGE");
-define("DB_USER", "root"); // XAMPP default user
-define("DB_PASS", ""); // XAMPP default pass
+define("DB_PORT", "3306");
+define("DB_USER", "fatec");
+define("DB_PASS", "");
 
 try {
     // Criação da conexão com o banco de dados usando PDO
@@ -18,6 +17,7 @@ try {
         PDO::ATTR_EMULATE_PREPARES   => false,
     ];
     $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+    return $pdo;
 } catch (PDOException $e) {
     // Como o banco ainda não está vinculado, vamos apenas ignorar a falha por enquanto
     // para não quebrar a página ao testar o front-end. Deixamos $pdo como null.
