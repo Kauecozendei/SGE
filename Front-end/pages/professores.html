@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professores - Mundo Encantado</title>
+    <meta name="description" content="Gestão de professores - Sistema de Gestão Escolar">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/dashboard.css" rel="stylesheet">
+    <link href="../assets/css/professores.css" rel="stylesheet">
+</head>
+<body>
+<div class="main-wrapper">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header d-flex align-items-center gap-3">
+            <img src="../assets/img/Logo.jpg" alt="Mundo Encantado" class="sidebar-logo" onerror="this.style.display='none'">
+            <span class="sidebar-title">Mundo Encantado</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html"   class="sidebar-link"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></a>
+            <a href="alunos.html"      class="sidebar-link"><i class="bi bi-people-fill"></i><span>Alunos</span></a>
+            <a href="professores.html" class="sidebar-link active"><i class="bi bi-person-video3"></i><span>Professores</span></a>
+            <a href="funcionarios.html"class="sidebar-link"><i class="bi bi-person-workspace"></i><span>Funcionários</span></a>
+            <a href="turmas.html"      class="sidebar-link"><i class="bi bi-bookmark-star-fill"></i><span>Turmas</span></a>
+            <a href="entrada-saida.html"class="sidebar-link"><i class="bi bi-door-open-fill"></i><span>Entrada / Saída</span></a>
+            <a href="agenda.html"      class="sidebar-link"><i class="bi bi-calendar-event-fill"></i><span>Agenda</span></a>
+            <a href="financeiro.html"  class="sidebar-link"><i class="bi bi-cash-coin"></i><span>Financeiro</span></a>
+            <a href="relatorios.html"  class="sidebar-link"><i class="bi bi-file-earmark-bar-graph-fill"></i><span>Relatórios</span></a>
+            <a href="perfil.html"      class="sidebar-link"><i class="bi bi-gear-fill"></i><span>Configurações</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" class="sidebar-link text-danger" id="btnSair">
+                <i class="bi bi-box-arrow-left"></i><span>Sair</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Conteúdo -->
+    <main class="content-area">
+        <header class="topbar d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn-menu" id="btnMenu" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+                <div>
+                    <h1 class="topbar-title mb-0">Professores</h1>
+                    <small class="topbar-date text-muted" id="dataAtual"></small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-3 flex-shrink-0">
+                <span class="topbar-greeting d-none d-md-block">Olá, Administrador 👋</span>
+                <div class="topbar-avatar"><i class="bi bi-person-fill"></i></div>
+            </div>
+        </header>
+
+        <!-- Toolbar -->
+        <div class="prof-toolbar d-flex flex-wrap gap-3 mb-3">
+            <input type="text" class="prof-search" id="searchProf" placeholder="Buscar por nome, disciplina ou turma...">
+            <select class="prof-filter" id="filterDisciplina">
+                <option value="">Todas as Disciplinas</option>
+                <option>Português</option>
+                <option>Matemática</option>
+                <option>Ciências</option>
+                <option>História</option>
+                <option>Educação Física</option>
+                <option>Artes</option>
+            </select>
+            <select class="prof-filter" id="filterStatusProf">
+                <option value="">Todos os Status</option>
+                <option value="ativo">Ativo</option>
+                <option value="inativo">Inativo</option>
+                <option value="ferias">Férias</option>
+            </select>
+            <button class="btn-novo-prof" id="btnNovoProf" data-bs-toggle="modal" data-bs-target="#modalProfessor">
+                <i class="bi bi-plus-lg"></i> Novo Professor
+            </button>
+        </div>
+
+        <!-- Tabela -->
+        <section class="card-padrao">
+            <div class="table-responsive">
+                <table class="table-prof table-hover align-middle w-100" id="tabelaProf">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>Disciplinas</th>
+                            <th>Turmas</th>
+                            <th>Horários</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyProf">
+                        <tr>
+                            <td><div class="prof-nome-cell d-flex align-items-center gap-2"><div class="prof-avatar">CM</div>Carlos Magalhães</div></td>
+                            <td>111.222.333-44</td>
+                            <td><span class="disciplina-tag">Matemática</span><span class="disciplina-tag">Física</span></td>
+                            <td>Turma A, B</td>
+                            <td><span class="horario-chip">Seg 08h</span><span class="horario-chip">Qua 10h</span></td>
+                            <td><span class="badge-status badge-verde">Ativo</span></td>
+                            <td><div class="prof-actions d-flex gap-2">
+                                <button class="btn-action-sm" title="Editar" onclick="editarProf(1)"><i class="bi bi-pencil"></i></button>
+                                <button class="btn-action-sm danger" title="Excluir" onclick="excluirProf(1)"><i class="bi bi-trash"></i></button>
+                            </div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="prof-nome-cell d-flex align-items-center gap-2"><div class="prof-avatar">JS</div>Juliana Souza</div></td>
+                            <td>555.666.777-88</td>
+                            <td><span class="disciplina-tag">Português</span><span class="disciplina-tag">Literatura</span></td>
+                            <td>Turma B, C</td>
+                            <td><span class="horario-chip">Ter 09h</span><span class="horario-chip">Sex 08h</span></td>
+                            <td><span class="badge-status badge-verde">Ativo</span></td>
+                            <td><div class="prof-actions d-flex gap-2">
+                                <button class="btn-action-sm" title="Editar" onclick="editarProf(2)"><i class="bi bi-pencil"></i></button>
+                                <button class="btn-action-sm danger" title="Excluir" onclick="excluirProf(2)"><i class="bi bi-trash"></i></button>
+                            </div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="prof-nome-cell d-flex align-items-center gap-2"><div class="prof-avatar">RA</div>Roberto Alves</div></td>
+                            <td>999.888.777-66</td>
+                            <td><span class="disciplina-tag">Ciências</span><span class="disciplina-tag">Biologia</span></td>
+                            <td>Turma A</td>
+                            <td><span class="horario-chip">Seg 11h</span><span class="horario-chip">Qui 10h</span></td>
+                            <td><span class="badge-status badge-laranja">Férias</span></td>
+                            <td><div class="prof-actions d-flex gap-2">
+                                <button class="btn-action-sm" title="Editar" onclick="editarProf(3)"><i class="bi bi-pencil"></i></button>
+                                <button class="btn-action-sm danger" title="Excluir" onclick="excluirProf(3)"><i class="bi bi-trash"></i></button>
+                            </div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="prof-nome-cell d-flex align-items-center gap-2"><div class="prof-avatar">FM</div>Fernanda Melo</div></td>
+                            <td>222.333.444-55</td>
+                            <td><span class="disciplina-tag">Artes</span><span class="disciplina-tag">Ed. Física</span></td>
+                            <td>Turma C</td>
+                            <td><span class="horario-chip">Qua 14h</span><span class="horario-chip">Sex 10h</span></td>
+                            <td><span class="badge-status badge-verde">Ativo</span></td>
+                            <td><div class="prof-actions d-flex gap-2">
+                                <button class="btn-action-sm" title="Editar" onclick="editarProf(4)"><i class="bi bi-pencil"></i></button>
+                                <button class="btn-action-sm danger" title="Excluir" onclick="excluirProf(4)"><i class="bi bi-trash"></i></button>
+                            </div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
+                <span class="pagination-info">Exibindo 4 de 18 professores</span>
+                <div class="pagination-btns d-flex gap-1" id="paginationProf">
+                    <button><i class="bi bi-chevron-left"></i></button>
+                    <button class="active">1</button>
+                    <button>2</button>
+                    <button>3</button>
+                    <button><i class="bi bi-chevron-right"></i></button>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Modal Cadastro Professor -->
+<div class="modal fade modal-prof" id="modalProfessor" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalProfTitle"><i class="bi bi-person-video3 me-2"></i>Formulário — Novo / Editar professor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formProfessor">
+                    <div class="form-section-title"><i class="bi bi-person-fill"></i> Dados Pessoais</div>
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label" for="inputNomeProf">Nome Completo *</label>
+                            <input type="text" class="form-control-custom" id="inputNomeProf" name="nome" placeholder="Nome completo" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="inputCpfProf">CPF *</label>
+                            <input type="text" class="form-control-custom" id="inputCpfProf" name="cpf" placeholder="000.000.000-00" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="inputTelProf">Telefone</label>
+                            <input type="tel" class="form-control-custom" id="inputTelProf" name="telefone" placeholder="(00) 00000-0000">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="inputEmailProf">E-mail *</label>
+                            <input type="email" class="form-control-custom" id="inputEmailProf" name="email" placeholder="email@escola.com" required>
+                        </div>
+                    </div>
+                    <div class="form-section-title"><i class="bi bi-book-fill"></i> Dados Profissionais</div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="inputFormacaoProf">Formação / Habilitação</label>
+                            <input type="text" class="form-control-custom" id="inputFormacaoProf" name="formacao" placeholder="Ex: Licenciatura em Matemática">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="selectStatusProf">Status *</label>
+                            <select class="form-control-custom" id="selectStatusProf" name="status" required>
+                                <option value="">Selecionar</option>
+                                <option value="ativo">Ativo</option>
+                                <option value="inativo">Inativo</option>
+                                <option value="ferias">Férias</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="inputDisciplinas">Disciplinas (separadas por vírgula)</label>
+                            <input type="text" class="form-control-custom" id="inputDisciplinas" name="disciplinas" placeholder="Ex: Matemática, Física">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="inputSenhaProfessor">Senha de acesso *</label>
+                            <input type="password" class="form-control-custom" id="inputSenhaProfessor" name="senha" placeholder="Mín. 8 caracteres" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="inputConfSenhaProfessor">Confirmar senha *</label>
+                            <input type="password" class="form-control-custom" id="inputConfSenhaProfessor" name="senha_confirmacao" placeholder="Repita a senha" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancelar" data-bs-dismiss="modal">CANCELAR</button>
+                <button class="btn-salvar" id="btnSalvarProfessor"><i class="bi bi-check-lg me-1"></i>SALVAR CADASTRO</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/professores.js"></script>
+</body>
+</html>
