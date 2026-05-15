@@ -1,0 +1,117 @@
+
+.turmas-search {
+    flex: 1; min-width: 220px;
+    padding: 0.65rem 1rem 0.65rem 2.5rem;
+    border: 1.5px solid var(--cor-borda); border-radius: var(--border-radius-sm);
+    background: #fdfcf9 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0'/%3E%3C/svg%3E") no-repeat 0.8rem center;
+    font-family: 'Nunito', sans-serif; font-weight: 600; font-size: 0.85rem;
+    transition: var(--transition-padrao);
+}
+.turmas-search:focus { outline: none; border-color: var(--cor-primaria); box-shadow: 0 0 0 3px rgba(43,97,166,0.12); }
+
+.btn-nova-turma {
+    background-color: #fef3c7; border: 2px solid var(--cor-aviso); color: #92400e;
+    border-radius: var(--border-radius-sm); padding: 0.6rem 1.2rem;
+    font-weight: 800; font-size: 0.82rem; cursor: pointer;
+    transition: var(--transition-padrao); white-space: nowrap;
+}
+.btn-nova-turma:hover { background-color: var(--cor-aviso); color: white; transform: translateY(-1px); }
+
+/* Grid de turmas */
+.turmas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.turma-card {
+    background: var(--cor-fundo-card); border-radius: var(--border-radius-md);
+    padding: 1.5rem; box-shadow: var(--sombra-suave);
+    transition: var(--transition-padrao);
+    border-top: 4px solid var(--cor-primaria);
+}
+.turma-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
+.turma-card.amarela  { border-top-color: var(--cor-aviso); }
+.turma-card.verde    { border-top-color: var(--cor-sucesso); }
+.turma-card.vermelho { border-top-color: var(--cor-erro); }
+.turma-card.roxa     { border-top-color: #8b5cf6; }
+
+.turma-card-header { margin-bottom: 1rem; }
+
+.turma-nome  { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.15rem; }
+.turma-serie { font-size: 0.78rem; font-weight: 600; color: var(--cor-texto-secundario); }
+
+.turma-badge {
+    padding: 0.25rem 0.7rem; border-radius: 50px;
+    font-weight: 800; font-size: 0.7rem;
+    background: #ebf3fc; color: var(--cor-primaria);
+    border: 1.5px solid var(--cor-primaria);
+    white-space: nowrap;
+}
+
+/* Info grid */
+.turma-info-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0.5rem; margin-bottom: 1rem;
+}
+.turma-info-item  { display: flex; flex-direction: column; gap: 0.1rem; }
+.turma-info-label { font-size: 0.68rem; font-weight: 800; color: var(--cor-texto-secundario); text-transform: uppercase; letter-spacing: 0.3px; }
+.turma-info-value { font-size: 0.85rem; font-weight: 700; }
+
+/* Barra de capacidade */
+.turma-barra { background: #ede6d6; height: 6px; border-radius: 6px; margin-bottom: 0.4rem; overflow: hidden; }
+.turma-barra-fill { height: 100%; border-radius: 6px; background: var(--cor-primaria); transition: width 1s ease; }
+.turma-barra-info { font-size: 0.72rem; font-weight: 700; color: var(--cor-texto-secundario); margin-bottom: 1rem; }
+
+.btn-gerenciar {
+    width: 100%; background: #fdfcf9; border: 2px solid var(--cor-primaria);
+    color: var(--cor-primaria); border-radius: var(--border-radius-sm);
+    padding: 0.55rem; font-weight: 800; font-size: 0.8rem;
+    cursor: pointer; transition: var(--transition-padrao);
+    display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+}
+.btn-gerenciar:hover { background: var(--cor-primaria); color: white; }
+
+/* Modal */
+.modal-turma .modal-content { border-radius: var(--border-radius-md); border: none; background: var(--cor-fundo); }
+.modal-turma .modal-header  { border-bottom: 1px solid var(--cor-borda); padding: 1.25rem 1.5rem; }
+.modal-turma .modal-title   { font-weight: 800; font-size: 1rem; }
+.modal-turma .modal-body    { padding: 1.5rem; }
+.modal-turma .modal-footer  { border-top: 1px solid var(--cor-borda); padding: 1rem 1.5rem; }
+
+.turma-aluno-item {
+    padding: 0.6rem 0.75rem; border-radius: var(--border-radius-sm);
+    background: #fdfcf9; border: 1.5px solid var(--cor-borda);
+    margin-bottom: 0.5rem; transition: var(--transition-padrao);
+}
+.turma-aluno-item:hover { border-color: var(--cor-primaria); }
+
+.turma-aluno-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #ebf3fc; border: 2px solid var(--cor-primaria);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.72rem; font-weight: 800; color: var(--cor-primaria); flex-shrink: 0;
+}
+.turma-aluno-nome { font-weight: 700; font-size: 0.85rem; }
+
+.btn-cancelar {
+    background-color: #fdfcf9; border: 2px solid var(--cor-borda);
+    color: var(--cor-texto-principal); border-radius: var(--border-radius-sm);
+    padding: 0.6rem 1.5rem; font-weight: 800; font-size: 0.85rem;
+    cursor: pointer; transition: var(--transition-padrao);
+}
+.btn-cancelar:hover { border-color: var(--cor-erro); color: var(--cor-erro); }
+.btn-salvar {
+    background-color: #ebf3fc; border: 2px solid var(--cor-primaria);
+    color: var(--cor-primaria); border-radius: var(--border-radius-sm);
+    padding: 0.6rem 1.5rem; font-weight: 800; font-size: 0.85rem;
+    cursor: pointer; transition: var(--transition-padrao);
+}
+.btn-salvar:hover { background-color: var(--cor-primaria); color: white; }
+
+@media (max-width: 767.98px) {
+    .turmas-grid { grid-template-columns: 1fr; }
+    .turmas-search, .btn-nova-turma { width: 100%; }
+    .btn-nova-turma { justify-content: center; }
+}
