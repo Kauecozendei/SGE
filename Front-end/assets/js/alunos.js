@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => { window.location.href = 'login.html'; }, 1200);
     });
 
+    carregarAlunos();
+
     // Busca dinâmica 
     document.getElementById('searchAlunos')?.addEventListener('input', function () {
         filtrarAlunos();
@@ -36,10 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Salvar aluno
-    document.getElementById('formAluno')?.addEventListener('submit', e => {
+    document.getElementById('formAluno')?.addEventListener('submit', async e => {
         e.preventDefault();
         if (!validarFormAluno()) return;
-        simularSalvar('Aluno cadastrado com sucesso!', 'modalAluno');
+        await salvarAluno();
     });
 
     document.getElementById('btnSalvarAluno')?.addEventListener('click', () => {
@@ -48,9 +50,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Resetar modal ao fechar 
     document.getElementById('modalAluno')?.addEventListener('hidden.bs.modal', () => {
-        document.getElementById('formAluno')?.reset();
+        const form = document.getElementById('formAluno');
+        if (form) {
+            form.reset();
+            delete form.dataset.editId;
+        }
         document.getElementById('modalAlunoTitle').innerHTML =
             '<i class="bi bi-person-plus-fill me-2"></i>Formulário — Novo / Editar aluno';
+        // Reset abas (se existir navegação)
+        document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('active'));
+        document.querySelector('.nav-link[data-bs-target="#dados-aluno"]')?.classList.add('active');
+        document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('show', 'active'));
+        document.getElementById('dados-aluno')?.classList.add('show', 'active');
     });
 
 });
@@ -106,25 +117,107 @@ function validarFormAluno() {
 }
 
 /**
- * Simula gravação e fecha modal
- * @param {string} msg
- * @param {string} modalId
+ * Salva o aluno via fetch
  */
-function simularSalvar(msg, modalId) {
+async function salvarAluno() {
     const btn = document.getElementById('btnSalvarAluno');
     if (btn) {
         btn.disabled = true;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Salvando...';
     }
 
-    setTimeout(() => {
+    try {
+        const form = document.getElementById('formAluno');
+        const formData = new FormData(form);
+        const isEdit = form.dataset.editId ? true : false;
+        
+        let url = '../../Back-End/insercoes/insercao_aluno.php';
+        if (isEdit) {
+            url = '../../Back-End/edicao.php';
+            formData.append('tabela', 'alunos');
+            formData.append('id', form.dataset.editId);
+        }
+
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success' || data.status === 'warning') {
+            showToast(data.message, 'success');
+            toggleModal('modalAluno', 'hide');
+            form.reset();
+            carregarAlunos();
+        } else {
+            showToast(data.message, 'danger');
+        }
+    } catch (error) {
+        console.error(error);
+        showToast('Erro de conexão com o servidor.', 'danger');
+    } finally {
         if (btn) {
             btn.disabled = false;
             btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>SALVAR CADASTRO';
         }
-        toggleModal(modalId, 'hide');
-        showToast(msg, 'success');
-    }, 1200);
+    }
+}
+
+let alunosListCache = [];
+
+/**
+ * Carrega a lista de alunos do banco
+ */
+async function carregarAlunos() {
+    const tbody = document.getElementById('tbodyAlunos');
+    if (!tbody) return;
+
+    tbody.innerHTML = '<tr><td colspan="7" class="text-center">Carregando alunos...</td></tr>';
+
+    try {
+        const response = await fetch('../../Back-End/api/listar_alunos.php');
+        const res = await response.json();
+
+        if (res.status === 'success') {
+            tbody.innerHTML = '';
+            alunosListCache = res.data; // Cache para usar no editarAluno
+            
+            if(res.data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">Nenhum aluno encontrado.</td></tr>';
+                return;
+            }
+
+            res.data.forEach(aluno => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div class="aluno-nome-cell d-flex align-items-center gap-2">
+                            <div class="aluno-avatar">${aluno.nome.substring(0,2).toUpperCase()}</div>
+                            ${aluno.nome}
+                        </div>
+                    </td>
+                    <td>${aluno.cpf || 'N/A'}</td>
+                    <td>${aluno.turma || 'Sem Turma'} - ${aluno.periodo || ''}</td>
+                    <td>${aluno.resp || 'Sem Resp'}</td>
+                    <td>${aluno.matricula}</td>
+                    <td><span class="badge-status badge-verde">Ativo</span></td>
+                    <td>
+                        <div class="aluno-actions d-flex gap-2">
+                            <button class="btn-action-sm" title="Editar" onclick="editarAluno(${aluno.id})"><i class="bi bi-pencil"></i></button>
+                            <button class="btn-action-sm danger" title="Excluir" onclick="excluirAluno(${aluno.id})"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            filtrarAlunos(); // Atualiza a contagem visual
+        } else {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Erro ao carregar dados.</td></tr>';
+        }
+    } catch (error) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Erro de conexão.</td></tr>';
+    }
 }
 
 /**
@@ -132,26 +225,17 @@ function simularSalvar(msg, modalId) {
  * @param {number} id
  */
 function editarAluno(id) {
-    const dados = {
-        1: { nome:'Maria Eduarda Silva',      cpf:'123.456.789-00', nasc:'2018-03-15', turma:'Turma A - Manhã',    periodo:'Manhã',    resp:'Ana Paula Silva',   tel:'(11) 98765-4321', email:'ana@gmail.com', parentesco:'Mãe' },
-        2: { nome:'Pedro Henrique Costa',     cpf:'987.654.321-00', nasc:'2017-07-22', turma:'Turma B - Tarde',    periodo:'Tarde',    resp:'Fernanda Costa',    tel:'(11) 91234-5678', email:'fer@gmail.com', parentesco:'Mãe' },
-        3: { nome:'Lucas Gabriel Oliveira',   cpf:'456.789.123-00', nasc:'2016-11-01', turma:'Turma C - Integral', periodo:'Integral', resp:'Mariana Oliveira',  tel:'(11) 99988-7766', email:'mari@gmail.com', parentesco:'Mãe' },
-        4: { nome:'Isabela Santos Ferreira',  cpf:'321.654.987-00', nasc:'2018-05-30', turma:'Turma A - Manhã',    periodo:'Manhã',    resp:'Roberto Ferreira',  tel:'(11) 97777-3333', email:'rob@gmail.com',  parentesco:'Pai' },
-        5: { nome:'João Miguel Almeida',      cpf:'654.321.987-00', nasc:'2017-09-12', turma:'Turma B - Tarde',    periodo:'Tarde',    resp:'Carla Almeida',     tel:'(11) 96666-1111', email:'car@gmail.com',  parentesco:'Mãe' },
-    };
-
-    const d = dados[id];
+    const d = alunosListCache.find(a => parseInt(a.id) === parseInt(id));
     if (!d) return;
 
     document.getElementById('inputNomeAluno').value   = d.nome;
-    document.getElementById('inputCpfAluno').value    = d.cpf;
-    document.getElementById('inputDataNasc').value    = d.nasc;
-    document.getElementById('selectTurmaAluno').value = d.turma;
-    document.getElementById('selectPeriodo').value    = d.periodo;
-    document.getElementById('inputNomeResp').value    = d.resp;
-    document.getElementById('inputTelResp').value     = d.tel;
-    document.getElementById('inputEmailResp').value   = d.email;
-    document.getElementById('selectParentesco').value = d.parentesco;
+    document.getElementById('inputCpfAluno').value    = d.cpf || '';
+    document.getElementById('inputDataNasc').value    = d.data_nascimento || '';
+    // As informações de responsável ou turma precisariam ser trazidas via backend com mais detalhes na listagem
+    document.getElementById('inputNomeResp').value    = d.resp || '';
+    
+    const form = document.getElementById('formAluno');
+    if(form) form.dataset.editId = id; // Marca como edição
 
     document.getElementById('modalAlunoTitle').innerHTML =
         '<i class="bi bi-pencil-fill me-2"></i>Editar Aluno — ' + d.nome;
@@ -172,16 +256,29 @@ function abrirDetalhesAluno(id) {
  * Remove linha do aluno da tabela após confirmação
  * @param {number} id
  */
-function excluirAluno(id) {
+async function excluirAluno(id) {
     if (!confirm('Tem certeza que deseja excluir este aluno? Esta ação não pode ser desfeita.')) return;
 
-    showLoading();
-    setTimeout(() => {
-        hideLoading();
-        // Remove a linha correspondente da tabela (simulação)
-        const rows = document.querySelectorAll('#tbodyAlunos tr');
-        if (rows[id - 1]) rows[id - 1].remove();
-        showToast('Aluno removido com sucesso.', 'danger');
-        filtrarAlunos();
-    }, 800);
+    try {
+        const formData = new FormData();
+        formData.append('tabela', 'alunos');
+        formData.append('id', id);
+
+        const response = await fetch('../../Back-End/exclusao.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success' || data.status === 'warning') {
+            showToast('Aluno removido com sucesso.', 'success');
+            carregarAlunos();
+        } else {
+            showToast(data.message, 'danger');
+        }
+    } catch (error) {
+        console.error(error);
+        showToast('Erro de conexão.', 'danger');
+    }
 }

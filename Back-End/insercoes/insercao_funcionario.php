@@ -1,58 +1,67 @@
 <?php
-// Inclui a conexão com o banco de dados (que está na pasta pai Back-End)
 require_once '../conexao.php';
+
+header('Content-Type: application/json');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    $nome            = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
-    $cpf             = filter_input(INPUT_POST, 'cpf', FILTER_SANITIZE_STRING);
+    $nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
+    $cpf = filter_input(INPUT_POST, 'cpf', FILTER_SANITIZE_STRING);
     $data_nascimento = filter_input(INPUT_POST, 'data_nascimento', FILTER_SANITIZE_STRING);
-    $cargos_id       = filter_input(INPUT_POST, 'cargos_id', FILTER_SANITIZE_NUMBER_INT);
+    $cargo_nome = filter_input(INPUT_POST, 'cargo', FILTER_SANITIZE_STRING); // Nome do cargo vindo do front
+    $telefone = filter_input(INPUT_POST, 'telefone', FILTER_SANITIZE_STRING);
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     
-    $instituicoes_id = 1; // Padrão 
+    $instituicoes_id = 1; // Default
+    
+    // Default password to be hashed
+    $senha_default = password_hash('123456', PASSWORD_DEFAULT);
 
-    $telefone        = filter_input(INPUT_POST, 'telefone', FILTER_SANITIZE_STRING);
-    $email           = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    $senha           = filter_input(INPUT_POST, 'senha', FILTER_DEFAULT); 
-
-    // Validação básica dos campos obrigatórios
-    if (empty($nome) || empty($cpf) || empty($data_nascimento) || empty($cargos_id) || empty($telefone) || empty($email) || empty($senha)) {
-        $response = ["status" => "error", "message" => "Por favor, preencha todos os campos obrigatórios."];
-    } else {
-        // Criptografar a senha
-        $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
-
-        if ($pdo) {
-            try {
-                // Prepara a query SQL para inserção na tabela de funcionários
-                $sql = "INSERT INTO funcionarios (nome, CPF, data_nascimento, cargos_id, instituicoes_id, telefone, email, senha_hash) VALUES (:nome, :cpf, :data_nascimento, :cargos_id, :instituicoes_id, :telefone, :email, :senha_hash)";
-                $stmt = $pdo->prepare($sql);
-                
-                // Vincula os parâmetros e executa
-                $stmt->execute([
-                    ':nome'            => $nome,
-                    ':cpf'             => $cpf,
-                    ':data_nascimento' => $data_nascimento,
-                    ':cargos_id'       => $cargos_id,
-                    ':instituicoes_id' => $instituicoes_id,
-                    ':telefone'        => $telefone,
-                    ':email'           => $email,
-                    ':senha_hash'      => $senhaHash
-                ]);
-
-                $response = ["status" => "success", "message" => "Funcionário cadastrado com sucesso!"];
-            } catch (PDOException $e) {
-                $response = ["status" => "error", "message" => "Erro ao realizar cadastro de funcionário: " . $e->getMessage()];
-            }
-        } else {
-            // Simulação sem banco
-            $response = ["status" => "warning", "message" => "Dados de FUNCIONÁRIO recebidos perfeitamente, mas o banco de dados não está conectado. (Simulação)"];
-        }
+    if (empty($nome) || empty($cpf) || empty($cargo_nome)) {
+        echo json_encode(["status" => "error", "message" => "Preencha os campos obrigatórios."]);
+        exit;
     }
 
-    // Retorna a resposta em JSON
-    header('Content-Type: application/json');
-    echo json_encode($response);
-    exit;
+    if ($pdo) {
+        try {
+            $pdo->beginTransaction();
+
+            // Encontrar ou criar o cargo
+            $stmtCargo = $pdo->prepare("SELECT id FROM cargos WHERE nome = :nome LIMIT 1");
+            $stmtCargo->execute([':nome' => $cargo_nome]);
+            $cargoData = $stmtCargo->fetch(PDO::FETCH_ASSOC);
+            
+            if ($cargoData) {
+                $cargos_id = $cargoData['id'];
+            } else {
+                $stmtNewCargo = $pdo->prepare("INSERT INTO cargos (nome) VALUES (:nome)");
+                $stmtNewCargo->execute([':nome' => $cargo_nome]);
+                $cargos_id = $pdo->lastInsertId();
+            }
+
+            // Insert Funcionario
+            $sqlFunc = "INSERT INTO funcionarios (nome, CPF, data_nascimento, cargos_id, instituicoes_id, telefone, email, senha_hash) 
+                         VALUES (:nome, :cpf, :nasc, :cargos_id, :inst, :telefone, :email, :senha)";
+            $stmtFunc = $pdo->prepare($sqlFunc);
+            $stmtFunc->execute([
+                ':nome' => $nome,
+                ':cpf' => $cpf,
+                ':nasc' => $data_nascimento,
+                ':cargos_id' => $cargos_id,
+                ':inst' => $instituicoes_id,
+                ':telefone' => $telefone,
+                ':email' => $email,
+                ':senha' => $senha_default
+            ]);
+
+            $pdo->commit();
+            echo json_encode(["status" => "success", "message" => "Funcionário cadastrado com sucesso!"]);
+        } catch (PDOException $e) {
+            $pdo->rollBack();
+            echo json_encode(["status" => "error", "message" => "Erro ao salvar funcionário.", "error" => $e->getMessage()]);
+        }
+    } else {
+        echo json_encode(["status" => "warning", "message" => "Simulação: Banco desconectado."]);
+    }
 }
 ?>

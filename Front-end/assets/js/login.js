@@ -63,65 +63,49 @@ document.addEventListener('DOMContentLoaded', () => {
             Verificando...
         `;
 
-<<<<<<< HEAD
-        setTimeout(async () => {
-            try {
-                const formData = new FormData();
-                formData.append('email', emailValue);
-                formData.append('senha', passwordValue);
+        try {
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('senha', pass);
 
-                const response = await fetch('../../Back-End/login_funcionario.php', {
-                    method: 'POST',
-                    body: formData
-                });
+            const response = await fetch('../../Back-End/login_funcionario.php', {
+                method: 'POST',
+                body: formData
+            });
 
-                const data = await response.json();
+            const data = await response.json();
 
-                if (data.status === 'success') {
-                    showToast(data.message, 'success');
-                    showLoading();
-
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1200);
-                } else {
-                    showError(data.message || 'E-mail ou senha inválidos.');
-                    btnLogin.disabled = false;
-                    btnLogin.innerHTML = 'Entrar no Sistema';
-                }
-            } catch (error) {
-                console.error("Erro no login:", error);
-                showError('Erro de conexão. Tente novamente mais tarde.');
-=======
-        /* Simula autenticação — substituir por fetch() ao backend PHP */
-        setTimeout(() => {
-            if (email === 'admin@gmail.com' && pass === '123456') {
-
+            if (data.status === 'success') {
                 /* ── Sucesso ── */
                 btnText.innerHTML = `<i class="bi bi-check-circle-fill me-2"></i>Acesso liberado!`;
                 btnLogin.classList.add('sucesso');
 
-                showToast('Bem-vindo ao Sistema! 👋', 'success');
+                showToast(data.message || 'Bem-vindo ao Sistema! 👋', 'success');
                 showLoading();
 
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
                 }, 1100);
-
             } else {
-
                 /* ── Erro ── */
                 emailInput.classList.add('error');
                 passInput.classList.add('error');
-                mostrarAlerta('E-mail ou senha inválidos.');
+                mostrarAlerta(data.message || 'E-mail ou senha inválidos.');
                 shakeCard();
 
->>>>>>> front-end
                 btnLogin.disabled = false;
                 btnLogin.classList.remove('sucesso');
                 btnText.innerHTML = 'Entrar no Sistema';
             }
-        }, 1500);
+        } catch (error) {
+            console.error("Erro no login:", error);
+            mostrarAlerta('Erro de conexão. Tente novamente mais tarde.');
+            shakeCard();
+            
+            btnLogin.disabled = false;
+            btnLogin.classList.remove('sucesso');
+            btnText.innerHTML = 'Entrar no Sistema';
+        }
     });
 
     /* ── Esqueci minha senha ───────────────────────────────── */

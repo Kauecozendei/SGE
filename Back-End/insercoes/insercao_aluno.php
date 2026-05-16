@@ -1,48 +1,91 @@
 <?php
-// Inclui a conexão com o banco de dados (que está na pasta pai Back-End)
 require_once '../conexao.php';
 
-// Verifica se a requisição é do tipo POST
+header('Content-Type: application/json');
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    // Recebe os dados obrigatórios do formulário de aluno
-    $matricula       = filter_input(INPUT_POST, 'matricula', FILTER_SANITIZE_NUMBER_INT);
-    $nome            = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
+    $nome_aluno = filter_input(INPUT_POST, 'nome_aluno', FILTER_SANITIZE_STRING);
+    $cpf_aluno = filter_input(INPUT_POST, 'cpf_aluno', FILTER_SANITIZE_STRING);
     $data_nascimento = filter_input(INPUT_POST, 'data_nascimento', FILTER_SANITIZE_STRING);
-    // Como o usuário não digita mais o ID da instituição, definimos como 1 (ou futuramente pegamos da sessão de quem está logado)
-    $instituicoes_id = 1;
+    $turma = filter_input(INPUT_POST, 'turma_id', FILTER_SANITIZE_STRING);
+    $periodo = filter_input(INPUT_POST, 'periodo', FILTER_SANITIZE_STRING);
+    
+    $nome_responsavel = filter_input(INPUT_POST, 'nome_responsavel', FILTER_SANITIZE_STRING);
+    $cpf_responsavel = filter_input(INPUT_POST, 'cpf_responsavel', FILTER_SANITIZE_STRING);
+    $telefone_responsavel = filter_input(INPUT_POST, 'telefone_responsavel', FILTER_SANITIZE_STRING);
+    $email_responsavel = filter_input(INPUT_POST, 'email_responsavel', FILTER_SANITIZE_EMAIL);
+    $parentesco = filter_input(INPUT_POST, 'parentesco', FILTER_SANITIZE_STRING);
+    
+    $instituicoes_id = 1; // Default
+    $matricula = rand(100000, 999999); // Generate random matricula
 
-    // Validação básica dos campos obrigatórios
-    if (empty($matricula) || empty($nome) || empty($data_nascimento)) {
-        $response = ["status" => "error", "message" => "Por favor, preencha todos os campos obrigatórios (matrícula, nome e data de nascimento)."];
-    } else {
-        if ($pdo) {
-            try {
-                // Prepara a query SQL para inserção na tabela de alunos
-                $sql = "INSERT INTO alunos (matricula, nome, data_nascimento, instituicoes_id) VALUES (:matricula, :nome, :data_nascimento, :instituicoes_id)";
-                $stmt = $pdo->prepare($sql);
-                
-                // Vincula os parâmetros e executa
-                $stmt->execute([
-                    ':matricula'       => $matricula,
-                    ':nome'            => $nome,
-                    ':data_nascimento' => $data_nascimento,
-                    ':instituicoes_id' => $instituicoes_id
-                ]);
-
-                $response = ["status" => "success", "message" => "Aluno cadastrado com sucesso!"];
-            } catch (PDOException $e) {
-                $response = ["status" => "error", "message" => "Erro ao realizar cadastro de aluno: " . $e->getMessage()];
-            }
-        } else {
-            // Simulação sem banco
-            $response = ["status" => "warning", "message" => "Dados de ALUNO recebidos perfeitamente, mas o banco de dados não está conectado. (Simulação)"];
-        }
+    if (empty($nome_aluno) || empty($data_nascimento) || empty($nome_responsavel)) {
+        echo json_encode(["status" => "error", "message" => "Preencha os campos obrigatórios."]);
+        exit;
     }
 
-    // Retorna a resposta em JSON
-    header('Content-Type: application/json');
-    echo json_encode($response);
-    exit;
+    if ($pdo) {
+        try {
+            $pdo->beginTransaction();
+
+            // Insert Responsável
+            $sqlResp = "INSERT INTO responsaveis (nome, CPF, telefone, data_nascimento, email) 
+                        VALUES (:nome, :cpf, :telefone, '1990-01-01', :email)
+                        ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), telefone=:telefone";
+            $stmtResp = $pdo->prepare($sqlResp);
+            $stmtResp->execute([
+                ':nome' => $nome_responsavel,
+                ':cpf' => $cpf_responsavel,
+                ':telefone' => $telefone_responsavel,
+                ':email' => $email_responsavel
+            ]);
+            $resp_id = $pdo->lastInsertId();
+
+            // Insert Aluno
+            $sqlAluno = "INSERT INTO alunos (matricula, nome, CPF, data_nascimento, instituicoes_id) 
+                         VALUES (:matricula, :nome, :cpf, :nasc, :inst)";
+            $stmtAluno = $pdo->prepare($sqlAluno);
+            $stmtAluno->execute([
+                ':matricula' => $matricula,
+                ':nome' => $nome_aluno,
+                ':cpf' => $cpf_aluno,
+                ':nasc' => $data_nascimento,
+                ':inst' => $instituicoes_id
+            ]);
+            $aluno_id = $pdo->lastInsertId();
+
+            // Link Aluno-Responsavel
+            $sqlLink = "INSERT INTO aluno_responsavel (alunos_id, responsaveis_id, relacao) VALUES (:aluno, :resp, :rel)";
+            $stmtLink = $pdo->prepare($sqlLink);
+            $stmtLink->execute([
+                ':aluno' => $aluno_id,
+                ':resp' => $resp_id,
+                ':rel' => $parentesco
+            ]);
+            
+            // Find Turma ID (mocking it if it doesn't exist by name)
+            // since the frontend passes the name like "Turma A - Manhã"
+            $sqlTurma = "SELECT id FROM turmas WHERE nome = :nome LIMIT 1";
+            $stmtTurma = $pdo->prepare($sqlTurma);
+            $stmtTurma->execute([':nome' => $turma]);
+            $turmaData = $stmtTurma->fetch(PDO::FETCH_ASSOC);
+            $turma_id = $turmaData ? $turmaData['id'] : null;
+
+            if ($turma_id) {
+                $sqlAluTurma = "INSERT INTO aluno_turma (alunos_id, turmas_id, data_inicio) VALUES (:aluno, :turma, NOW())";
+                $stmtAluTurma = $pdo->prepare($sqlAluTurma);
+                $stmtAluTurma->execute([':aluno' => $aluno_id, ':turma' => $turma_id]);
+            }
+
+            $pdo->commit();
+            echo json_encode(["status" => "success", "message" => "Aluno cadastrado com sucesso! Matrícula: " . $matricula]);
+        } catch (PDOException $e) {
+            $pdo->rollBack();
+            echo json_encode(["status" => "error", "message" => "Erro ao salvar aluno: " . $e->getMessage()]);
+        }
+    } else {
+        echo json_encode(["status" => "warning", "message" => "Simulação: Banco desconectado."]);
+    }
 }
 ?>

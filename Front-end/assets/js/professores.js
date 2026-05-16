@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => { window.location.href = 'login.html'; }, 1200);
     });
 
+    carregarProfessores();
+
     // Busca dinâmica
     document.getElementById('searchProf')?.addEventListener('input', filtrarProfessores);
     document.getElementById('filterDisciplina')?.addEventListener('change', filtrarProfessores);
@@ -27,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Salvar professor
-    document.getElementById('btnSalvarProfessor')?.addEventListener('click', () => {
+    document.getElementById('btnSalvarProfessor')?.addEventListener('click', async () => {
         const nome  = document.getElementById('inputNomeProf')?.value.trim();
         const email = document.getElementById('inputEmailProf')?.value.trim();
         if (!nome || !email) { showToast('Preencha nome e e-mail.', 'warning'); return; }
@@ -36,12 +38,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const s2 = document.getElementById('inputConfSenhaProfessor')?.value;
         if (s1 !== s2) { showToast('As senhas não coincidem.', 'warning'); return; }
 
-        simularSalvar('Professor salvo com sucesso!', 'modalProfessor', 'btnSalvarProfessor');
+        await salvarProfessor();
     });
 
     // Resetar modal ao fechar
     document.getElementById('modalProfessor')?.addEventListener('hidden.bs.modal', () => {
-        document.getElementById('formProfessor')?.reset();
+        const form = document.getElementById('formProfessor');
+        if (form) {
+            form.reset();
+            delete form.dataset.editId;
+        }
         document.getElementById('modalProfTitle').innerHTML =
             '<i class="bi bi-person-video3 me-2"></i>Formulário — Novo / Editar professor';
     });
@@ -74,43 +80,137 @@ function filtrarProfessores() {
 }
 
 function editarProf(id) {
-    const dados = {
-        1: { nome:'Carlos Magalhães', cpf:'111.222.333-44', tel:'(11) 91111-0001', email:'carlos.m@escola.com', formacao:'Lic. Matemática', status:'ativo',  disc:'Matemática, Física' },
-        2: { nome:'Juliana Souza',    cpf:'555.666.777-88', tel:'(11) 91111-0002', email:'juliana.s@escola.com', formacao:'Lic. Letras',      status:'ativo',  disc:'Português, Literatura' },
-        3: { nome:'Roberto Alves',    cpf:'999.888.777-66', tel:'(11) 91111-0003', email:'roberto.a@escola.com', formacao:'Lic. Ciências',    status:'ferias', disc:'Ciências, Biologia' },
-        4: { nome:'Fernanda Melo',    cpf:'222.333.444-55', tel:'(11) 91111-0004', email:'fernanda.m@escola.com',formacao:'Lic. Ed. Física',  status:'ativo',  disc:'Artes, Ed. Física' },
-    };
-    const d = dados[id]; if (!d) return;
+    const d = profsListCache.find(p => parseInt(p.id) === parseInt(id));
+    if (!d) return;
+
     document.getElementById('inputNomeProf').value      = d.nome;
-    document.getElementById('inputCpfProf').value       = d.cpf;
-    document.getElementById('inputTelProf').value       = d.tel;
-    document.getElementById('inputEmailProf').value     = d.email;
-    document.getElementById('inputFormacaoProf').value  = d.formacao;
-    document.getElementById('selectStatusProf').value   = d.status;
-    document.getElementById('inputDisciplinas').value   = d.disc;
+    document.getElementById('inputCpfProf').value       = d.cpf || '';
+    document.getElementById('inputTelProf').value       = d.tel || '';
+    document.getElementById('inputEmailProf').value     = d.email || '';
+    document.getElementById('inputFormacaoProf').value  = d.formacao || '';
+    
+    const form = document.getElementById('formProfessor');
+    if (form) form.dataset.editId = id;
+
     document.getElementById('modalProfTitle').innerHTML =
         '<i class="bi bi-pencil-fill me-2"></i>Editar Professor — ' + d.nome;
     toggleModal('modalProfessor', 'show');
 }
 
-function excluirProf(id) {
+async function excluirProf(id) {
     if (!confirm('Tem certeza que deseja excluir este professor?')) return;
-    showLoading();
-    setTimeout(() => {
-        hideLoading();
-        const rows = document.querySelectorAll('#tbodyProf tr');
-        if (rows[id - 1]) rows[id - 1].remove();
-        showToast('Professor removido com sucesso.', 'danger');
-        filtrarProfessores();
-    }, 800);
+    
+    try {
+        const formData = new FormData();
+        formData.append('tabela', 'funcionarios');
+        formData.append('id', id);
+
+        const response = await fetch('../../Back-End/exclusao.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success' || data.status === 'warning') {
+            showToast('Professor removido com sucesso.', 'success');
+            carregarProfessores();
+        } else {
+            showToast(data.message, 'danger');
+        }
+    } catch (error) {
+        showToast('Erro de conexão.', 'danger');
+    }
 }
 
-function simularSalvar(msg, modalId, btnId) {
-    const btn = document.getElementById(btnId);
+async function salvarProfessor() {
+    const btn = document.getElementById('btnSalvarProfessor');
     if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Salvando...'; }
-    setTimeout(() => {
+    
+    try {
+        const form = document.getElementById('formProfessor');
+        const formData = new FormData(form);
+        const isEdit = form.dataset.editId ? true : false;
+        
+        let url = '../../Back-End/insercoes/insercao_funcionario.php';
+        formData.append('cargo', 'Professor');
+
+        if (isEdit) {
+            url = '../../Back-End/edicao.php';
+            formData.append('tabela', 'funcionarios');
+            formData.append('id', form.dataset.editId);
+        }
+
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success' || data.status === 'warning') {
+            showToast(data.message, 'success');
+            toggleModal('modalProfessor', 'hide');
+            form.reset();
+            carregarProfessores();
+        } else {
+            showToast(data.message, 'danger');
+        }
+    } catch (error) {
+        showToast('Erro de conexão.', 'danger');
+    } finally {
         if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>SALVAR CADASTRO'; }
-        toggleModal(modalId, 'hide');
-        showToast(msg, 'success');
-    }, 1200);
+    }
+}
+
+let profsListCache = [];
+
+async function carregarProfessores() {
+    const tbody = document.getElementById('tbodyProf');
+    if (!tbody) return;
+
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center">Carregando professores...</td></tr>';
+
+    try {
+        const response = await fetch('../../Back-End/api/listar_funcionarios.php?cargo=Professor');
+        const res = await response.json();
+
+        if (res.status === 'success') {
+            tbody.innerHTML = '';
+            profsListCache = res.data;
+            
+            if(res.data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">Nenhum professor encontrado.</td></tr>';
+                return;
+            }
+
+            res.data.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div class="prof-nome-cell d-flex align-items-center gap-2">
+                            <div class="prof-avatar">${p.nome.substring(0,2).toUpperCase()}</div>
+                            ${p.nome}
+                        </div>
+                    </td>
+                    <td>${p.email || 'N/A'}</td>
+                    <td><span class="badge-formacao">Professor</span></td>
+                    <td>${p.tel || 'N/A'}</td>
+                    <td><span class="badge-status-prof badge-verde">Ativo</span></td>
+                    <td>
+                        <div class="prof-actions d-flex gap-2">
+                            <button class="btn-action-sm" title="Editar" onclick="editarProf(${p.id})"><i class="bi bi-pencil"></i></button>
+                            <button class="btn-action-sm danger" title="Excluir" onclick="excluirProf(${p.id})"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            filtrarProfessores();
+        } else {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Erro ao carregar dados.</td></tr>';
+        }
+    } catch (error) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Erro de conexão.</td></tr>';
+    }
 }

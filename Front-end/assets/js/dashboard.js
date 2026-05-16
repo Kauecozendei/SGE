@@ -17,7 +17,68 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => card.classList.add('visible'), 150 * (i + 1));
     });
 
-    // Animação contadora dos números
+    // Botão sair
+    document.getElementById('btnSair')?.addEventListener('click', e => {
+        e.preventDefault();
+        if (!confirm('Deseja realmente sair do sistema?')) return;
+        showToast('Saindo do sistema...', 'warning');
+        showLoading();
+        setTimeout(() => { window.location.href = 'login.html'; }, 1200);
+    });
+
+    carregarDashboard();
+});
+
+async function carregarDashboard() {
+    try {
+        // Estatísticas
+        const respStats = await fetch('../../Back-End/api/dashboard_stats.php');
+        const stats = await respStats.json();
+        
+        if (stats.status === 'success') {
+            const numeros = document.querySelectorAll('.dash-card-numero');
+            if (numeros[0]) numeros[0].dataset.target = stats.data.total_alunos;
+            if (numeros[1]) numeros[1].dataset.target = stats.data.total_professores;
+            if (numeros[2]) numeros[2].dataset.target = stats.data.total_turmas;
+            // O 4º card é mensalidades pendentes, permanece estático
+        }
+        
+        animarNumeros();
+
+        // Últimos Alunos
+        const respAlunos = await fetch('../../Back-End/api/listar_alunos.php');
+        const dadosAlunos = await respAlunos.json();
+        
+        if (dadosAlunos.status === 'success') {
+            const tbody = document.querySelector('.table-dash tbody');
+            if (tbody) {
+                tbody.innerHTML = '';
+                // Pegar os 5 últimos
+                const ultimos = dadosAlunos.data.slice(-5).reverse();
+                
+                if (ultimos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">Nenhum aluno cadastrado.</td></tr>';
+                } else {
+                    ultimos.forEach(a => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${a.nome}</td>
+                                <td>${a.turma || 'Sem turma'} - ${a.periodo || ''}</td>
+                                <td>${a.resp || 'Sem responsável'}</td>
+                                <td><span class="badge-status badge-verde">Ativo</span></td>
+                            </tr>
+                        `;
+                    });
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Erro ao carregar dashboard', error);
+        animarNumeros(); // Anima com 0 ou estáticos se der erro
+    }
+}
+
+function animarNumeros() {
     document.querySelectorAll('.dash-card-numero').forEach(el => {
         const target   = parseInt(el.dataset.target) || 0;
         const duration = 1200;
@@ -33,14 +94,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => requestAnimationFrame(update), 500);
     });
-
-    // Botão sair
-    document.getElementById('btnSair')?.addEventListener('click', e => {
-        e.preventDefault();
-        if (!confirm('Deseja realmente sair do sistema?')) return;
-        showToast('Saindo do sistema...', 'warning');
-        showLoading();
-        setTimeout(() => { window.location.href = 'login.html'; }, 1200);
-    });
-
-});
+}

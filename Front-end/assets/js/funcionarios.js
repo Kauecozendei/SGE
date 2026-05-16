@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => { window.location.href = 'login.html'; }, 1200);
     });
 
+    carregarFuncionarios();
+
     // Busca dinâmica 
     document.getElementById('searchFuncionarios')?.addEventListener('input', function () {
         filtrarFuncionarios();
@@ -41,10 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Salvar funcionário
-    document.getElementById('formFuncionario')?.addEventListener('submit', e => {
+    document.getElementById('formFuncionario')?.addEventListener('submit', async e => {
         e.preventDefault();
         if (!validarFormFunc()) return;
-        salvarFuncionario();
+        await salvarFuncionario();
     });
 
     document.getElementById('btnSalvarFuncionario')?.addEventListener('click', () => {
@@ -53,7 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Resetar modal ao fechar
     document.getElementById('modalFuncionario')?.addEventListener('hidden.bs.modal', () => {
-        document.getElementById('formFuncionario')?.reset();
+        const form = document.getElementById('formFuncionario');
+        if(form) {
+            form.reset();
+            delete form.dataset.editId;
+        }
         const preview = document.getElementById('avatarPreview');
         if (preview) preview.innerHTML = '<i class="bi bi-person-fill"></i>';
         document.getElementById('modalFuncTitle').innerHTML =
@@ -61,19 +67,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Confirmar exclusão
-    document.getElementById('btnConfirmarExcluirFunc')?.addEventListener('click', () => {
+    document.getElementById('btnConfirmarExcluirFunc')?.addEventListener('click', async () => {
         const idPendente = parseInt(document.getElementById('btnConfirmarExcluirFunc').dataset.id);
         const modal = bootstrap.Modal.getInstance(document.getElementById('modalExcluirFunc'));
         if (modal) modal.hide();
 
-        showLoading();
-        setTimeout(() => {
-            hideLoading();
-            const card = document.querySelector(`.func-card[data-id="${idPendente}"]`);
-            if (card) card.remove();
-            showToast('Funcionário removido com sucesso.', 'danger');
-            filtrarFuncionarios();
-        }, 800);
+        try {
+            const formData = new FormData();
+            formData.append('tabela', 'funcionarios');
+            formData.append('id', idPendente);
+
+            const response = await fetch('../../Back-End/exclusao.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success' || data.status === 'warning') {
+                showToast('Funcionário removido com sucesso.', 'success');
+                carregarFuncionarios();
+            } else {
+                showToast(data.message, 'danger');
+            }
+        } catch (error) {
+            showToast('Erro de conexão.', 'danger');
+        }
     });
 
 });
@@ -137,20 +156,120 @@ function validarFormFunc() {
 }
 
 /* Simula salvamento do funcionário */
-function salvarFuncionario() {
+async function salvarFuncionario() {
     const btn = document.getElementById('btnSalvarFuncionario');
     if (btn) {
         btn.disabled = true;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Salvando...';
     }
-    setTimeout(() => {
+
+    try {
+        const form = document.getElementById('formFuncionario');
+        const formData = new FormData(form);
+        const isEdit = form.dataset.editId ? true : false;
+        
+        let url = '../../Back-End/insercoes/insercao_funcionario.php';
+        if (isEdit) {
+            url = '../../Back-End/edicao.php';
+            formData.append('tabela', 'funcionarios');
+            formData.append('id', form.dataset.editId);
+        }
+
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success' || data.status === 'warning') {
+            showToast(data.message, 'success');
+            toggleModal('modalFuncionario', 'hide');
+            form.reset();
+            carregarFuncionarios();
+        } else {
+            showToast(data.message, 'danger');
+        }
+    } catch (error) {
+        showToast('Erro de conexão.', 'danger');
+    } finally {
         if (btn) {
             btn.disabled = false;
             btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>SALVAR CADASTRO';
         }
-        toggleModal('modalFuncionario', 'hide');
-        showToast('Funcionário salvo com sucesso!', 'success');
-    }, 1200);
+    }
+}
+
+let funcsListCache = [];
+
+async function carregarFuncionarios() {
+    const container = document.getElementById('listaFuncionarios');
+    if (!container) return;
+    
+    // Limpar os cartões existentes que não sejam o título ou controles (presume-se que o HTML tenha os cards dentro de uma row, vamos limpar os .func-card originais)
+    // Para simplificar, vou limpar o HTML dos cards
+    const rowCards = container.querySelector('.row.g-3') || container;
+    
+    try {
+        const response = await fetch('../../Back-End/api/listar_funcionarios.php');
+        const res = await response.json();
+
+        if (res.status === 'success') {
+            rowCards.innerHTML = '';
+            funcsListCache = res.data;
+            
+            if(res.data.length === 0) {
+                rowCards.innerHTML = '<div class="col-12 text-center text-muted">Nenhum funcionário cadastrado.</div>';
+                return;
+            }
+
+            res.data.forEach(f => {
+                const badgeClass = 'badge-verde';
+                const avatarInitials = f.nome.substring(0,2).toUpperCase();
+                
+                const card = document.createElement('div');
+                card.className = 'col-md-6 col-lg-4 func-card';
+                card.dataset.id = f.id;
+                card.dataset.nome = f.nome;
+                
+                card.innerHTML = `
+                    <div class="card-funcionario p-3 d-flex flex-column h-100 position-relative">
+                        <div class="dropdown position-absolute top-0 end-0 m-3">
+                            <button class="btn btn-link text-muted p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
+                                <li><a class="dropdown-item" href="#" onclick="editarFuncionario(${f.id}); return false;"><i class="bi bi-pencil me-2 text-primary"></i>Editar</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#" onclick="excluirFuncionario(${f.id}); return false;"><i class="bi bi-trash me-2"></i>Excluir</a></li>
+                            </ul>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="avatar-func">${avatarInitials}</div>
+                            <div>
+                                <h6 class="mb-0 fw-bold text-dark text-truncate" style="max-width: 180px;" title="${f.nome}">${f.nome}</h6>
+                                <small class="text-muted">${f.cargo || 'Funcionário'}</small>
+                            </div>
+                        </div>
+                        <div class="info-func mb-3 mt-auto">
+                            <div class="mb-1"><i class="bi bi-envelope"></i> ${f.email || 'N/A'}</div>
+                            <div class="mb-1"><i class="bi bi-telephone"></i> ${f.tel || 'N/A'}</div>
+                            <div><i class="bi bi-card-text"></i> ${f.cpf || 'N/A'}</div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center border-top pt-3 mt-2">
+                            <span class="badge-status-func ${badgeClass}">Ativo</span>
+                        </div>
+                    </div>
+                `;
+                rowCards.appendChild(card);
+            });
+            filtrarFuncionarios();
+        } else {
+            rowCards.innerHTML = '<div class="col-12 text-center text-danger">Erro ao carregar dados.</div>';
+        }
+    } catch (error) {
+        rowCards.innerHTML = '<div class="col-12 text-center text-danger">Erro de conexão.</div>';
+    }
 }
 
 /**
@@ -158,25 +277,19 @@ function salvarFuncionario() {
  * @param {number} id
  */
 function editarFuncionario(id) {
-    const dados = {
-        1: { nome:'Ana Paula Souza',     cpf:'111.222.333-44', tel:'(11) 98000-1111', email:'ana.paula@escola.com',  cargo:'Diretora',                 status:'ativo'  },
-        2: { nome:'Marcos Figueiredo',   cpf:'555.666.777-88', tel:'(11) 97000-2222', email:'marcos.f@escola.com',   cargo:'Coordenador Pedagógico',   status:'ativo'  },
-        3: { nome:'Juliana Ramos',       cpf:'999.888.777-66', tel:'(11) 96000-3333', email:'juliana.r@escola.com',  cargo:'Professora - Turma A',     status:'ferias' },
-        4: { nome:'Carlos Mendes',       cpf:'444.333.222-11', tel:'(11) 95000-4444', email:'carlos.m@escola.com',   cargo:'Auxiliar de Classe',       status:'ativo'  },
-        5: { nome:'Patrícia Lima',       cpf:'222.111.999-00', tel:'(11) 94000-5555', email:'patricia.l@escola.com', cargo:'Secretária',               status:'inativo'},
-    };
-
-    const d = dados[id];
+    const d = funcsListCache.find(f => parseInt(f.id) === parseInt(id));
     if (!d) return;
 
     document.getElementById('inputNomeFunc').value    = d.nome;
-    document.getElementById('inputCpfFunc').value     = d.cpf;
-    document.getElementById('inputTelFunc').value     = d.tel;
-    document.getElementById('inputEmailFunc').value   = d.email;
-    document.getElementById('inputCargoFunc').value   = d.cargo;
-    document.getElementById('selectStatusFunc').value = d.status;
+    document.getElementById('inputCpfFunc').value     = d.cpf || '';
+    document.getElementById('inputTelFunc').value     = d.tel || '';
+    document.getElementById('inputEmailFunc').value   = d.email || '';
+    document.getElementById('inputCargoFunc').value   = d.cargo || '';
     document.getElementById('inputSenhaFunc').value   = '';
     document.getElementById('inputConfSenhaFunc').value = '';
+    
+    const form = document.getElementById('formFuncionario');
+    if (form) form.dataset.editId = id;
 
     document.getElementById('modalFuncTitle').innerHTML =
         '<i class="bi bi-pencil-fill me-2"></i>Editar Funcionário — ' + d.nome;

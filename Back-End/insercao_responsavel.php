@@ -1,4 +1,4 @@
-?<?php
+gi?<?php
 // Inclui a conexão com o banco de dados
 require_once 'conexao.php';
 
