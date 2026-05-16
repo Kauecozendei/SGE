@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financeiro - Mundo Encantado</title>
+    <meta name="description" content="Gestão financeira - Sistema de Gestão Escolar">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/dashboard.css" rel="stylesheet">
+    <link href="../assets/css/financeiro.css" rel="stylesheet">
+</head>
+<body>
+<div class="main-wrapper">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header d-flex align-items-center gap-3">
+            <img src="../assets/img/Logo.jpg" alt="Mundo Encantado" class="sidebar-logo" onerror="this.style.display='none'">
+            <span class="sidebar-title">Mundo Encantado</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html"    class="sidebar-link"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></a>
+            <a href="alunos.html"       class="sidebar-link"><i class="bi bi-people-fill"></i><span>Alunos</span></a>
+            <a href="professores.html"  class="sidebar-link"><i class="bi bi-person-video3"></i><span>Professores</span></a>
+            <a href="funcionarios.html" class="sidebar-link"><i class="bi bi-person-workspace"></i><span>Funcionários</span></a>
+            <a href="turmas.html"       class="sidebar-link"><i class="bi bi-bookmark-star-fill"></i><span>Turmas</span></a>
+            <a href="entrada-saida.html" class="sidebar-link"><i class="bi bi-door-open-fill"></i><span>Entrada / Saída</span></a>
+            <a href="agenda.html"       class="sidebar-link"><i class="bi bi-calendar-event-fill"></i><span>Agenda</span></a>
+            <a href="financeiro.html"   class="sidebar-link active"><i class="bi bi-cash-coin"></i><span>Financeiro</span></a>
+            <a href="relatorios.html"   class="sidebar-link"><i class="bi bi-file-earmark-bar-graph-fill"></i><span>Relatórios</span></a>
+            <a href="perfil.html"       class="sidebar-link"><i class="bi bi-gear-fill"></i><span>Configurações</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" class="sidebar-link text-danger" id="btnSair">
+                <i class="bi bi-box-arrow-left"></i><span>Sair</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Conteúdo -->
+    <main class="content-area">
+        <header class="topbar d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn-menu" id="btnMenu" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+                <div>
+                    <h1 class="topbar-title mb-0">Financeiro</h1>
+                    <small class="topbar-date text-muted" id="dataAtual"></small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-3 flex-shrink-0">
+                <span class="topbar-greeting d-none d-md-block">Olá, Administrador 👋</span>
+                <div class="topbar-avatar"><i class="bi bi-person-fill"></i></div>
+            </div>
+        </header>
+
+        <!-- Cards Resumo -->
+        <div class="row g-3 mb-4" id="finCards">
+            <div class="col-xl-3 col-md-6">
+                <div class="fin-card azul">
+                    <div class="fin-card-label">Total Previsto</div>
+                    <div class="fin-card-valor" data-target="48500">R$ 0</div>
+                    <div class="fin-card-sub">92 mensalidades × R$ 527</div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="fin-card verde">
+                    <div class="fin-card-label">Recebido</div>
+                    <div class="fin-card-valor" data-target="38200">R$ 0</div>
+                    <div class="fin-card-sub">68 pagamentos confirmados</div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="fin-card laranja">
+                    <div class="fin-card-label">Pendente</div>
+                    <div class="fin-card-valor" data-target="7300">R$ 0</div>
+                    <div class="fin-card-sub">14 em aberto este mês</div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="fin-card vermelho">
+                    <div class="fin-card-label">Atrasado</div>
+                    <div class="fin-card-valor" data-target="3000">R$ 0</div>
+                    <div class="fin-card-sub">10 cobranças vencidas</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="fin-toolbar d-flex flex-wrap gap-3 mb-3">
+            <input type="text" class="fin-search" id="searchFin" placeholder="Buscar por aluno, responsável ou referência...">
+            <select class="fin-filter" id="filterMesFin">
+                <option value="">Todos os Meses</option>
+                <option value="01">Janeiro</option>
+                <option value="02">Fevereiro</option>
+                <option value="03">Março</option>
+                <option value="04">Abril</option>
+                <option value="05">Maio</option>
+                <option value="06">Junho</option>
+            </select>
+            <select class="fin-filter" id="filterStatusFin">
+                <option value="">Todos os Status</option>
+                <option value="pago">Pago</option>
+                <option value="pendente">Pendente</option>
+                <option value="atrasado">Atrasado</option>
+            </select>
+            <button class="btn-nova-cobranca" data-bs-toggle="modal" data-bs-target="#modalCobranca">
+                <i class="bi bi-plus-lg"></i> Nova Cobrança
+            </button>
+        </div>
+
+        <!-- Tabela -->
+        <section class="card-padrao">
+            <div class="table-responsive">
+                <table class="table-fin table-hover align-middle w-100" id="tabelaFin">
+                    <thead>
+                        <tr>
+                            <th>Aluno</th>
+                            <th>Turma</th>
+                            <th>Tipo</th>
+                            <th>Vencimento</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyFin">
+                        <tr>
+                            <td>Maria Eduarda Silva</td>
+                            <td>Turma A</td>
+                            <td>Mensalidade</td>
+                            <td>05/05/2026</td>
+                            <td class="fin-valor-pago">R$ 527,00</td>
+                            <td><span class="fin-status pago"><i class="bi bi-check-circle-fill"></i>Pago</span></td>
+                            <td><div class="fin-actions d-flex gap-2">
+                                <button class="btn-action-sm" title="Ver recibo" onclick="verRecibo(1)"><i class="bi bi-receipt"></i></button>
+                                <button class="btn-action-sm success" title="Confirmar pagamento"><i class="bi bi-check2-circle"></i></button>
+                            </div></td>
+                        </tr>
+                        <tr>
+                            <td>Pedro Henrique Costa</td>
+                            <td>Turma B</td>
+                            <td>Mensalidade</td>
+                            <td>05/05/2026</td>
+                            <td class="fin-valor-pendente">R$ 527,00</td>
+                            <td><span class="fin-status pendente"><i class="bi bi-clock-fill"></i>Pendente</span></td>
+                            <td><div class="fin-actions d-flex gap-2">
+                                <button class="btn-action-sm" title="Editar"><i class="bi bi-pencil"></i></button>
+                                <button class="btn-action-sm success" title="Confirmar pagamento" onclick="confirmarPagamento('Pedro Henrique Costa')"><i class="bi bi-check2-circle"></i></button>
+                            </div></td>
+                        </tr>
+                        <tr class="row-atrasado">
+                            <td>Lucas Gabriel Oliveira</td>
+                            <td>Turma C</td>
+                            <td>Mensalidade</td>
+                            <td>05/04/2026</td>
+                            <td class="fin-valor-atrasado">R$ 527,00</td>
+                            <td><span class="fin-status atrasado"><i class="bi bi-exclamation-circle-fill"></i>Atrasado</span></td>
+                            <td><div class="fin-actions d-flex gap-2">
+                                <button class="btn-action-sm" title="Editar"><i class="bi bi-pencil"></i></button>
+                                <button class="btn-action-sm success" title="Confirmar pagamento" onclick="confirmarPagamento('Lucas Gabriel Oliveira')"><i class="bi bi-check2-circle"></i></button>
+                                <button class="btn-action-sm danger" title="Cancelar" onclick="showToast('Cobrança cancelada.','danger')"><i class="bi bi-x-circle"></i></button>
+                            </div></td>
+                        </tr>
+                        <tr>
+                            <td>Isabela Santos Ferreira</td>
+                            <td>Turma A</td>
+                            <td>Material</td>
+                            <td>10/05/2026</td>
+                            <td class="fin-valor-pago">R$ 180,00</td>
+                            <td><span class="fin-status pago"><i class="bi bi-check-circle-fill"></i>Pago</span></td>
+                            <td><div class="fin-actions d-flex gap-2">
+                                <button class="btn-action-sm" title="Ver recibo" onclick="verRecibo(4)"><i class="bi bi-receipt"></i></button>
+                            </div></td>
+                        </tr>
+                        <tr class="row-atrasado">
+                            <td>João Miguel Almeida</td>
+                            <td>Turma B</td>
+                            <td>Mensalidade</td>
+                            <td>05/03/2026</td>
+                            <td class="fin-valor-atrasado">R$ 527,00</td>
+                            <td><span class="fin-status atrasado"><i class="bi bi-exclamation-circle-fill"></i>Atrasado</span></td>
+                            <td><div class="fin-actions d-flex gap-2">
+                                <button class="btn-action-sm" title="Editar"><i class="bi bi-pencil"></i></button>
+                                <button class="btn-action-sm success" title="Confirmar pagamento" onclick="confirmarPagamento('João Miguel Almeida')"><i class="bi bi-check2-circle"></i></button>
+                            </div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
+                <span class="pagination-info">Exibindo 5 de 92 cobranças</span>
+                <div class="pagination-btns d-flex gap-1" id="paginationFin">
+                    <button><i class="bi bi-chevron-left"></i></button>
+                    <button class="active">1</button>
+                    <button>2</button>
+                    <button>3</button>
+                    <button><i class="bi bi-chevron-right"></i></button>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Modal Nova Cobrança -->
+<div class="modal fade modal-fin" id="modalCobranca" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-cash-coin me-2"></i>Nova Cobrança</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formCobranca">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label" for="selectAlunoFin">Aluno *</label>
+                            <select class="form-control-custom" id="selectAlunoFin" name="aluno_id" required>
+                                <option value="">Selecionar aluno</option>
+                                <option>Maria Eduarda Silva</option>
+                                <option>Pedro Henrique Costa</option>
+                                <option>Lucas Gabriel Oliveira</option>
+                                <option>Isabela Santos Ferreira</option>
+                                <option>João Miguel Almeida</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="selectTipoCobranca">Tipo *</label>
+                            <select class="form-control-custom" id="selectTipoCobranca" name="tipo" required>
+                                <option value="">Selecionar</option>
+                                <option>Mensalidade</option>
+                                <option>Material</option>
+                                <option>Uniforme</option>
+                                <option>Excursão</option>
+                                <option>Outro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="inputValorCobranca">Valor (R$) *</label>
+                            <input type="number" class="form-control-custom" id="inputValorCobranca" name="valor" placeholder="0,00" step="0.01" min="0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="inputVencimentoCobranca">Vencimento *</label>
+                            <input type="date" class="form-control-custom" id="inputVencimentoCobranca" name="vencimento" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="selectStatusCobranca">Status</label>
+                            <select class="form-control-custom" id="selectStatusCobranca" name="status">
+                                <option value="pendente">Pendente</option>
+                                <option value="pago">Pago</option>
+                                <option value="atrasado">Atrasado</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="inputObsCobranca">Observação</label>
+                            <input type="text" class="form-control-custom" id="inputObsCobranca" name="observacao" placeholder="Referência, mês, detalhe...">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn-salvar" id="btnSalvarCobranca">
+                    <i class="bi bi-check-lg me-1"></i>Salvar Cobrança
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/financeiro.js"></script>
+</body>
+</html>

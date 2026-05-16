@@ -1,0 +1,124 @@
+
+/* Cards */
+.fin-card {
+    background: var(--cor-fundo-card); border-radius: var(--border-radius-md);
+    padding: 1.25rem; box-shadow: var(--sombra-suave);
+    transition: var(--transition-padrao); border-left: 4px solid transparent;
+}
+.fin-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+.fin-card.azul    { border-left-color: var(--cor-secundaria); }
+.fin-card.verde   { border-left-color: var(--cor-sucesso); }
+.fin-card.laranja { border-left-color: var(--cor-aviso); }
+.fin-card.vermelho{ border-left-color: var(--cor-erro); }
+
+.fin-card-label {
+    font-size: 0.72rem; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.4px; color: var(--cor-texto-secundario); margin-bottom: 0.4rem;
+}
+.fin-card-valor { font-size: 1.6rem; font-weight: 800; line-height: 1; margin-bottom: 0.3rem; }
+.fin-card.azul    .fin-card-valor { color: var(--cor-secundaria); }
+.fin-card.verde   .fin-card-valor { color: var(--cor-sucesso); }
+.fin-card.laranja .fin-card-valor { color: var(--cor-aviso); }
+.fin-card.vermelho .fin-card-valor{ color: var(--cor-erro); }
+.fin-card-sub { font-size: 0.72rem; font-weight: 600; color: var(--cor-texto-secundario); }
+
+/* Search / Filter */
+.fin-search {
+    flex: 1; min-width: 220px;
+    padding: 0.65rem 1rem 0.65rem 2.5rem;
+    border: 1.5px solid var(--cor-borda); border-radius: var(--border-radius-sm);
+    background: #fdfcf9 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0'/%3E%3C/svg%3E") no-repeat 0.8rem center;
+    font-family: 'Nunito', sans-serif; font-weight: 600; font-size: 0.85rem;
+    transition: var(--transition-padrao);
+}
+.fin-filter {
+    padding: 0.65rem 1rem; border: 1.5px solid var(--cor-borda);
+    border-radius: var(--border-radius-sm); background-color: #fdfcf9;
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.85rem;
+    cursor: pointer; min-width: 140px;
+}
+.fin-search:focus, .fin-filter:focus {
+    outline: none; border-color: var(--cor-primaria);
+    box-shadow: 0 0 0 3px rgba(43,97,166,0.12);
+}
+
+.btn-nova-cobranca {
+    background-color: #dcfce7; border: 2px solid var(--cor-sucesso); color: #166534;
+    border-radius: var(--border-radius-sm); padding: 0.6rem 1.2rem;
+    font-weight: 800; font-size: 0.82rem; cursor: pointer;
+    transition: var(--transition-padrao); white-space: nowrap;
+}
+.btn-nova-cobranca:hover { background-color: var(--cor-sucesso); color: white; transform: translateY(-1px); }
+
+/* Tabela */
+.table-fin { font-size: 0.85rem; }
+.table-fin thead th {
+    background-color: var(--cor-fundo-card); border-bottom: 2px solid var(--cor-borda);
+    font-weight: 800; font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.3px; color: var(--cor-texto-secundario); padding: 0.75rem 1rem; white-space: nowrap;
+}
+.table-fin tbody td { padding: 0.75rem 1rem; border-bottom: 1px solid #ede6d6; font-weight: 600; }
+.table-fin tbody tr.row-atrasado       { background: #fff5f5; }
+.table-fin tbody tr.row-atrasado:hover { background: #fee2e2; }
+.table-fin tbody tr:last-child td      { border-bottom: none; }
+
+/* Status financeiro */
+.fin-status {
+    padding: 0.25rem 0.8rem; border-radius: 50px;
+    font-weight: 800; font-size: 0.72rem; display: inline-flex; align-items: center; gap: 0.3rem;
+}
+.fin-status.pago     { background: #dcfce7; color: #166534; border: 1.5px solid #16a34a; }
+.fin-status.pendente { background: #fef3c7; color: #92400e; border: 1.5px solid #f59e0b; }
+.fin-status.atrasado { background: #fee2e2; color: #991b1b; border: 1.5px solid #ef4444; }
+.fin-status.cancelado{ background: #f3f4f6; color: #374151; border: 1.5px solid #9ca3af; }
+
+.fin-valor-pago     { color: var(--cor-sucesso); font-weight: 800; }
+.fin-valor-pendente { color: var(--cor-aviso);  font-weight: 800; }
+.fin-valor-atrasado { color: var(--cor-erro);   font-weight: 800; }
+
+.btn-action-sm {
+    width: 32px; height: 32px; border-radius: 8px;
+    border: 1.5px solid var(--cor-borda); background: #fdfcf9;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: var(--transition-padrao); font-size: 0.85rem; color: var(--cor-texto-secundario);
+}
+.btn-action-sm:hover          { border-color: var(--cor-primaria); color: var(--cor-primaria); background-color: #ebf3fc; }
+.btn-action-sm.success:hover  { border-color: var(--cor-sucesso);  color: var(--cor-sucesso);  background-color: #dcfce7; }
+.btn-action-sm.danger:hover   { border-color: var(--cor-erro);     color: var(--cor-erro);     background-color: #fee2e2; }
+
+/* Paginação */
+.pagination-info { font-size: 0.78rem; font-weight: 600; color: var(--cor-texto-secundario); }
+.pagination-btns button {
+    width: 34px; height: 34px; border-radius: 8px;
+    border: 1.5px solid var(--cor-borda); background: #fdfcf9;
+    font-weight: 800; font-size: 0.8rem; cursor: pointer;
+    transition: var(--transition-padrao); display: flex; align-items: center; justify-content: center;
+}
+.pagination-btns button:hover  { border-color: var(--cor-primaria); color: var(--cor-primaria); }
+.pagination-btns button.active { background: #ebf3fc; border-color: var(--cor-primaria); color: var(--cor-primaria); }
+
+/* Modal */
+.modal-fin .modal-content { border-radius: var(--border-radius-md); border: none; background: var(--cor-fundo); }
+.modal-fin .modal-header  { border-bottom: 1px solid var(--cor-borda); padding: 1.25rem 1.5rem; }
+.modal-fin .modal-title   { font-weight: 800; font-size: 1rem; }
+.modal-fin .modal-body    { padding: 1.5rem; }
+.modal-fin .modal-footer  { border-top: 1px solid var(--cor-borda); padding: 1rem 1.5rem; }
+
+.btn-cancelar {
+    background-color: #fdfcf9; border: 2px solid var(--cor-borda); color: var(--cor-texto-principal);
+    border-radius: var(--border-radius-sm); padding: 0.6rem 1.5rem;
+    font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: var(--transition-padrao);
+}
+.btn-cancelar:hover { border-color: var(--cor-erro); color: var(--cor-erro); }
+.btn-salvar {
+    background-color: #ebf3fc; border: 2px solid var(--cor-primaria); color: var(--cor-primaria);
+    border-radius: var(--border-radius-sm); padding: 0.6rem 1.5rem;
+    font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: var(--transition-padrao);
+}
+.btn-salvar:hover { background-color: var(--cor-primaria); color: white; }
+
+@media (max-width: 575.98px) {
+    .fin-card-valor { font-size: 1.2rem; }
+    .fin-search, .fin-filter, .btn-nova-cobranca { width: 100%; }
+    .btn-nova-cobranca { justify-content: center; }
+}
