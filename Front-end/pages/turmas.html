@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turmas - Mundo Encantado</title>
+    <meta name="description" content="Gestão de turmas - Sistema de Gestão Escolar">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/dashboard.css" rel="stylesheet">
+    <link href="../assets/css/turmas.css" rel="stylesheet">
+</head>
+<body>
+<div class="main-wrapper">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header d-flex align-items-center gap-3">
+            <img src="../assets/img/Logo.jpg" alt="Mundo Encantado" class="sidebar-logo" onerror="this.style.display='none'">
+            <span class="sidebar-title">Mundo Encantado</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html"    class="sidebar-link"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></a>
+            <a href="alunos.html"       class="sidebar-link"><i class="bi bi-people-fill"></i><span>Alunos</span></a>
+            <a href="professores.html"  class="sidebar-link"><i class="bi bi-person-video3"></i><span>Professores</span></a>
+            <a href="funcionarios.html" class="sidebar-link"><i class="bi bi-person-workspace"></i><span>Funcionários</span></a>
+            <a href="turmas.html"       class="sidebar-link active"><i class="bi bi-bookmark-star-fill"></i><span>Turmas</span></a>
+            <a href="entrada-saida.html" class="sidebar-link"><i class="bi bi-door-open-fill"></i><span>Entrada / Saída</span></a>
+            <a href="agenda.html"       class="sidebar-link"><i class="bi bi-calendar-event-fill"></i><span>Agenda</span></a>
+            <a href="financeiro.html"   class="sidebar-link"><i class="bi bi-cash-coin"></i><span>Financeiro</span></a>
+            <a href="relatorios.html"   class="sidebar-link"><i class="bi bi-file-earmark-bar-graph-fill"></i><span>Relatórios</span></a>
+            <a href="perfil.html"       class="sidebar-link"><i class="bi bi-gear-fill"></i><span>Configurações</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" class="sidebar-link text-danger" id="btnSair">
+                <i class="bi bi-box-arrow-left"></i><span>Sair</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Conteúdo -->
+    <main class="content-area">
+        <header class="topbar d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn-menu" id="btnMenu" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+                <div>
+                    <h1 class="topbar-title mb-0">Turmas</h1>
+                    <small class="topbar-date text-muted" id="dataAtual"></small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-3 flex-shrink-0">
+                <span class="topbar-greeting d-none d-md-block">Olá, Administrador 👋</span>
+                <div class="topbar-avatar"><i class="bi bi-person-fill"></i></div>
+            </div>
+        </header>
+
+        <!-- Toolbar -->
+        <div class="turmas-toolbar d-flex flex-wrap align-items-center gap-3 mb-3">
+            <input type="text" class="turmas-search" id="searchTurmas" placeholder="Buscar turma por nome, série ou professor...">
+            <button class="btn-nova-turma" id="btnNovaTurma" data-bs-toggle="modal" data-bs-target="#modalTurma">
+                <i class="bi bi-plus-lg"></i> Nova Turma
+            </button>
+        </div>
+
+        <div class="turmas-grid" id="turmasGrid">
+
+            <!-- Turma A -->
+            <div class="turma-card azul" data-nome="Turma A - Manhã">
+                <div class="turma-card-header d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <div class="turma-nome">Turma A</div>
+                        <div class="turma-serie">Maternal II — Manhã</div>
+                    </div>
+                    <span class="turma-badge">Sala 01</span>
+                </div>
+                <div class="turma-info-grid">
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Professor(a)</span>
+                        <span class="turma-info-value">Juliana Souza</span>
+                    </div>
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Alunos</span>
+                        <span class="turma-info-value">18 / 25</span>
+                    </div>
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Horário</span>
+                        <span class="turma-info-value">07h30 – 11h30</span>
+                    </div>
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Status</span>
+                        <span class="badge-status badge-verde">Ativa</span>
+                    </div>
+                </div>
+                <div class="turma-barra">
+                    <div class="turma-barra-fill" style="width:72%"></div>
+                </div>
+                <div class="turma-barra-info">
+                    <span>Capacidade: 72%</span>
+                    <span>7 vagas</span>
+                </div>
+                <button class="btn-gerenciar" onclick="gerenciarTurma('Turma A')">
+                    <i class="bi bi-gear-fill"></i> Gerenciar Turma
+                </button>
+            </div>
+
+            <!-- Turma B -->
+            <div class="turma-card verde" data-nome="Turma B - Tarde">
+                <div class="turma-card-header d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <div class="turma-nome">Turma B</div>
+                        <div class="turma-serie">Pré I — Tarde</div>
+                    </div>
+                    <span class="turma-badge">Sala 02</span>
+                </div>
+                <div class="turma-info-grid">
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Professor(a)</span>
+                        <span class="turma-info-value">Carlos Magalhães</span>
+                    </div>
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Alunos</span>
+                        <span class="turma-info-value">22 / 25</span>
+                    </div>
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Horário</span>
+                        <span class="turma-info-value">13h00 – 17h00</span>
+                    </div>
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Status</span>
+                        <span class="badge-status badge-verde">Ativa</span>
+                    </div>
+                </div>
+                <div class="turma-barra">
+                    <div class="turma-barra-fill" style="width:88%"></div>
+                </div>
+                <div class="turma-barra-info">
+                    <span>Capacidade: 88%</span>
+                    <span>3 vagas</span>
+                </div>
+                <button class="btn-gerenciar" onclick="gerenciarTurma('Turma B')">
+                    <i class="bi bi-gear-fill"></i> Gerenciar Turma
+                </button>
+            </div>
+
+            <!-- Turma C -->
+            <div class="turma-card amarela" data-nome="Turma C - Integral">
+                <div class="turma-card-header d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <div class="turma-nome">Turma C</div>
+                        <div class="turma-serie">Pré II — Integral</div>
+                    </div>
+                    <span class="turma-badge">Sala 03</span>
+                </div>
+                <div class="turma-info-grid">
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Professor(a)</span>
+                        <span class="turma-info-value">Fernanda Melo</span>
+                    </div>
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Alunos</span>
+                        <span class="turma-info-value">15 / 20</span>
+                    </div>
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Horário</span>
+                        <span class="turma-info-value">07h30 – 17h00</span>
+                    </div>
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Status</span>
+                        <span class="badge-status badge-verde">Ativa</span>
+                    </div>
+                </div>
+                <div class="turma-barra">
+                    <div class="turma-barra-fill" style="width:75%"></div>
+                </div>
+                <div class="turma-barra-info">
+                    <span>Capacidade: 75%</span>
+                    <span>5 vagas</span>
+                </div>
+                <button class="btn-gerenciar" onclick="gerenciarTurma('Turma C')">
+                    <i class="bi bi-gear-fill"></i> Gerenciar Turma
+                </button>
+            </div>
+
+            <!-- Turma D -->
+            <div class="turma-card roxa" data-nome="Turma D - Manhã">
+                <div class="turma-card-header d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <div class="turma-nome">Turma D</div>
+                        <div class="turma-serie">1º Ano — Manhã</div>
+                    </div>
+                    <span class="turma-badge">Sala 04</span>
+                </div>
+                <div class="turma-info-grid">
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Professor(a)</span>
+                        <span class="turma-info-value">Roberto Alves</span>
+                    </div>
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Alunos</span>
+                        <span class="turma-info-value">25 / 30</span>
+                    </div>
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Horário</span>
+                        <span class="turma-info-value">07h30 – 11h30</span>
+                    </div>
+                    <div class="turma-info-item">
+                        <span class="turma-info-label">Status</span>
+                        <span class="badge-status badge-laranja">Quase cheia</span>
+                    </div>
+                </div>
+                <div class="turma-barra">
+                    <div class="turma-barra-fill" style="width:83%"></div>
+                </div>
+                <div class="turma-barra-info">
+                    <span>Capacidade: 83%</span>
+                    <span>5 vagas</span>
+                </div>
+                <button class="btn-gerenciar" onclick="gerenciarTurma('Turma D')">
+                    <i class="bi bi-gear-fill"></i> Gerenciar Turma
+                </button>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- Modal Nova Turma -->
+<div class="modal fade modal-turma" id="modalTurma" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTurmaTitle">
+                    <i class="bi bi-bookmark-star-fill me-2"></i>Formulário — Nova / Editar Turma
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formTurma">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="inputNomeTurma">Nome da Turma *</label>
+                            <input type="text" class="form-control-custom" id="inputNomeTurma" name="nome" placeholder="Ex: Turma E" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="inputSerieTurma">Série / Nível *</label>
+                            <select class="form-control-custom" id="inputSerieTurma" name="serie" required>
+                                <option value="">Selecionar</option>
+                                <option>Berçário</option>
+                                <option>Maternal I</option>
+                                <option>Maternal II</option>
+                                <option>Pré I</option>
+                                <option>Pré II</option>
+                                <option>1º Ano</option>
+                                <option>2º Ano</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="inputSalaTurma">Sala</label>
+                            <input type="text" class="form-control-custom" id="inputSalaTurma" name="sala" placeholder="Ex: Sala 05">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="inputCapacidade">Capacidade Máxima</label>
+                            <input type="number" class="form-control-custom" id="inputCapacidade" name="capacidade" placeholder="25" min="1">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="selectPeriodoTurma">Período</label>
+                            <select class="form-control-custom" id="selectPeriodoTurma" name="periodo">
+                                <option>Manhã</option>
+                                <option>Tarde</option>
+                                <option>Integral</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="selectProfTurma">Professor Responsável</label>
+                            <select class="form-control-custom" id="selectProfTurma" name="professor_id">
+                                <option value="">Selecionar professor</option>
+                                <option>Carlos Magalhães</option>
+                                <option>Juliana Souza</option>
+                                <option>Roberto Alves</option>
+                                <option>Fernanda Melo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="inputHorarioTurma">Horário</label>
+                            <input type="text" class="form-control-custom" id="inputHorarioTurma" name="horario" placeholder="Ex: 07h30 – 11h30">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancelar" data-bs-dismiss="modal">CANCELAR</button>
+                <button class="btn-salvar" id="btnSalvarTurma"><i class="bi bi-check-lg me-1"></i>SALVAR TURMA</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Gerenciar Turma (lista de alunos) -->
+<div class="modal fade modal-turma" id="modalGerenciarTurma" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="gerenciarTurmaTitle">
+                    <i class="bi bi-people-fill me-2"></i>Alunos da Turma
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body" id="gerenciarTurmaBody">
+                <!-- preenchido por JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancelar" data-bs-dismiss="modal">Fechar</button>
+                <button class="btn-salvar" onclick="showToast('Turma atualizada!','success')">
+                    <i class="bi bi-check-lg me-1"></i>Salvar Alterações
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/turmas.js"></script>
+</body>
+</html>
