@@ -107,6 +107,7 @@ CREATE TABLE IF NOT EXISTS restricoes_alimentares(
 	descricao varchar(1000),
 		CONSTRAINT fk_alunos
 			FOREIGN KEY (alunos_id) REFERENCES alunos(id)
+			ON DELETE CASCADE
 )ENGINE=InnoDB;
 
 #CRIAÇÃO DA TABELA DE HORÁRIOS
@@ -119,9 +120,10 @@ CREATE TABLE IF NOT EXISTS horarios(
 		CONSTRAINT chk_tipo
         	CHECK (tipo IN ('entrada', 'saida')),
 	observacao varchar(500),
-	funcionarios_id int,
+	funcionarios_id int NOT NULL,
 		CONSTRAINT fk_alunos
-			FOREIGN KEY (alunos_id) REFERENCES alunos(id),
+			FOREIGN KEY (alunos_id) REFERENCES alunos(id)
+			ON DELETE CASCADE,
 		CONSTRAINT fk_funcionarios
 			FOREIGN KEY (funcionarios_id) REFERENCES funcionarios(id)
 )ENGINE=InnoDB;
@@ -136,14 +138,12 @@ CREATE TABLE IF NOT EXISTS alimentacao(
 	observacao varchar(500),
 	funcionarios_id int NOT NULL,
 		CONSTRAINT fk_alunos
-			FOREIGN KEY (alunos_id) REFERENCES alunos(id),
+			FOREIGN KEY (alunos_id) REFERENCES alunos(id)
+			ON DELETE CASCADE,
 		CONSTRAINT fk_funcionarios
 			FOREIGN KEY (funcionarios_id) REFERENCES funcionarios(id)
 )ENGINE=InnoDB;
 
-#ALTERAÇÃO NA TABELA DE HORÁRIOS
-ALTER TABLE horarios
-MODIFY funcionarios_id int NOT NULL
 
 #CRIAÇÃO DA TABELA DE BANHOS
 CREATE TABLE IF NOT EXISTS banhos(
@@ -154,7 +154,8 @@ CREATE TABLE IF NOT EXISTS banhos(
 	observacao varchar(500),
 	funcionarios_id int NOT NULL,
 		CONSTRAINT fk_alunos
-			FOREIGN KEY (alunos_id) REFERENCES alunos(id),
+			FOREIGN KEY (alunos_id) REFERENCES alunos(id)
+			ON DELETE CASCADE,
 		CONSTRAINT fk_funcionarios
 			FOREIGN KEY (funcionarios_id) REFERENCES funcionarios(id)
 )ENGINE=InnoDB;
@@ -167,9 +168,11 @@ CREATE TABLE IF NOT EXISTS aluno_turma(
 	data_inicio date NOT NULL,
 	data_fim date,
 		CONSTRAINT fk_alunos
-			FOREIGN KEY (alunos_id) REFERENCES alunos(id),
+			FOREIGN KEY (alunos_id) REFERENCES alunos(id)
+			ON DELETE CASCADE,
 		CONSTRAINT fk_turmas
-			FOREIGN KEY (turmas_id) REFERENCES turmas(id),
+			FOREIGN KEY (turmas_id) REFERENCES turmas(id)
+			ON DELETE CASCADE,
 		CONSTRAINT uk_alunos_inicio
 			UNIQUE(alunos_id, data_inicio)
 )ENGINE=InnoDB;
@@ -181,9 +184,11 @@ CREATE TABLE IF NOT EXISTS aluno_responsavel(
 	responsaveis_id int NOT NULL,
 	relacao varchar(50) NOT NULL,
 		CONSTRAINT fk_alunos
-			FOREIGN KEY (alunos_id) REFERENCES alunos(id),
+			FOREIGN KEY (alunos_id) REFERENCES alunos(id)
+			ON DELETE CASCADE,
 		CONSTRAINT fk_responsaveis
-			FOREIGN KEY (responsaveis_id) REFERENCES responsaveis(id),
+			FOREIGN KEY (responsaveis_id) REFERENCES responsaveis(id)
+			ON DELETE CASCADE,
 		CONSTRAINT uk_alunos_responsaveis
 			UNIQUE(alunos_id, responsaveis_id)
 )ENGINE=InnoDB;
@@ -194,9 +199,11 @@ CREATE TABLE IF NOT EXISTS professor_turma(
 	professores_id int NOT NULL,
 	turmas_id int NOT NULL,
 		CONSTRAINT fk_professor
-			FOREIGN KEY (professores_id) REFERENCES funcionarios(id),
+			FOREIGN KEY (professores_id) REFERENCES funcionarios(id)
+			ON DELETE CASCADE,
 		CONSTRAINT fk_turmas
-			FOREIGN KEY (turmas_id) REFERENCES turmas(id),
+			FOREIGN KEY (turmas_id) REFERENCES turmas(id)
+			ON DELETE CASCADE,
 		CONSTRAINT uk_professor_turma
 			UNIQUE (professores_id, turmas_id)
 )ENGINE=InnoDB;
@@ -208,11 +215,14 @@ CREATE TABLE IF NOT EXISTS professor_turma_disciplina(
 	turmas_id int NOT NULL,
 	disciplinas_id int NOT NULL,
 		CONSTRAINT fk_professor
-			FOREIGN KEY (professores_id) REFERENCES funcionarios(id),
+			FOREIGN KEY (professores_id) REFERENCES funcionarios(id)
+			ON DELETE CASCADE,
 		CONSTRAINT fk_turmas
-			FOREIGN KEY (turmas_id) REFERENCES turmas(id),
+			FOREIGN KEY (turmas_id) REFERENCES turmas(id)
+			ON DELETE CASCADE,
 		CONSTRAINT fk_disciplinas
-			FOREIGN KEY (disciplinas_id) REFERENCES disciplinas(id),
+			FOREIGN KEY (disciplinas_id) REFERENCES disciplinas(id)
+			ON DELETE CASCADE,
 		CONSTRAINT uk_professor_turma_disciplina
 			UNIQUE (professores_id, turmas_id, disciplinas_id)
 )ENGINE=InnoDB;
@@ -233,6 +243,7 @@ CREATE TABLE IF NOT EXISTS log_registros(
 		CONSTRAINT fk_funcionarios
 			FOREIGN KEY (funcionarios_id) REFERENCES funcionarios(id)
 )ENGINE=InnoDB;
+
 
 #CRIAÇÃO TABELA ADMIN
 CREATE TABLE IF NOT EXISTS admin(
