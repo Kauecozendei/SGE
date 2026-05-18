@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - Mundo Encantado</title>
+    <meta name="description" content="Relatórios do sistema - Sistema de Gestão Escolar">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/dashboard.css" rel="stylesheet">
+    <link href="../assets/css/relatorios.css" rel="stylesheet">
+</head>
+<body>
+<div class="main-wrapper">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header d-flex align-items-center gap-3">
+            <img src="../assets/img/Logo.jpg" alt="Mundo Encantado" class="sidebar-logo" onerror="this.style.display='none'">
+            <span class="sidebar-title">Mundo Encantado</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html"    class="sidebar-link"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></a>
+            <a href="alunos.html"       class="sidebar-link"><i class="bi bi-people-fill"></i><span>Alunos</span></a>
+            <a href="professores.html"  class="sidebar-link"><i class="bi bi-person-video3"></i><span>Professores</span></a>
+            <a href="funcionarios.html" class="sidebar-link"><i class="bi bi-person-workspace"></i><span>Funcionários</span></a>
+            <a href="turmas.html"       class="sidebar-link"><i class="bi bi-bookmark-star-fill"></i><span>Turmas</span></a>
+            <a href="entrada-saida.html" class="sidebar-link"><i class="bi bi-door-open-fill"></i><span>Entrada / Saída</span></a>
+            <a href="agenda.html"       class="sidebar-link"><i class="bi bi-calendar-event-fill"></i><span>Agenda</span></a>
+            <a href="financeiro.html"   class="sidebar-link"><i class="bi bi-cash-coin"></i><span>Financeiro</span></a>
+            <a href="relatorios.html"   class="sidebar-link active"><i class="bi bi-file-earmark-bar-graph-fill"></i><span>Relatórios</span></a>
+            <a href="perfil.html"       class="sidebar-link"><i class="bi bi-gear-fill"></i><span>Configurações</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" class="sidebar-link text-danger" id="btnSair">
+                <i class="bi bi-box-arrow-left"></i><span>Sair</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Conteúdo -->
+    <main class="content-area">
+        <header class="topbar d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn-menu" id="btnMenu" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+                <div>
+                    <h1 class="topbar-title mb-0">Relatórios</h1>
+                    <small class="topbar-date text-muted" id="dataAtual"></small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-3 flex-shrink-0">
+                <span class="topbar-greeting d-none d-md-block">Olá, Administrador 👋</span>
+                <div class="topbar-avatar"><i class="bi bi-person-fill"></i></div>
+            </div>
+        </header>
+
+        <!-- Painel de filtros -->
+        <div class="rel-filtros-card">
+            <div class="rel-filtros-title">
+                <i class="bi bi-funnel-fill"></i> Tipo de relatório
+            </div>
+
+            <!-- Seletor de tipo -->
+            <div class="row g-2 mb-4" id="relTipoGrid">
+                <div class="col-6 col-md-3">
+                    <button class="rel-tipo-btn active w-100" data-tipo="frequencia"><i class="bi bi-calendar-check-fill"></i>Frequência</button>
+                </div>
+                <div class="col-6 col-md-3">
+                    <button class="rel-tipo-btn w-100" data-tipo="alimentacao"><i class="bi bi-cup-hot-fill"></i>Alimentação</button>
+                </div>
+                <div class="col-6 col-md-3">
+                    <button class="rel-tipo-btn w-100" data-tipo="banhos"><i class="bi bi-droplet-fill"></i>Banhos</button>
+                </div>
+                <div class="col-6 col-md-3">
+                    <button class="rel-tipo-btn w-100" data-tipo="atrasos"><i class="bi bi-clock-history"></i>Atrasos</button>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="rel-form-group">
+                        <label for="inputRelAluno">Nome do Aluno</label>
+                        <input type="text" id="inputRelAluno" placeholder="Todos os alunos">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="rel-form-group">
+                        <label for="selectRelTurma">Turma</label>
+                        <select id="selectRelTurma">
+                            <option value="">Todas as Turmas</option>
+                            <option>Turma A - Manhã</option>
+                            <option>Turma B - Tarde</option>
+                            <option>Turma C - Integral</option>
+                            <option>Turma D - Manhã</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="rel-form-group">
+                        <label for="inputRelDataInicio">Data Início</label>
+                        <input type="date" id="inputRelDataInicio">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="rel-form-group">
+                        <label for="inputRelDataFim">Data Fim</label>
+                        <input type="date" id="inputRelDataFim">
+                    </div>
+                </div>
+            </div>
+
+            <div class="rel-actions d-flex flex-wrap gap-3">
+                <button class="btn-gerar" id="btnGerarRel">
+                    <i class="bi bi-bar-chart-fill"></i> Gerar Relatório
+                </button>
+                <button class="btn-exportar" id="btnExportarRel">
+                    <i class="bi bi-file-earmark-arrow-down-fill"></i> Exportar Excel / Local
+                </button>
+            </div>
+        </div>
+
+        <!-- Resultado (oculto até clicar em Gerar) -->
+        <div class="rel-resultado" id="relResultado">
+
+            <!-- Números resumo -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="rel-numero-item">
+                        <div class="rel-numero-valor" style="color:var(--cor-secundaria);" id="relN1">24</div>
+                        <div class="rel-numero-label">Alunos</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="rel-numero-item">
+                        <div class="rel-numero-valor" style="color:var(--cor-sucesso);" id="relN2">96%</div>
+                        <div class="rel-numero-label">Freq. média</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="rel-numero-item">
+                        <div class="rel-numero-valor" style="color:var(--cor-aviso);" id="relN3">8</div>
+                        <div class="rel-numero-label">Faltas</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="rel-numero-item">
+                        <div class="rel-numero-valor" style="color:var(--cor-erro);" id="relN4">12</div>
+                        <div class="rel-numero-label">Atrasos</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de barras CSS -->
+            <div class="card-padrao mb-4">
+                <h5 class="mb-3" style="font-size:0.88rem;font-weight:800;">
+                    <i class="bi bi-bar-chart-fill me-2"></i>
+                    Relatório Frequência mês atual, 2026
+                </h5>
+                <div class="grafico-barras" id="graficoBarras">
+                    <!-- gerado por JS -->
+                </div>
+                <div class="grafico-linha-base"></div>
+            </div>
+
+            <!-- Tabela de resultados -->
+            <div class="card-padrao">
+                <div class="d-flex align-items-center justify-content-between mb-3" style="flex-wrap:wrap;gap:0.5rem;">
+                    <h5 class="mb-0" style="font-size:0.88rem;font-weight:800;">
+                        <i class="bi bi-table me-2"></i>Detalhamento por Aluno
+                    </h5>
+                    <button class="btn-exportar" style="padding:0.4rem 1rem;font-size:0.78rem;" onclick="showToast('Exportando relatório...','info')">
+                        <i class="bi bi-download me-1"></i>Exportar CSV
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table-rel table-hover align-middle w-100" id="tabelaRel">
+                        <thead>
+                            <tr>
+                                <th>Aluno</th>
+                                <th>Turma</th>
+                                <th>Dias Presentes</th>
+                                <th>Faltas</th>
+                                <th>Atrasos</th>
+                                <th>Frequência</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyRel">
+                            <tr>
+                                <td>Ana Oliveira</td>
+                                <td>Girassol</td>
+                                <td>20</td>
+                                <td>0</td>
+                                <td>2</td>
+                                <td>
+                                    <div class="freq-bar d-flex align-items-center gap-2">
+                                        <div class="freq-bar-track">
+                                            <div class="freq-bar-fill" style="width:100%"></div>
+                                        </div>
+                                        <span class="freq-pct" style="color:var(--cor-sucesso);">100%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Bruno Mendes</td>
+                                <td>Margarida</td>
+                                <td>18</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>
+                                    <div class="freq-bar d-flex align-items-center gap-2">
+                                        <div class="freq-bar-track">
+                                            <div class="freq-bar-fill" style="width:90%"></div>
+                                        </div>
+                                        <span class="freq-pct" style="color:var(--cor-sucesso);">90%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Carla Ferreira</td>
+                                <td>Rosa</td>
+                                <td>16</td>
+                                <td>4</td>
+                                <td>6</td>
+                                <td>
+                                    <div class="freq-bar d-flex align-items-center gap-2">
+                                        <div class="freq-bar-track">
+                                            <div class="freq-bar-fill media" style="width:80%"></div>
+                                        </div>
+                                        <span class="freq-pct" style="color:var(--cor-aviso);">80%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Daniel Santos</td>
+                                <td>Girassol</td>
+                                <td>14</td>
+                                <td>6</td>
+                                <td>8</td>
+                                <td>
+                                    <div class="freq-bar d-flex align-items-center gap-2">
+                                        <div class="freq-bar-track">
+                                            <div class="freq-bar-fill baixa" style="width:70%"></div>
+                                        </div>
+                                        <span class="freq-pct" style="color:var(--cor-erro);">70%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/relatorios.js"></script>
+</body>
+</html>
