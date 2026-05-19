@@ -82,8 +82,8 @@ function editarProf(id) {
     };
     const d = dados[id]; if (!d) return;
     document.getElementById('inputNomeProf').value      = d.nome;
-    document.getElementById('inputCpfProf').value       = d.cpf;
-    document.getElementById('inputTelProf').value       = d.tel;
+    definirValorMascarado(document.getElementById('inputCpfProf'), d.cpf);
+    definirValorMascarado(document.getElementById('inputTelProf'), d.tel);
     document.getElementById('inputEmailProf').value     = d.email;
     document.getElementById('inputFormacaoProf').value  = d.formacao;
     document.getElementById('selectStatusProf').value   = d.status;
