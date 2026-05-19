@@ -239,7 +239,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label" for="inputCpfAluno">CPF</label>
-                                <input type="text" class="form-control-custom" id="inputCpfAluno" name="cpf_aluno" placeholder="000.000.000-00">
+                                <input type="text" class="form-control-custom" id="inputCpfAluno" name="cpf_aluno" data-mask="cpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" aria-label="CPF do aluno">
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label" for="inputDataNasc">Data de Nascimento *</label>
@@ -283,11 +283,11 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label" for="inputCpfResp">CPF</label>
-                                <input type="text" class="form-control-custom" id="inputCpfResp" name="cpf_responsavel" placeholder="000.000.000-00">
+                                <input type="text" class="form-control-custom" id="inputCpfResp" name="cpf_responsavel" data-mask="cpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" aria-label="CPF do responsável">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="inputTelResp">Telefone *</label>
-                                <input type="tel" class="form-control-custom" id="inputTelResp" name="telefone_responsavel" placeholder="(00) 00000-0000" required>
+                                <input type="tel" class="form-control-custom" id="inputTelResp" name="telefone_responsavel" data-mask="telefone" inputmode="tel" autocomplete="off" placeholder="(00) 00000-0000" aria-label="Telefone do responsável" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="inputEmailResp">E-mail</label>

@@ -1,7 +1,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Data atual 
+    // Data atual
     const dias  = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
     const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
     const hoje  = new Date();
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         filtrarFuncionarios();
     });
 
-    // Filtros 
+    // Filtros
     document.getElementById('filterCargoFunc')?.addEventListener('change', filtrarFuncionarios);
     document.getElementById('filterStatusFunc')?.addEventListener('change', filtrarFuncionarios);
 
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('formFuncionario')?.requestSubmit();
     });
 
-    // Resetar modal ao fechar
+    // Resetar modal ao fechar 
     document.getElementById('modalFuncionario')?.addEventListener('hidden.bs.modal', () => {
         document.getElementById('formFuncionario')?.reset();
         const preview = document.getElementById('avatarPreview');
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '<i class="bi bi-person-plus-fill me-2"></i>Formulário — Novo / Editar funcionário';
     });
 
-    // Confirmar exclusão
+    // Confirmar exclusão 
     document.getElementById('btnConfirmarExcluirFunc')?.addEventListener('click', () => {
         const idPendente = parseInt(document.getElementById('btnConfirmarExcluirFunc').dataset.id);
         const modal = bootstrap.Modal.getInstance(document.getElementById('modalExcluirFunc'));
@@ -170,8 +170,8 @@ function editarFuncionario(id) {
     if (!d) return;
 
     document.getElementById('inputNomeFunc').value    = d.nome;
-    document.getElementById('inputCpfFunc').value     = d.cpf;
-    document.getElementById('inputTelFunc').value     = d.tel;
+    definirValorMascarado(document.getElementById('inputCpfFunc'), d.cpf);
+    definirValorMascarado(document.getElementById('inputTelFunc'), d.tel);
     document.getElementById('inputEmailFunc').value   = d.email;
     document.getElementById('inputCargoFunc').value   = d.cargo;
     document.getElementById('selectStatusFunc').value = d.status;

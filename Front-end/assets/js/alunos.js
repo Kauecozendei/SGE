@@ -1,7 +1,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Data atual
+    // Data atual 
     const dias  = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
     const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
     const hoje  = new Date();
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Salvar aluno
+    // Salvar aluno (form submit) 
     document.getElementById('formAluno')?.addEventListener('submit', e => {
         e.preventDefault();
         if (!validarFormAluno()) return;
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('formAluno')?.requestSubmit();
     });
 
-    // Resetar modal ao fechar 
+    // Resetar modal ao fechar
     document.getElementById('modalAluno')?.addEventListener('hidden.bs.modal', () => {
         document.getElementById('formAluno')?.reset();
         document.getElementById('modalAlunoTitle').innerHTML =
@@ -55,12 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-// Funções auxiliares
-
-
-/**
- * Filtra a tabela de alunos combinando busca + turma + status
- */
+/* Filtra a tabela de alunos combinando busca + turma + status */
 function filtrarAlunos() {
     const q      = (document.getElementById('searchAlunos')?.value      || '').toLowerCase().trim();
     const turma  = (document.getElementById('filterTurmaAlunos')?.value  || '').toLowerCase();
@@ -144,12 +139,12 @@ function editarAluno(id) {
     if (!d) return;
 
     document.getElementById('inputNomeAluno').value   = d.nome;
-    document.getElementById('inputCpfAluno').value    = d.cpf;
+    definirValorMascarado(document.getElementById('inputCpfAluno'), d.cpf);
     document.getElementById('inputDataNasc').value    = d.nasc;
     document.getElementById('selectTurmaAluno').value = d.turma;
     document.getElementById('selectPeriodo').value    = d.periodo;
     document.getElementById('inputNomeResp').value    = d.resp;
-    document.getElementById('inputTelResp').value     = d.tel;
+    definirValorMascarado(document.getElementById('inputTelResp'), d.tel);
     document.getElementById('inputEmailResp').value   = d.email;
     document.getElementById('selectParentesco').value = d.parentesco;
 
