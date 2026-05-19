@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil / Configurações - Mundo Encantado</title>
+    <meta name="description" content="Configurações de perfil do usuário - Sistema de Gestão Escolar">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/dashboard.css" rel="stylesheet">
+    <link href="../assets/css/perfil.css" rel="stylesheet">
+
+</head>
+<body>
+
+    <div class="main-wrapper">
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header d-flex align-items-center gap-3">
+                <img src="../assets/img/Logo.jpg" alt="Mundo Encantado" class="sidebar-logo" onerror="this.style.display='none'">
+                <span class="sidebar-title">Mundo Encantado</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html"    class="sidebar-link"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></a>
+                <a href="alunos.html"       class="sidebar-link"><i class="bi bi-people-fill"></i><span>Alunos</span></a>
+                <a href="professores.html"  class="sidebar-link"><i class="bi bi-person-video3"></i><span>Professores</span></a>
+                <a href="funcionarios.html" class="sidebar-link"><i class="bi bi-person-workspace"></i><span>Funcionários</span></a>
+                <a href="turmas.html"       class="sidebar-link"><i class="bi bi-bookmark-star-fill"></i><span>Turmas</span></a>
+                <a href="entrada-saida.html" class="sidebar-link"><i class="bi bi-door-open-fill"></i><span>Entrada / Saída</span></a>
+                <a href="agenda.html"       class="sidebar-link"><i class="bi bi-calendar-event-fill"></i><span>Agenda</span></a>
+                <a href="financeiro.html"   class="sidebar-link"><i class="bi bi-cash-coin"></i><span>Financeiro</span></a>
+                <a href="relatorios.html"   class="sidebar-link"><i class="bi bi-file-earmark-bar-graph-fill"></i><span>Relatórios</span></a>
+                <a href="perfil.html"       class="sidebar-link active"><i class="bi bi-gear-fill"></i><span>Configurações</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" class="sidebar-link text-danger" id="btnSair">
+                    <i class="bi bi-box-arrow-left"></i><span>Sair</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="content-area">
+
+            <!-- Topbar -->
+            <header class="topbar d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn-menu" id="btnMenu" onclick="toggleSidebar()">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h1 class="topbar-title mb-0">Perfil / Configurações</h1>
+                        <small class="topbar-date text-muted" id="dataAtual"></small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3 flex-shrink-0">
+                    <span class="topbar-greeting d-none d-md-block">Olá, Administrador 👋</span>
+                    <div class="topbar-avatar"><i class="bi bi-person-fill"></i></div>
+                </div>
+            </header>
+
+            <!-- Perfil Header -->
+            <div class="card-padrao mb-4">
+                <div class="perfil-header d-flex align-items-center gap-4 mb-4">
+                    <div class="perfil-avatar-wrapper">
+                        <div class="perfil-avatar" id="perfilAvatarDisplay">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <div class="perfil-avatar-edit" title="Alterar foto" onclick="document.getElementById('inputFotoPerfil').click()">
+                            <i class="bi bi-camera-fill"></i>
+                        </div>
+                        <input type="file" id="inputFotoPerfil" accept="image/*" style="display:none;">
+                    </div>
+                    <div class="perfil-user-info">
+                        <h2 id="perfilNomeDisplay">Administrador</h2>
+                        <p><i class="bi bi-shield-check-fill me-1 text-primary"></i>Administrador do Sistema</p>
+                        <p><i class="bi bi-envelope-fill me-1"></i>admin@gmail.com</p>
+                    </div>
+                </div>
+
+                <!-- Tabs de Navegação -->
+                <div class="perfil-tabs" id="perfilTabs">
+                    <button class="perfil-tab active" data-section="dados">
+                        <i class="bi bi-person-fill me-1"></i>Dados Pessoais
+                    </button>
+                    <button class="perfil-tab" data-section="senha">
+                        <i class="bi bi-lock-fill me-1"></i>Alterar Senha
+                    </button>
+                    <button class="perfil-tab" data-section="preferencias">
+                        <i class="bi bi-sliders me-1"></i>Preferências
+                    </button>
+                </div>
+
+                <!-- ===== SEÇÃO: Dados Pessoais ===== -->
+                <div class="perfil-section active" id="section-dados">
+                    <form id="formPerfilDados">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="perfil-form-group">
+                                    <label for="inputPerfilNome">Nome Completo</label>
+                                    <input type="text" id="inputPerfilNome" name="nome" value="Administrador" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="perfil-form-group">
+                                    <label for="inputPerfilCargo">Cargo / Função</label>
+                                    <input type="text" id="inputPerfilCargo" name="cargo" value="Administrador do Sistema">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="perfil-form-group">
+                                    <label for="inputPerfilEmail">E-mail</label>
+                                    <input type="email" id="inputPerfilEmail" name="email" value="admin@gmail.com" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="perfil-form-group">
+                                    <label for="inputPerfilTel">Telefone</label>
+                                    <input type="tel" id="inputPerfilTel" name="telefone" placeholder="(00) 00000-0000">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="perfil-form-group">
+                                    <label for="inputPerfilCpf">CPF</label>
+                                    <input type="text" id="inputPerfilCpf" name="cpf" placeholder="000.000.000-00">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="perfil-form-group">
+                                    <label for="inputPerfilDataNasc">Data de Nascimento</label>
+                                    <input type="date" id="inputPerfilDataNasc" name="data_nascimento">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="perfil-actions d-flex gap-2 flex-wrap mt-4">
+                            <button type="submit" class="btn-salvar" id="btnSalvarDados">
+                                <i class="bi bi-check-lg me-1"></i>Salvar Alterações
+                            </button>
+                            <button type="button" class="btn-cancelar" onclick="resetFormPerfil()">
+                                Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- ===== SEÇÃO: Alterar Senha ===== -->
+                <div class="perfil-section" id="section-senha">
+                    <form id="formPerfilSenha">
+                        <div class="row g-3" style="max-width:480px;">
+                            <div class="col-12">
+                                <div class="perfil-form-group">
+                                    <label for="inputSenhaAtual">Senha Atual</label>
+                                    <input type="password" id="inputSenhaAtual" name="senha_atual" placeholder="••••••••" required>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="perfil-form-group">
+                                    <label for="inputNovaSenha">Nova Senha</label>
+                                    <input type="password" id="inputNovaSenha" name="nova_senha" placeholder="Mín. 8 caracteres" required>
+                                    <div class="senha-strength">
+                                        <div class="senha-strength-bar" id="strengthBar"></div>
+                                    </div>
+                                    <div class="senha-strength-text" id="strengthText"></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="perfil-form-group">
+                                    <label for="inputConfNovaSenha">Confirmar Nova Senha</label>
+                                    <input type="password" id="inputConfNovaSenha" name="nova_senha_confirmacao" placeholder="Repita a nova senha" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="perfil-actions d-flex gap-2 flex-wrap mt-4">
+                            <button type="submit" class="btn-salvar" id="btnSalvarSenha">
+                                <i class="bi bi-lock-fill me-1"></i>Atualizar Senha
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- ===== SEÇÃO: Preferências ===== -->
+                <div class="perfil-section" id="section-preferencias">
+
+                    <div class="pref-item">
+                        <div class="pref-info">
+                            <h6>Notificações por E-mail</h6>
+                            <p>Receber alertas de atrasos e avisos por e-mail</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="prefEmailNotif" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="pref-item">
+                        <div class="pref-info">
+                            <h6>Toast de Boas-vindas</h6>
+                            <p>Exibir mensagem de boas-vindas ao entrar no sistema</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="prefWelcomeToast" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="pref-item">
+                        <div class="pref-info">
+                            <h6>Alerta de Reincidentes</h6>
+                            <p>Mostrar alerta visual para alunos com atrasos frequentes</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="prefAlertaReinc" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="pref-item">
+                        <div class="pref-info">
+                            <h6>Sidebar sempre visível (Desktop)</h6>
+                            <p>Manter o menu lateral fixo em telas grandes</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="prefSidebarFixed" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="perfil-actions d-flex gap-2 flex-wrap mt-4">
+                        <button class="btn-salvar" id="btnSalvarPrefs" onclick="salvarPreferencias()">
+                            <i class="bi bi-check-lg me-1"></i>Salvar Preferências
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/perfil.js"></script>
+</body>
+</html>
