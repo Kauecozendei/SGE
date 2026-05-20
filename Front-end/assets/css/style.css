@@ -29,6 +29,9 @@
     /* Transições */
     --transition-padrao:    all 0.22s ease;
     --transition-lenta:     all 0.4s ease;
+
+    /* [NOVO] Largura da sidebar - centraliza o valor para facilitar manutenção */
+    --sidebar-width:        250px;
 }
 
 /* RESET & BASE */
@@ -41,6 +44,8 @@
 html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    /* [FIX] Previne scroll horizontal em qualquer situação */
+    overflow-x: hidden;
 }
 
 body {
@@ -51,6 +56,8 @@ body {
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
     line-height: 1.6;
+    /* [FIX] Previne scroll horizontal no body */
+    overflow-x: hidden;
 }
 
 ::selection {
@@ -84,6 +91,11 @@ a:hover { opacity: 0.85; }
 .content-area {
     padding: 2rem;
     transition: var(--transition-lenta);
+    /* [FIX] Previne conteúdo vazando para fora do container */
+    overflow-x: hidden;
+    /* [FIX] Garante que o conteúdo respeita o espaço disponível */
+    max-width: 100%;
+    min-width: 0;
 }
 
 /* CARDS PADRÃO */
@@ -94,6 +106,8 @@ a:hover { opacity: 0.85; }
     padding: 1.75rem;
     transition: var(--transition-padrao);
     border: 1px solid transparent;
+    /* [FIX] Previne overflow interno dos cards */
+    overflow: hidden;
 }
 
 .card-padrao:hover {
@@ -193,6 +207,8 @@ a:hover { opacity: 0.85; }
     font-weight: 600;
     transition: var(--transition-padrao);
     appearance: none;
+    /* [FIX] Garante que inputs nunca ultrapassem o container */
+    max-width: 100%;
 }
 
 .form-control-custom:hover {
@@ -263,6 +279,14 @@ a:hover { opacity: 0.85; }
 .text-erro       { color: var(--cor-erro)     !important; }
 .min-width-0     { min-width: 0 !important; }
 
+/* Utilitário para truncar texto com ellipsis */
+.text-truncate-custom {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
 /* Foco acessível para teclado */
 :focus-visible {
     outline: 2px solid var(--cor-primaria);
@@ -276,18 +300,60 @@ a:hover { opacity: 0.85; }
 ::-webkit-scrollbar-thumb { background: var(--cor-borda); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: #b8a898; }
 
+/* Imagens responsivas globais */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Tabelas responsivas globais */
+.table-responsive-custom {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+}
+
 
 /* RESPONSIVIDADE GLOBAL */
+
+/* Notebooks grandes (≤1399px) */
+@media (max-width: 1399.98px) {
+    .content-area {
+        padding: 1.75rem;
+    }
+}
+
+/* Notebooks médios / tablets landscape (≤1199px) */
+@media (max-width: 1199.98px) {
+    .content-area {
+        padding: 1.5rem;
+    }
+}
+
+/* Tablets (≤991px) */
 @media (max-width: 991.98px) {
-    .content-area { padding: 1.5rem; }
+    .content-area {
+        padding: 1.5rem;
+    }
 }
 
+/* Mobile landscape (≤767px) */
 @media (max-width: 767.98px) {
-    .content-area { padding: 1rem 0.9rem; }
-    .card-padrao  { padding: 1.25rem; }
+    .content-area {
+        padding: 1rem 0.9rem;
+    }
+    .card-padrao {
+        padding: 1.25rem;
+    }
 }
 
+/* Mobile portrait (≤480px) */
 @media (max-width: 480px) {
-    .card-padrao  { padding: 1rem; border-radius: var(--border-radius-sm); }
+    .content-area {
+        padding: 0.75rem;
+    }
+    .card-padrao {
+        padding: 1rem;
+        border-radius: var(--border-radius-sm);
+    }
 }
-

@@ -113,9 +113,30 @@
 }
 .btn-salvar:hover { background-color: var(--cor-primaria); color: white; }
 
+/* Notebooks médios (≤1199px) */
+@media (max-width: 1199.98px) {
+    .perfil-avatar { width: 85px; height: 85px; font-size: 2.2rem; }
+    .perfil-user-info h2 { font-size: 1.15rem; }
+}
+
+/* Mobile (≤767px) */
 @media (max-width: 767.98px) {
     .perfil-tabs { overflow-x: auto; flex-wrap: nowrap; }
     .perfil-tab  { white-space: nowrap; flex-shrink: 0; }
     .perfil-actions .btn-salvar,
-    .perfil-actions .btn-cancelar { width: 100%; text-align: center; }
+    .perfil-actions .btn-cancelar { width: 100%; text-align: center; display: flex; justify-content: center; }
+    .perfil-avatar { width: 75px; height: 75px; font-size: 1.8rem; }
+    .perfil-user-info h2 { font-size: 1.1rem; }
+}
+
+/* Mobile pequeno (≤480px) */
+@media (max-width: 480px) {
+    .perfil-avatar { width: 65px; height: 65px; font-size: 1.5rem; }
+    .perfil-avatar-edit { width: 26px; height: 26px; font-size: 0.65rem; }
+    .perfil-user-info h2 { font-size: 1rem; }
+    .perfil-user-info p { font-size: 0.75rem; }
+    .perfil-tab { padding: 0.5rem 0.9rem; font-size: 0.8rem; }
+    .pref-item { padding: 0.75rem; }
+    .pref-info h6 { font-size: 0.8rem; }
+    .pref-info p { font-size: 0.7rem; }
 }

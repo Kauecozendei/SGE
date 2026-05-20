@@ -1,6 +1,8 @@
 
 .turmas-search {
-    flex: 1; min-width: 220px;
+    flex: 1; min-width: 160px;
+    max-width: 100%;
+    box-sizing: border-box;
     padding: 0.65rem 1rem 0.65rem 2.5rem;
     border: 1.5px solid var(--cor-borda); border-radius: var(--border-radius-sm);
     background: #fdfcf9 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0'/%3E%3C/svg%3E") no-repeat 0.8rem center;
@@ -28,6 +30,8 @@
 .turma-card {
     background: var(--cor-fundo-card); border-radius: var(--border-radius-md);
     padding: 1.5rem; box-shadow: var(--sombra-suave);
+    /* [FIX] Previne overflow interno */
+    overflow: hidden; min-width: 0;
     transition: var(--transition-padrao);
     border-top: 4px solid var(--cor-primaria);
 }
@@ -110,8 +114,34 @@
 }
 .btn-salvar:hover { background-color: var(--cor-primaria); color: white; }
 
+/* Notebooks médios (≤1199px) */
+@media (max-width: 1199.98px) {
+    .turmas-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+    .turmas-search { min-width: 140px; }
+    .turma-card { padding: 1.25rem; }
+}
+
+/* Tablets (≤991px) */
+@media (max-width: 991.98px) {
+    .turmas-search { flex-basis: 100%; }
+    .btn-nova-turma { flex-grow: 1; justify-content: center; }
+}
+
+/* Mobile (≤767px) */
 @media (max-width: 767.98px) {
     .turmas-grid { grid-template-columns: 1fr; }
-    .turmas-search, .btn-nova-turma { width: 100%; }
+    .turmas-search, .btn-nova-turma { width: 100%; min-width: 0; }
     .btn-nova-turma { justify-content: center; }
+    .modal-turma .modal-header { padding: 1rem; }
+    .modal-turma .modal-body { padding: 1rem; }
+    .modal-turma .modal-footer { padding: 0.75rem 1rem; flex-wrap: wrap; gap: 0.5rem; }
+    .btn-cancelar, .btn-salvar { flex: 1; display: flex; justify-content: center; }
+}
+
+/* Mobile pequeno (≤480px) */
+@media (max-width: 480px) {
+    .turma-card { padding: 1rem; border-radius: var(--border-radius-sm); }
+    .turma-nome { font-size: 0.95rem; }
+    .turma-info-value { font-size: 0.8rem; }
+    .btn-gerenciar { font-size: 0.75rem; padding: 0.5rem; }
 }
