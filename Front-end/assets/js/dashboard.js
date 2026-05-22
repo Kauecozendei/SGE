@@ -37,10 +37,14 @@ async function carregarDashboard() {
         
         if (stats.status === 'success') {
             const numeros = document.querySelectorAll('.dash-card-numero');
-            if (numeros[0]) numeros[0].dataset.target = stats.data.total_alunos;
-            if (numeros[1]) numeros[1].dataset.target = stats.data.total_professores;
-            if (numeros[2]) numeros[2].dataset.target = stats.data.total_turmas;
+            if (numeros[0]) numeros[0].dataset.target = stats.data.alunos;
+            if (numeros[1]) numeros[1].dataset.target = stats.data.funcionarios;
+            if (numeros[2]) numeros[2].dataset.target = stats.data.turmas;
             // O 4º card é mensalidades pendentes, permanece estático
+        } else {
+            if (typeof showToast === 'function') {
+                showToast(stats.message || 'Erro ao carregar estatísticas.', 'danger');
+            }
         }
         
         animarNumeros();
@@ -74,6 +78,9 @@ async function carregarDashboard() {
         }
     } catch (error) {
         console.error('Erro ao carregar dashboard', error);
+        if (typeof showToast === 'function') {
+            showToast('Erro de conexão ou servidor offline.', 'danger');
+        }
         animarNumeros(); // Anima com 0 ou estáticos se der erro
     }
 }

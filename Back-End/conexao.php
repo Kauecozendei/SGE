@@ -2,9 +2,9 @@
 // Configurações do Banco de Dados
 // Baseado nas configurações do docker-compose.yml na pasta db:
 // Se estiver rodando o PHP de dentro do container Docker 'php-SGE', use o host 'mariadb-SGE' e a porta '3306'.
-define("DB_HOST", "mariadb"); 
+define("DB_HOST", "127.0.0.1"); 
 define("DB_NAME", "BancoSGE");
-define("DB_PORT", "3306");
+define("DB_PORT", "3308");
 define("DB_USER", "fatec");
 define("DB_PASS", "");
 
