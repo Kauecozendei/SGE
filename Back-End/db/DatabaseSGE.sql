@@ -66,6 +66,10 @@ CREATE TABLE IF NOT EXISTS turmas(
 	nome varchar(20) NOT NULL,
 	periodo varchar(20) NOT NULL,
 	instituicoes_id int NOT NULL,
+	serie varchar(50) DEFAULT NULL,
+	sala varchar(50) DEFAULT NULL,
+	capacidade int DEFAULT 25,
+	horario varchar(100) DEFAULT NULL,
 		CONSTRAINT fk_instituicoes
 			FOREIGN KEY (instituicoes_id) REFERENCES instituicoes(id)
 )ENGINE=InnoDB;

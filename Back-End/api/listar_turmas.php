@@ -15,12 +15,18 @@ try {
             t.id,
             t.nome,
             t.periodo,
+            t.serie,
+            t.sala,
+            t.capacidade,
+            t.horario,
             (SELECT COUNT(*) FROM aluno_turma atu WHERE atu.turmas_id = t.id AND atu.data_fim IS NULL) as qtd_alunos,
-            GROUP_CONCAT(DISTINCT f.nome SEPARATOR ', ') as professores
+            (SELECT COUNT(*) FROM professor_turma ptu WHERE ptu.turmas_id = t.id) as qtd_professores,
+            GROUP_CONCAT(DISTINCT f.nome SEPARATOR ', ') as professores,
+            GROUP_CONCAT(DISTINCT pt.professores_id SEPARATOR ',') as professor_ids
         FROM turmas t
         LEFT JOIN professor_turma pt ON t.id = pt.turmas_id
         LEFT JOIN funcionarios f ON pt.professores_id = f.id
-        GROUP BY t.id, t.nome, t.periodo
+        GROUP BY t.id, t.nome, t.periodo, t.serie, t.sala, t.capacidade, t.horario
         ORDER BY t.nome ASC
     ";
     
