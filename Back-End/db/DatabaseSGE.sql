@@ -252,3 +252,26 @@ CREATE TABLE IF NOT EXISTS admin(
 	email varchar(50) NOT NULL,
 	senha_hash varchar(255) NOT NULL
 )ENGINE=InnoDB;
+
+#CRIAÇÃO DA TABELA FINANCEIRO
+CREATE TABLE IF NOT EXISTS financeiro (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    alunos_id INT NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    data_vencimento DATE NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pendente',
+    observacao VARCHAR(500),
+    data_pagamento DATE DEFAULT NULL,
+    CONSTRAINT fk_financeiro_alunos FOREIGN KEY (alunos_id) REFERENCES alunos(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+#CRIAÇÃO DA TABELA AGENDA
+CREATE TABLE IF NOT EXISTS agenda (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(100) NOT NULL,
+    data DATE NOT NULL,
+    hora TIME DEFAULT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    descricao VARCHAR(500)
+) ENGINE=InnoDB;

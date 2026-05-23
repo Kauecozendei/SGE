@@ -13,13 +13,18 @@ try {
     $sql = "
         SELECT
             h.id,
+            h.alunos_id,
             a.nome as aluno,
             t.nome as turma,
+            t.periodo,
             h.data,
             h.horario,
             h.tipo,
             h.observacao,
-            f.nome as funcionario
+            f.nome as funcionario,
+            (SELECT r.nome FROM responsaveis r 
+             JOIN aluno_responsavel ar ON r.id = ar.responsaveis_id 
+             WHERE ar.alunos_id = a.id LIMIT 1) as responsavel
         FROM horarios h
         JOIN alunos a ON h.alunos_id = a.id
         LEFT JOIN aluno_turma atu ON a.id = atu.alunos_id AND atu.data_fim IS NULL

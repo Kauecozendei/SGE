@@ -1,4 +1,6 @@
 
+let eventosData = [];
+
 document.addEventListener('DOMContentLoaded', () => {
 
     setDataAtualAgenda();
@@ -15,8 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.agendaMesAtual = new Date().getMonth();
     window.agendaAnoAtual = new Date().getFullYear();
 
-    renderCalendario();
-    renderEventosLista();
+    carregarEventos();
     syncPainelEventosAltura();
     window.addEventListener('resize', syncPainelEventosAltura);
 
@@ -24,15 +25,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnMesAnterior')?.addEventListener('click', () => {
         window.agendaMesAtual--;
         if (window.agendaMesAtual < 0) { window.agendaMesAtual = 11; window.agendaAnoAtual--; }
-        renderCalendario();
-        renderEventosLista();
+        carregarEventos();
     });
 
     document.getElementById('btnProximoMes')?.addEventListener('click', () => {
         window.agendaMesAtual++;
         if (window.agendaMesAtual > 11) { window.agendaMesAtual = 0; window.agendaAnoAtual++; }
-        renderCalendario();
-        renderEventosLista();
+        carregarEventos();
     });
 
     // Filtros de tipo
@@ -45,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Salvar evento
-    document.getElementById('btnSalvarEvento')?.addEventListener('click', () => {
+    document.getElementById('btnSalvarEvento')?.addEventListener('click', async () => {
         const titulo = document.getElementById('inputTituloEvento')?.value.trim();
         const data   = document.getElementById('inputDataEvento')?.value;
         const tipo   = document.getElementById('selectTipoEvento')?.value;
@@ -54,32 +53,59 @@ document.addEventListener('DOMContentLoaded', () => {
         const btn = document.getElementById('btnSalvarEvento');
         btn.disabled = true;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Salvando...';
-        setTimeout(() => {
+        
+        try {
+            const form = document.getElementById('formEvento');
+            const formData = new FormData(form);
+
+            const response = await fetch('../../Back-End/api/save_evento.php', {
+                method: 'POST',
+                body: formData
+            });
+            const res = await response.json();
+
+            if (res.status === 'success') {
+                toggleModal('modalEvento', 'hide');
+                form.reset();
+                showToast(res.message, 'success');
+                carregarEventos();
+            } else {
+                showToast(res.message, 'danger');
+            }
+        } catch (error) {
+            console.error("Erro ao salvar evento:", error);
+            showToast('Erro de conexão ao salvar evento.', 'danger');
+        } finally {
             btn.disabled = false;
             btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Salvar Evento';
-            toggleModal('modalEvento', 'hide');
-            document.getElementById('formEvento')?.reset();
-            showToast('Evento adicionado com sucesso!', 'success');
-        }, 1000);
+        }
     });
 
 });
 
-// Dados fake de eventos 
+/**
+ * Carrega eventos do backend e renderiza tela
+ */
+async function carregarEventos() {
+    showLoading();
+    try {
+        const response = await fetch(`../../Back-End/api/get_eventos.php?mes=${window.agendaMesAtual}&ano=${window.agendaAnoAtual}`);
+        const res = await response.json();
+        hideLoading();
 
-const eventosData = [
-    { dia: 2,  titulo:'Reunião pedagógica',     tipo:'reuniao',  hora:'09:00' },
-    { dia: 5,  titulo:'Prova de Matemática',    tipo:'prova',    hora:'08:30' },
-    { dia: 8,  titulo:'Passeio ao zoológico',   tipo:'evento',   hora:'07:00' },
-    { dia: 10, titulo:'Entrega de boletins',    tipo:'lembrete', hora:'14:00' },
-    { dia: 12, titulo:'Reunião de pais',        tipo:'reuniao',  hora:'19:00' },
-    { dia: 15, titulo:'Prova de Português',     tipo:'prova',    hora:'08:30' },
-    { dia: 18, titulo:'Feira de Ciências',      tipo:'evento',   hora:'09:00' },
-    { dia: 20, titulo:'Aniversário da escola',  tipo:'feriado',  hora:'—' },
-    { dia: 22, titulo:'Conselho de classe',     tipo:'reuniao',  hora:'16:00' },
-    { dia: 25, titulo:'Simulado geral',         tipo:'prova',    hora:'08:00' },
-    { dia: 28, titulo:'Encerramento do mês',    tipo:'lembrete', hora:'17:00' },
-];
+        if (res.status === 'success') {
+            eventosData = res.data || [];
+            renderCalendario();
+            renderEventosLista();
+        } else {
+            showToast('Erro ao carregar eventos: ' + res.message, 'danger');
+        }
+    } catch (error) {
+        hideLoading();
+        console.error("Erro ao buscar eventos:", error);
+        showToast('Erro de conexão ao buscar eventos da agenda.', 'danger');
+    }
+}
 
 /**
  * Alinha a altura máxima do painel lateral à do calendário (desktop).
@@ -243,12 +269,22 @@ function renderEventosLista(filtroTipo = '') {
         <div class="evento-item" role="listitem">
             <div class="evento-dot ${ev.tipo}"></div>
             <div class="evento-info">
-                <div class="evento-titulo">${ev.titulo}</div>
+                <div class="evento-titulo">${escapeHtml(ev.titulo)}</div>
                 <div class="evento-detalhe">Dia ${ev.dia} · ${ev.tipo.charAt(0).toUpperCase() + ev.tipo.slice(1)}</div>
             </div>
-            <span class="evento-hora">${ev.hora}</span>
+            <span class="evento-hora">${escapeHtml(ev.hora)}</span>
         </div>
     `).join('');
 
     syncPainelEventosAltura();
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    return text.toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
