@@ -1,18 +1,39 @@
 
+/* TOOLBAR - Busca, Filtros e Botão Novo */
+.func-toolbar {
+    /* [FIX] Garante que a toolbar nunca cause scroll horizontal */
+    max-width: 100%;
+    overflow: hidden;
+}
+
 .func-search {
-    flex: 1; min-width: 220px;
+    flex: 1;
+    /* [FIX] Reduzido min-width para evitar overflow em notebooks menores */
+    min-width: 180px;
     padding: 0.65rem 1rem 0.65rem 2.5rem;
     border: 1.5px solid var(--cor-borda); border-radius: var(--border-radius-sm);
     background: #fdfcf9 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0'/%3E%3C/svg%3E") no-repeat 0.8rem center;
     font-family: 'Nunito', sans-serif; font-weight: 600; font-size: 0.85rem;
     transition: var(--transition-padrao);
+    /* [FIX] Garante que o input nunca exceda o container */
+    max-width: 100%;
+    box-sizing: border-box;
 }
+
 .func-filter {
-    padding: 0.65rem 1rem; border: 1.5px solid var(--cor-borda);
-    border-radius: var(--border-radius-sm); background-color: #fdfcf9;
+    padding: 0.65rem 1rem;
+    border: 1.5px solid var(--cor-borda);
+    border-radius: var(--border-radius-sm);
+    background-color: #fdfcf9;
     font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.85rem;
-    cursor: pointer; min-width: 140px;
+    cursor: pointer;
+    /* [FIX] Reduzido min-width e adicionado flex-shrink para caber em telas menores */
+    min-width: 120px;
+    flex-shrink: 1;
+    max-width: 100%;
+    box-sizing: border-box;
 }
+
 .func-search:focus, .func-filter:focus {
     outline: none; border-color: var(--cor-primaria);
     box-shadow: 0 0 0 3px rgba(43,97,166,0.12);
@@ -23,14 +44,22 @@
     border-radius: var(--border-radius-sm); padding: 0.6rem 1.2rem;
     font-weight: 800; font-size: 0.82rem; cursor: pointer;
     transition: var(--transition-padrao); white-space: nowrap;
+    /* [FIX] Garante que o botão não quebre o layout */
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
 }
 .btn-novo-func:hover { background-color: var(--cor-sucesso); color: white; transform: translateY(-1px); }
 
-/* Cards de funcionário */
+/* CARDS DE FUNCIONÁRIO */
 .func-card {
     background: var(--cor-fundo-card); border-radius: var(--border-radius-md);
     padding: 1.25rem 1.5rem;
     box-shadow: var(--sombra-suave); transition: var(--transition-padrao);
+    /* [FIX] Previne conteúdo vazando do card */
+    overflow: hidden;
+    min-width: 0;
 }
 .func-card:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.1); transform: translateY(-2px); }
 
@@ -43,22 +72,51 @@
 }
 .func-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-.func-nome  { font-weight: 800; font-size: 0.95rem; margin-bottom: 0.15rem; }
-.func-cargo { font-size: 0.78rem; font-weight: 600; color: var(--cor-texto-secundario); }
+.func-nome {
+    font-weight: 800; font-size: 0.95rem; margin-bottom: 0.15rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.func-cargo {
+    font-size: 0.78rem; font-weight: 600; color: var(--cor-texto-secundario);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .func-email { font-size: 0.75rem; font-weight: 600; color: var(--cor-texto-secundario); }
 
+
+.func-info {
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* BOTÕES DE AÇÃO DO CARD */
 .btn-func-action {
-    padding: 0.4rem 0.9rem; border-radius: 8px;
+    padding: 0.35rem 0.7rem; border-radius: 8px;
     border: 1.5px solid var(--cor-borda); background: #fdfcf9;
-    font-weight: 800; font-size: 0.75rem; cursor: pointer;
+    font-weight: 800; font-size: 0.72rem; cursor: pointer;
     transition: var(--transition-padrao);
+    /* [FIX] Garante que botões se adaptem */
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
 }
 .btn-func-action.editar  { border-color: var(--cor-primaria); color: var(--cor-primaria); }
 .btn-func-action.editar:hover  { background-color: var(--cor-primaria); color: white; }
 .btn-func-action.excluir { border-color: var(--cor-erro); color: var(--cor-erro); }
 .btn-func-action.excluir:hover { background-color: var(--cor-erro); color: white; }
 
-/* Modal */
+/* [FIX] Container dos botões e status - não deve encolher */
+.func-card > .d-flex:last-child {
+    flex-shrink: 0;
+}
+
+/* MODAL - Formulário de Funcionário */
 .modal-func .modal-content { border-radius: var(--border-radius-md); border: none; background: var(--cor-fundo); }
 .modal-func .modal-header  { border-bottom: 1px solid var(--cor-borda); padding: 1.25rem 1.5rem; }
 .modal-func .modal-title   { font-weight: 800; font-size: 1rem; }
@@ -92,8 +150,11 @@
     border-radius: var(--border-radius-sm); padding: 0.6rem 1rem;
     font-size: 0.75rem; font-weight: 700; color: #92400e;
     display: flex; align-items: center; gap: 0.4rem; margin-top: 0.5rem;
+    /* [FIX] Permite quebra de texto no aviso */
+    flex-wrap: wrap;
 }
 
+/* BOTÕES DO MODAL (Cancelar / Salvar) */
 .btn-cancelar {
     background-color: #fdfcf9; border: 2px solid var(--cor-borda);
     color: var(--cor-texto-principal); border-radius: var(--border-radius-sm);
@@ -110,7 +171,217 @@
 }
 .btn-salvar:hover { background-color: var(--cor-primaria); color: white; }
 
+/* Paginação */
+.pagination-info {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--cor-texto-secundario);
+}
+
+/* RESPONSIVIDADE - FUNCIONÁRIOS */
+
+/* Notebooks grandes (≤1399px) */
+@media (max-width: 1399.98px) {
+    .func-card {
+        padding: 1.1rem 1.25rem;
+    }
+    .func-nome {
+        font-size: 0.9rem;
+    }
+}
+
+/* Notebooks médios 1366x768 / 1280x720 (≤1199px) */
+@media (max-width: 1199.98px) {
+    .func-search {
+        min-width: 160px;
+    }
+    .func-filter {
+        min-width: 110px;
+        font-size: 0.82rem;
+    }
+    .func-card {
+        padding: 1rem 1.15rem;
+    }
+    .func-nome {
+        font-size: 0.88rem;
+    }
+    .func-cargo {
+        font-size: 0.74rem;
+    }
+    .btn-func-action {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
+    }
+    .func-avatar {
+        width: 44px; height: 44px;
+    }
+}
+
+/* Tablets (≤991px) - sidebar vira drawer, conteúdo ocupa 100% */
+@media (max-width: 991.98px) {
+    .func-toolbar {
+        gap: 0.5rem;
+    }
+    .func-search {
+        min-width: 150px;
+        flex-basis: 100%;
+    }
+    .func-filter {
+        flex: 1;
+        min-width: 0;
+    }
+    .btn-novo-func {
+        flex-grow: 1;
+        justify-content: center;
+    }
+    .func-card {
+        padding: 1rem 1.1rem;
+    }
+    /* Modal */
+    .modal-func .modal-header {
+        padding: 1rem 1.25rem;
+    }
+    .modal-func .modal-body {
+        padding: 1.25rem;
+    }
+    .modal-func .modal-footer {
+        padding: 0.85rem 1.25rem;
+    }
+}
+
+/* Mobile landscape / tablets pequenos (≤767px) */
 @media (max-width: 767.98px) {
-    .func-search, .func-filter, .btn-novo-func { width: 100%; }
-    .btn-novo-func { justify-content: center; }
+    .func-search,
+    .func-filter,
+    .btn-novo-func {
+        width: 100%;
+        min-width: 0;
+    }
+    .btn-novo-func {
+        justify-content: center;
+    }
+
+    /* Cards: layout empilhado em vez de horizontal */
+    .func-card {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+
+    /* Cabeçalho do card (avatar + info) lado a lado */
+    .func-card .func-avatar {
+        width: 42px;
+        height: 42px;
+    }
+
+    .func-card .func-nome {
+        white-space: normal;
+        font-size: 0.9rem;
+    }
+
+    .func-card .func-cargo {
+        white-space: normal;
+        font-size: 0.75rem;
+    }
+
+    /* Botões e status: largura total, alinhado à esquerda */
+    .func-card > .d-flex:last-child {
+        width: 100%;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between;
+    }
+
+    .func-card > .d-flex:last-child .d-flex {
+        gap: 0.5rem;
+    }
+
+    /* Modal ajustes */
+    .modal-func .modal-title {
+        font-size: 0.9rem;
+    }
+    .modal-func .modal-header {
+        padding: 1rem;
+    }
+    .modal-func .modal-body {
+        padding: 1rem;
+    }
+    .modal-func .modal-footer {
+        padding: 0.75rem 1rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .btn-cancelar,
+    .btn-salvar {
+        flex: 1;
+        min-width: 0;
+        text-align: center;
+        padding: 0.55rem 1rem;
+        font-size: 0.82rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .avatar-upload-preview {
+        width: 65px; height: 65px;
+        font-size: 1.6rem;
+    }
+}
+
+/* Mobile portrait (≤480px) */
+@media (max-width: 480px) {
+    .func-card {
+        padding: 0.85rem;
+        border-radius: var(--border-radius-sm);
+    }
+    .func-avatar {
+        width: 38px; height: 38px;
+    }
+    .func-nome {
+        font-size: 0.85rem;
+    }
+    .func-cargo {
+        font-size: 0.72rem;
+    }
+    .btn-func-action {
+        padding: 0.3rem 0.55rem;
+        font-size: 0.68rem;
+    }
+    /* Botões do card: esconde texto, só mostra ícone em telas muito pequenas */
+    .btn-func-action .me-1 {
+        margin-right: 0 !important;
+    }
+
+    .badge-status {
+        font-size: 0.68rem;
+        padding: 0.25rem 0.65rem;
+    }
+    /* Modal */
+    .modal-func .modal-title {
+        font-size: 0.82rem;
+    }
+    .avatar-upload-preview {
+        width: 55px; height: 55px;
+        font-size: 1.4rem;
+    }
+    .form-section-title {
+        font-size: 0.78rem;
+    }
+    .senha-warning {
+        font-size: 0.7rem;
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+/* Mobile muito pequeno (≤360px) */
+@media (max-width: 360px) {
+    .func-card {
+        padding: 0.75rem;
+    }
+    .btn-cancelar,
+    .btn-salvar {
+        font-size: 0.78rem;
+        padding: 0.5rem 0.75rem;
+    }
 }

@@ -1,5 +1,4 @@
 
-/* Search com ícone embutido */
 .alunos-search,
 .alunos-filter {
     padding: 0.65rem 1rem 0.65rem 2.5rem;
@@ -11,14 +10,18 @@
     font-size: 0.85rem;
     transition: var(--transition-padrao);
     flex: 1;
-    min-width: 200px;
+    min-width: 160px;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .alunos-filter {
     background-image: none;
     padding-left: 1rem;
-    min-width: 140px;
+    min-width: 120px;
     flex: unset;
+    flex-shrink: 1;
+    max-width: 100%;
     cursor: pointer;
     font-weight: 700;
 }
@@ -156,8 +159,47 @@
 }
 .btn-salvar:hover { background-color: var(--cor-primaria); color: white; }
 
-/* Responsivo */
+/* Responsivo - Notebooks médios (≤1199px) */
+@media (max-width: 1199.98px) {
+    .alunos-search { min-width: 140px; }
+    .alunos-filter { min-width: 100px; font-size: 0.82rem; }
+    .table-alunos { font-size: 0.82rem; }
+    .table-alunos thead th { padding: 0.65rem 0.75rem; }
+    .table-alunos tbody td { padding: 0.65rem 0.75rem; }
+}
+
+/* Responsivo - Tablets (≤991px) */
+@media (max-width: 991.98px) {
+    .alunos-search { flex-basis: 100%; }
+    .alunos-filter { flex: 1; min-width: 0; }
+    .btn-novo-aluno { flex-grow: 1; justify-content: center; }
+}
+
+/* Responsivo - Mobile (≤767px) */
 @media (max-width: 767.98px) {
-    .alunos-search, .alunos-filter, .btn-novo-aluno { width: 100%; }
+    .alunos-search, .alunos-filter, .btn-novo-aluno { width: 100%; min-width: 0; }
     .btn-novo-aluno { justify-content: center; }
+    .modal-aluno .modal-header { padding: 1rem; }
+    .modal-aluno .modal-body { padding: 1rem; }
+    .modal-aluno .modal-footer {
+        padding: 0.75rem 1rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .btn-cancelar, .btn-salvar {
+        flex: 1;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+    }
+}
+
+/* Mobile pequeno (≤480px) */
+@media (max-width: 480px) {
+    .table-alunos { font-size: 0.78rem; }
+    .table-alunos thead th { padding: 0.5rem 0.5rem; font-size: 0.68rem; }
+    .table-alunos tbody td { padding: 0.5rem 0.5rem; }
+    .aluno-avatar { width: 30px; height: 30px; font-size: 0.72rem; }
+    .btn-action-sm { width: 28px; height: 28px; font-size: 0.78rem; }
+    .pagination-btns button { width: 30px; height: 30px; font-size: 0.72rem; }
 }

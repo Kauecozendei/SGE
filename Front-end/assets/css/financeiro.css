@@ -24,7 +24,8 @@
 
 /* Search / Filter */
 .fin-search {
-    flex: 1; min-width: 220px;
+    flex: 1; min-width: 160px;
+    max-width: 100%; box-sizing: border-box;
     padding: 0.65rem 1rem 0.65rem 2.5rem;
     border: 1.5px solid var(--cor-borda); border-radius: var(--border-radius-sm);
     background: #fdfcf9 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0'/%3E%3C/svg%3E") no-repeat 0.8rem center;
@@ -35,7 +36,8 @@
     padding: 0.65rem 1rem; border: 1.5px solid var(--cor-borda);
     border-radius: var(--border-radius-sm); background-color: #fdfcf9;
     font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.85rem;
-    cursor: pointer; min-width: 140px;
+    cursor: pointer; min-width: 120px;
+    flex-shrink: 1; max-width: 100%;
 }
 .fin-search:focus, .fin-filter:focus {
     outline: none; border-color: var(--cor-primaria);
@@ -117,8 +119,39 @@
 }
 .btn-salvar:hover { background-color: var(--cor-primaria); color: white; }
 
-@media (max-width: 575.98px) {
-    .fin-card-valor { font-size: 1.2rem; }
-    .fin-search, .fin-filter, .btn-nova-cobranca { width: 100%; }
+/* Notebooks médios (≤1199px) */
+@media (max-width: 1199.98px) {
+    .fin-search { min-width: 140px; }
+    .fin-filter { min-width: 100px; font-size: 0.82rem; }
+    .fin-card-valor { font-size: 1.4rem; }
+    .table-fin { font-size: 0.82rem; }
+    .table-fin thead th { padding: 0.65rem 0.75rem; }
+    .table-fin tbody td { padding: 0.65rem 0.75rem; }
+}
+
+/* Tablets (≤991px) */
+@media (max-width: 991.98px) {
+    .fin-search { flex-basis: 100%; }
+    .fin-filter { flex: 1; min-width: 0; }
+    .btn-nova-cobranca { flex-grow: 1; justify-content: center; }
+}
+
+/* Mobile (≤767px) */
+@media (max-width: 767.98px) {
+    .fin-search, .fin-filter, .btn-nova-cobranca { width: 100%; min-width: 0; }
     .btn-nova-cobranca { justify-content: center; }
+    .modal-fin .modal-header { padding: 1rem; }
+    .modal-fin .modal-body { padding: 1rem; }
+    .modal-fin .modal-footer { padding: 0.75rem 1rem; flex-wrap: wrap; gap: 0.5rem; }
+    .btn-cancelar, .btn-salvar { flex: 1; display: flex; justify-content: center; }
+}
+
+/* Mobile pequeno (≤480px) */
+@media (max-width: 480px) {
+    .fin-card-valor { font-size: 1.2rem; }
+    .fin-card { padding: 1rem; }
+    .table-fin { font-size: 0.78rem; }
+    .table-fin thead th { padding: 0.5rem 0.5rem; font-size: 0.68rem; }
+    .table-fin tbody td { padding: 0.5rem 0.5rem; }
+    .fin-status { font-size: 0.65rem; padding: 0.2rem 0.6rem; }
 }

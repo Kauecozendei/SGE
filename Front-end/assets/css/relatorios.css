@@ -109,6 +109,36 @@
 .freq-bar-fill.baixa { background: var(--cor-erro); }
 .freq-pct { font-size: 0.75rem; font-weight: 800; min-width: 36px; text-align: right; }
 
-@media (max-width: 575.98px) {
+/* Notebooks médios (≤1199px) */
+@media (max-width: 1199.98px) {
+    .rel-numero-valor { font-size: 1.7rem; }
+    .table-rel { font-size: 0.82rem; }
+    .table-rel thead th { padding: 0.65rem 0.75rem; }
+    .table-rel tbody td { padding: 0.65rem 0.75rem; }
+    .grafico-barras { height: 120px; }
+}
+
+/* Tablets (≤991px) */
+@media (max-width: 991.98px) {
+    .rel-filtros-card { padding: 1.25rem; }
+}
+
+/* Mobile (≤767px) */
+@media (max-width: 767.98px) {
     .btn-gerar, .btn-exportar { width: 100%; justify-content: center; }
+    .rel-filtros-card { padding: 1rem; }
+    .rel-numero-item { padding: 0.75rem; }
+    .rel-numero-valor { font-size: 1.5rem; }
+}
+
+/* Mobile pequeno (≤480px) */
+@media (max-width: 480px) {
+    .rel-tipo-btn { padding: 0.75rem 0.35rem; font-size: 0.72rem; }
+    .rel-tipo-btn i { font-size: 1.1rem; }
+    .rel-numero-valor { font-size: 1.3rem; }
+    .grafico-barras { height: 100px; }
+    .grafico-barra-label { font-size: 0.58rem; }
+    .table-rel { font-size: 0.78rem; }
+    .table-rel thead th { padding: 0.5rem 0.5rem; font-size: 0.68rem; }
+    .table-rel tbody td { padding: 0.5rem 0.5rem; }
 }
