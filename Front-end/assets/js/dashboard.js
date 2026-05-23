@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => card.classList.add('visible'), 150 * (i + 1));
     });
 
-    // Animação contadora dos números
-    document.querySelectorAll('.dash-card-numero').forEach(el => {
+    // Função de animação de contador
+    function animateCounter(el) {
         const target   = parseInt(el.dataset.target) || 0;
         const duration = 1200;
         const start    = performance.now();
@@ -31,8 +31,71 @@ document.addEventListener('DOMContentLoaded', () => {
             else el.textContent = target;
         }
 
-        setTimeout(() => requestAnimationFrame(update), 500);
-    });
+        setTimeout(() => requestAnimationFrame(update), 100);
+    }
+
+    // Helper para escapar HTML
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text.toString()
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    // Carregar estatísticas reais do banco de dados
+    fetch('../../Back-End/api/get_dashboard_stats.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success' || data.status === 'warning') {
+                const totalAlunos = document.getElementById('cardTotalAlunos');
+                const professoresAtivos = document.getElementById('cardProfessoresAtivos');
+                const turmasAbertas = document.getElementById('cardTurmasAbertas');
+                const mensalidadesPendentes = document.getElementById('cardMensalidadesPendentes');
+
+                if (totalAlunos) totalAlunos.dataset.target = data.total_alunos;
+                if (professoresAtivos) professoresAtivos.dataset.target = data.professores_ativos;
+                if (turmasAbertas) turmasAbertas.dataset.target = data.turmas_abertas;
+                if (mensalidadesPendentes) mensalidadesPendentes.dataset.target = data.mensalidades_pendentes;
+
+                // Animar contadores
+                [totalAlunos, professoresAtivos, turmasAbertas, mensalidadesPendentes].forEach(el => {
+                    if (el) animateCounter(el);
+                });
+
+                // Preencher tabela de últimos alunos cadastrados
+                const tbody = document.getElementById('tbodyUltimosAlunos');
+                if (tbody && data.ultimos_alunos) {
+                    tbody.innerHTML = '';
+                    if (data.ultimos_alunos.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-3">Nenhum aluno cadastrado no banco.</td></tr>';
+                    } else {
+                        data.ultimos_alunos.forEach(aluno => {
+                            const tr = document.createElement('tr');
+                            const turma = aluno.turma ? aluno.turma : 'Sem Turma';
+                            const responsavel = aluno.responsavel ? aluno.responsavel : 'Sem Responsável';
+                            tr.innerHTML = `
+                                <td>${escapeHtml(aluno.nome)}</td>
+                                <td>${escapeHtml(turma)}</td>
+                                <td>${escapeHtml(responsavel)}</td>
+                                <td><span class="badge-status badge-verde">Ativo</span></td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    }
+                }
+            } else {
+                console.warn('Backend retornou erro, usando mock:', data.message);
+                document.querySelectorAll('.dash-card-numero').forEach(el => animateCounter(el));
+            }
+        })
+        .catch(err => {
+            console.error('Falha ao conectar ao backend:', err);
+            // Fallback animando os mocks padrões do HTML
+            document.querySelectorAll('.dash-card-numero').forEach(el => animateCounter(el));
+        });
 
     // Botão sair
     document.getElementById('btnSair')?.addEventListener('click', e => {
@@ -42,5 +105,5 @@ document.addEventListener('DOMContentLoaded', () => {
         showLoading();
         setTimeout(() => { window.location.href = 'login.html'; }, 1200);
     });
-
 });
+

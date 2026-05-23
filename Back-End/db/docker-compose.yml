@@ -2,12 +2,12 @@ services:
   mariadb:
     image: mariadb:latest
     container_name: mariadb-SGE
-    restart: unless-stopped 
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}    # <<< ALTERE PARA UMA SENHA SEGURA
-      MYSQL_DATABASE: BancoSGE      # Nome do banco de dados a ser criado na inicialização
-      MYSQL_USER: fatec                  # Um usuário adicional (não-root) que será criado
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}         # Senha para o usuário adicional
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # <<< ALTERE PARA UMA SENHA SEGURA
+      MYSQL_DATABASE: BancoSGE # Nome do banco de dados a ser criado na inicialização
+      MYSQL_USER: fatec # Um usuário adicional (não-root) que será criado
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD} # Senha para o usuário adicional
     ports:
       - "3308:3306"
     volumes:

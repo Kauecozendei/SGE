@@ -28,10 +28,10 @@
                 <a href="funcionarios.html" class="sidebar-link active"><i class="bi bi-person-workspace"></i><span>Funcionários</span></a>
                 <a href="turmas.html"       class="sidebar-link"><i class="bi bi-bookmark-star-fill"></i><span>Turmas</span></a>
                 <a href="entrada-saida.html" class="sidebar-link"><i class="bi bi-door-open-fill"></i><span>Entrada / Saída</span></a>
-                <a href="agenda.html"       class="sidebar-link"><i class="bi bi-calendar-event-fill"></i><span>Agenda</span></a>
+                <a href="404.html"       class="sidebar-link"><i class="bi bi-calendar-event-fill"></i><span>Agenda</span></a>
                 <a href="financeiro.html"   class="sidebar-link"><i class="bi bi-cash-coin"></i><span>Financeiro</span></a>
-                <a href="relatorios.html"   class="sidebar-link"><i class="bi bi-file-earmark-bar-graph-fill"></i><span>Relatórios</span></a>
-                <a href="perfil.html"       class="sidebar-link"><i class="bi bi-gear-fill"></i><span>Configurações</span></a>
+                <a href="404.html"   class="sidebar-link"><i class="bi bi-file-earmark-bar-graph-fill"></i><span>Relatórios</span></a>
+                <a href="404.html"       class="sidebar-link"><i class="bi bi-gear-fill"></i><span>Configurações</span></a>
             </nav>
             <div class="sidebar-footer">
                 <a href="#" class="sidebar-link text-danger" id="btnSair">
@@ -86,90 +86,7 @@
 
                 <!-- Card Func 1 -->
                 <div class="func-list row g-3">
-                    <div class="col-xl-4 col-md-6">
-                        <div class="func-card d-flex align-items-center gap-3" data-id="1" data-nome="Ana Paula Souza" data-cargo="Diretora">
-                            <div class="func-avatar"><i class="bi bi-person-fill" style="font-size:1.4rem;"></i></div>
-                            <div class="func-info flex-grow-1">
-                                <div class="func-nome">Ana Paula Souza</div>
-                                <div class="func-cargo">Diretora • <span style="font-size:0.72rem;">ana.paula@escola.com</span></div>
-                            </div>
-                            <div class="d-flex flex-column align-items-end gap-2">
-                                <span class="badge-status badge-verde">Ativo</span>
-                                <div class="d-flex gap-1">
-                                    <button class="btn-func-action editar" onclick="editarFuncionario(1)"><i class="bi bi-pencil me-1"></i>Editar</button>
-                                    <button class="btn-func-action excluir" onclick="excluirFuncionario(1)"><i class="bi bi-trash me-1"></i>Excluir</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-4 col-md-6">
-                        <div class="func-card d-flex align-items-center gap-3" data-id="2" data-nome="Marcos Figueiredo" data-cargo="Coordenador">
-                            <div class="func-avatar"><i class="bi bi-person-fill" style="font-size:1.4rem;"></i></div>
-                            <div class="func-info flex-grow-1">
-                                <div class="func-nome">Marcos Figueiredo</div>
-                                <div class="func-cargo">Coordenador Pedagógico • <span style="font-size:0.72rem;">marcos.f@escola.com</span></div>
-                            </div>
-                            <div class="d-flex flex-column align-items-end gap-2">
-                                <span class="badge-status badge-verde">Ativo</span>
-                                <div class="d-flex gap-1">
-                                    <button class="btn-func-action editar" onclick="editarFuncionario(2)"><i class="bi bi-pencil me-1"></i>Editar</button>
-                                    <button class="btn-func-action excluir" onclick="excluirFuncionario(2)"><i class="bi bi-trash me-1"></i>Excluir</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-4 col-md-6">
-                        <div class="func-card d-flex align-items-center gap-3" data-id="3" data-nome="Juliana Ramos" data-cargo="Professora">
-                            <div class="func-avatar"><i class="bi bi-person-fill" style="font-size:1.4rem;"></i></div>
-                            <div class="func-info flex-grow-1">
-                                <div class="func-nome">Juliana Ramos</div>
-                                <div class="func-cargo">Professora - Turma A • <span style="font-size:0.72rem;">juliana.r@escola.com</span></div>
-                            </div>
-                            <div class="d-flex flex-column align-items-end gap-2">
-                                <span class="badge-status badge-laranja">Férias</span>
-                                <div class="d-flex gap-1">
-                                    <button class="btn-func-action editar" onclick="editarFuncionario(3)"><i class="bi bi-pencil me-1"></i>Editar</button>
-                                    <button class="btn-func-action excluir" onclick="excluirFuncionario(3)"><i class="bi bi-trash me-1"></i>Excluir</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-4 col-md-6">
-                        <div class="func-card d-flex align-items-center gap-3" data-id="4" data-nome="Carlos Mendes" data-cargo="Auxiliar">
-                            <div class="func-avatar"><i class="bi bi-person-fill" style="font-size:1.4rem;"></i></div>
-                            <div class="func-info flex-grow-1">
-                                <div class="func-nome">Carlos Mendes</div>
-                                <div class="func-cargo">Auxiliar de Classe • <span style="font-size:0.72rem;">carlos.m@escola.com</span></div>
-                            </div>
-                            <div class="d-flex flex-column align-items-end gap-2">
-                                <span class="badge-status badge-verde">Ativo</span>
-                                <div class="d-flex gap-1">
-                                    <button class="btn-func-action editar" onclick="editarFuncionario(4)"><i class="bi bi-pencil me-1"></i>Editar</button>
-                                    <button class="btn-func-action excluir" onclick="excluirFuncionario(4)"><i class="bi bi-trash me-1"></i>Excluir</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-4 col-md-6">
-                        <div class="func-card d-flex align-items-center gap-3" data-id="5" data-nome="Patrícia Lima" data-cargo="Secretária">
-                            <div class="func-avatar"><i class="bi bi-person-fill" style="font-size:1.4rem;"></i></div>
-                            <div class="func-info flex-grow-1">
-                                <div class="func-nome">Patrícia Lima</div>
-                                <div class="func-cargo">Secretária • <span style="font-size:0.72rem;">patricia.l@escola.com</span></div>
-                            </div>
-                            <div class="d-flex flex-column align-items-end gap-2">
-                                <span class="badge-status badge-vermelho">Inativo</span>
-                                <div class="d-flex gap-1">
-                                    <button class="btn-func-action editar" onclick="editarFuncionario(5)"><i class="bi bi-pencil me-1"></i>Editar</button>
-                                    <button class="btn-func-action excluir" onclick="excluirFuncionario(5)"><i class="bi bi-trash me-1"></i>Excluir</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Os cartões de funcionários serão carregados dinamicamente via JS -->
                 </div>
 
                 <p class="pagination-info mt-2">Exibindo 5 de 18 funcionários</p>
@@ -191,6 +108,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="formFuncionario">
+                        <input type="hidden" id="inputIdFuncionario" name="id">
 
                         <!-- Avatar Upload -->
                         <div class="avatar-upload">

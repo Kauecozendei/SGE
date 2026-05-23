@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    carregarHorarios();
+
     // Animação dos cards de status
     document.querySelectorAll('.status-card .status-numero').forEach(el => {
         const target = parseInt(el.dataset.target || el.textContent) || 0;
@@ -79,11 +81,34 @@ document.addEventListener('DOMContentLoaded', () => {
     // Botão confirmar saída
     const btnConfSaida = document.getElementById('btnConfirmarSaida');
     if (btnConfSaida) {
-        btnConfSaida.addEventListener('click', () => {
-            const nome = document.getElementById('saidaNome').textContent;
+        btnConfSaida.addEventListener('click', async () => {
+            const alunoId = document.getElementById('btnConfirmarSaida').dataset.id;
+            const obs = document.getElementById('saidaObs')?.value || '';
             const modal = bootstrap.Modal.getInstance(document.getElementById('modalSaida'));
-            if (modal) modal.hide();
-            showToast(`Saída de ${nome} registrada com sucesso!`, 'success');
+            
+            try {
+                const formData = new FormData();
+                formData.append('aluno_id', alunoId);
+                formData.append('tipo', 'saida');
+                formData.append('observacao', obs);
+
+                const response = await fetch('../../Back-End/insercoes/registrar_horario.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success' || data.status === 'warning') {
+                    if (modal) modal.hide();
+                    showToast(data.message, 'success');
+                    carregarHorarios();
+                } else {
+                    showToast(data.message, 'danger');
+                }
+            } catch (error) {
+                showToast('Erro de conexão.', 'danger');
+            }
         });
     }
 
@@ -122,33 +147,63 @@ function aplicarFiltros() {
 
 /**
  * Abre modal de detalhes do aluno
- * @param {string} nome
  */
 function abrirDetalhes(nome) {
-    const dados = {
-        'Carla Ferreira': { turma:'Rosa', horaPrev:'08:00', entrada:'10:45', status:'Atrasado', resp:'Maria Ferreira', obs:'Transporte particular' },
-        'Daniel Santos':  { turma:'Girassol', horaPrev:'08:00', entrada:'07:02', status:'Atrasado', resp:'João Santos', obs:'Regularmente atrasado' },
-        'Maria Oliveira': { turma:'Girassol', horaPrev:'08:00', entrada:'09:30', status:'Atrasado', resp:'Carlos Oliveira', obs:'—' },
-    };
-
-    const d = dados[nome] || {};
-    document.getElementById('detNome').textContent       = nome;
-    document.getElementById('detTurma').textContent      = d.turma      || '—';
-    document.getElementById('detHoraPrev').textContent   = d.horaPrev   || '—';
-    document.getElementById('detEntrada').textContent    = d.entrada    || '—';
-    document.getElementById('detStatus').innerHTML       = d.status ? `<span class="es-status atrasado">${d.status}</span>` : '—';
-    document.getElementById('detResponsavel').textContent = d.resp      || '—';
-    document.getElementById('detObs').textContent        = d.obs        || '—';
+    document.getElementById('detNome').textContent = nome;
+    document.getElementById('detTurma').textContent = '—';
+    document.getElementById('detHoraPrev').textContent = '—';
+    document.getElementById('detEntrada').textContent = '—';
+    document.getElementById('detStatus').innerHTML = '—';
+    document.getElementById('detResponsavel').textContent = '—';
+    document.getElementById('detObs').textContent = '—';
 
     toggleModal('modalDetalhes', 'show');
 }
 
 /**
  * Abre modal de registro de saída
- * @param {string} nome
  */
-function registrarSaida(nome) {
+function registrarSaida(id, nome) {
     document.getElementById('saidaNome').textContent = nome;
     document.getElementById('saidaObs').value = '';
+    document.getElementById('btnConfirmarSaida').dataset.id = id;
     toggleModal('modalSaida', 'show');
+}
+
+async function carregarHorarios() {
+    try {
+        const response = await fetch('../../Back-End/api/listar_horarios.php');
+        const res = await response.json();
+
+        if (res.status === 'success') {
+            const tbodyE = document.querySelector('#tabelaEntradas tbody');
+            const tbodyS = document.querySelector('#tabelaSaidas tbody');
+            
+            if(tbodyE) tbodyE.innerHTML = '';
+            if(tbodyS) tbodyS.innerHTML = '';
+
+            res.data.forEach(h => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${h.aluno || 'Desconhecido'}</td>
+                    <td>${h.turma || 'Sem Turma'} - ${h.periodo || ''}</td>
+                    <td>${h.horario || 'N/A'}</td>
+                    <td><span class="es-status no-horario">${h.tipo}</span></td>
+                    <td>${h.responsavel || 'N/A'}</td>
+                    <td>
+                        <button class="btn-action-sm info" title="Detalhes" onclick="abrirDetalhes('${h.aluno}')"><i class="bi bi-info-circle"></i></button>
+                        ${h.tipo === 'entrada' ? `<button class="btn-action-sm warning" title="Registrar Saída" onclick="registrarSaida(${h.alunos_id}, '${h.aluno}')"><i class="bi bi-box-arrow-right"></i></button>` : ''}
+                    </td>
+                `;
+
+                if (h.tipo === 'entrada' && tbodyE) {
+                    tbodyE.appendChild(tr);
+                } else if (h.tipo === 'saida' && tbodyS) {
+                    tbodyS.appendChild(tr);
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Erro de conexão ao carregar horários.', error);
+    }
 }
