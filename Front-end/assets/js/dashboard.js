@@ -86,6 +86,78 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                     }
                 }
+
+                // Preencher Agenda de Hoje
+                const listaAgenda = document.getElementById('listaAgendaHoje');
+                if (listaAgenda && data.agenda_hoje) {
+                    listaAgenda.innerHTML = '';
+                    if (data.agenda_hoje.length === 0) {
+                        listaAgenda.innerHTML = '<li class="text-center text-muted py-3 small">Nenhum evento agendado para hoje.</li>';
+                    } else {
+                        data.agenda_hoje.forEach(evt => {
+                            const li = document.createElement('li');
+                            li.className = 'd-flex align-items-center gap-2';
+                            
+                            let badgeClass = 'badge-azul';
+                            let tipoNome = 'Evento';
+                            
+                            switch (evt.tipo) {
+                                case 'reuniao':
+                                    badgeClass = 'badge-azul';
+                                    tipoNome = 'Reunião';
+                                    break;
+                                case 'prova':
+                                    badgeClass = 'badge-vermelho';
+                                    tipoNome = 'Prova';
+                                    break;
+                                case 'evento':
+                                    badgeClass = 'badge-verde';
+                                    tipoNome = 'Evento';
+                                    break;
+                                case 'lembrete':
+                                    badgeClass = 'badge-laranja';
+                                    tipoNome = 'Lembrete';
+                                    break;
+                                case 'feriado':
+                                    badgeClass = 'badge-vermelho';
+                                    tipoNome = 'Feriado';
+                                    break;
+                            }
+                            
+                            li.innerHTML = `
+                                <span class="dash-lista-hora flex-shrink-0">${escapeHtml(evt.hora)}</span>
+                                <span class="dash-lista-texto flex-grow-1 text-truncate" title="${escapeHtml(evt.descricao || evt.titulo)}">${escapeHtml(evt.titulo)}</span>
+                                <span class="badge-status ${badgeClass} flex-shrink-0">${tipoNome}</span>
+                            `;
+                            listaAgenda.appendChild(li);
+                        });
+                    }
+                }
+
+                // Preencher Avisos Importantes
+                const listaAvisos = document.getElementById('listaAvisos');
+                if (listaAvisos && data.avisos) {
+                    listaAvisos.innerHTML = '';
+                    if (data.avisos.length === 0) {
+                        listaAvisos.innerHTML = '<li class="text-center text-muted py-3 small">Nenhum aviso importante cadastrado.</li>';
+                    } else {
+                        data.avisos.forEach(aviso => {
+                            const li = document.createElement('li');
+                            li.className = 'd-flex align-items-center gap-2';
+                            
+                            let textClass = 'text-primary';
+                            if (aviso.tipo === 'success') textClass = 'text-success';
+                            else if (aviso.tipo === 'warning') textClass = 'text-warning';
+                            else if (aviso.tipo === 'danger' || aviso.tipo === 'error') textClass = 'text-danger';
+                            
+                            li.innerHTML = `
+                                <i class="bi bi-circle-fill ${textClass} flex-shrink-0" style="font-size:.5rem"></i>
+                                <span class="dash-lista-texto">${escapeHtml(aviso.texto)}</span>
+                            `;
+                            listaAvisos.appendChild(li);
+                        });
+                    }
+                }
             } else {
                 console.warn('Backend retornou erro, usando mock:', data.message);
                 document.querySelectorAll('.dash-card-numero').forEach(el => animateCounter(el));

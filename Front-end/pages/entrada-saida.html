@@ -55,9 +55,9 @@
                     </div>
                 </div>
                 <div class="d-flex align-items-center gap-3 flex-shrink-0">
-                    <span class="topbar-greeting d-none d-md-block">Olá, Administrador 👋</span>
-                    <div class="topbar-avatar"><i class="bi bi-person-fill"></i></div>
-                </div>
+                <span class="topbar-greeting d-none d-md-block"></span>
+                <div class="topbar-avatar"><i class="bi bi-person-fill"></i></div>
+            </div>
             </header>
 
             <!-- Cards de Status -->
@@ -135,54 +135,7 @@
                             </tr>
                         </thead>
                         <tbody id="tbodyEntradas">
-                            <tr>
-                                <td>Carla Ferreira</td>
-                                <td>Rosa</td>
-                                <td>08:00</td>
-                                <td>10:45</td>
-                                <td><span class="es-status atrasado">Sim</span></td>
-                                <td>Só na volta</td>
-                                <td>
-                                    <button class="btn-saida" onclick="registrarSaida('Carla Ferreira')">
-                                        <i class="bi bi-box-arrow-right me-1"></i>Saída
-                                    </button>
-                                    <button class="btn-info-es" onclick="abrirDetalhes('Carla Ferreira')" title="Detalhes">
-                                        <i class="bi bi-info-circle"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="row-atrasado">
-                                <td>Daniel Santos</td>
-                                <td>Girassol</td>
-                                <td>08:00</td>
-                                <td><span class="es-status atrasado">07:02</span></td>
-                                <td><span class="es-status atrasado">20min</span></td>
-                                <td>Já na volta</td>
-                                <td>
-                                    <button class="btn-saida" onclick="registrarSaida('Daniel Santos')">
-                                        <i class="bi bi-box-arrow-right me-1"></i>Saída
-                                    </button>
-                                    <button class="btn-info-es" onclick="abrirDetalhes('Daniel Santos')" title="Detalhes">
-                                        <i class="bi bi-info-circle"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Maria Oliveira</td>
-                                <td>Girassol</td>
-                                <td>08:00</td>
-                                <td>09:30</td>
-                                <td><span class="es-status atrasado">30min</span></td>
-                                <td>Sim</td>
-                                <td>
-                                    <button class="btn-saida" onclick="registrarSaida('Maria Oliveira')">
-                                        <i class="bi bi-box-arrow-right me-1"></i>Saída
-                                    </button>
-                                    <button class="btn-info-es" onclick="abrirDetalhes('Maria Oliveira')" title="Detalhes">
-                                        <i class="bi bi-info-circle"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                            <tr><td colspan="7" class="text-center text-muted py-3">Carregando registros...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -204,13 +157,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="row-excedido">
-                                <td>Lucas Martins</td>
-                                <td>Girassol</td>
-                                <td>17:00</td>
-                                <td>17:32</td>
-                                <td><span class="es-status atrasado">32min</span></td>
-                            </tr>
+                            <tr><td colspan="5" class="text-center text-muted py-3">Nenhum registro excedente encontrado.</td></tr>
                         </tbody>
                     </table>
                 </div>

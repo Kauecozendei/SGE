@@ -32,7 +32,19 @@ if (!$pdo) {
 try {
     $pdo->beginTransaction();
 
-    $cargos_id = 1; // Professor
+    // Encontrar ou criar o cargo 'Professor' no banco de dados
+    $stmtCargo = $pdo->prepare("SELECT id FROM cargos WHERE LOWER(nome) = 'professor' LIMIT 1");
+    $stmtCargo->execute();
+    $cargoData = $stmtCargo->fetch(PDO::FETCH_ASSOC);
+
+    if ($cargoData) {
+        $cargos_id = $cargoData['id'];
+    } else {
+        $stmtNewCargo = $pdo->prepare("INSERT INTO cargos (nome) VALUES ('Professor')");
+        $stmtNewCargo->execute();
+        $cargos_id = $pdo->lastInsertId();
+    }
+
     $instituicoes_id = 1; // Mundo Encantado
     $data_nascimento = '1980-01-01'; // Data padrão
 

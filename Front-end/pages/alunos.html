@@ -55,8 +55,8 @@
                     </div>
                 </div>
                 <div class="d-flex align-items-center gap-3 flex-shrink-0">
-                    <span class="topbar-greeting d-none d-md-block">Olá, Administrador 👋</span>
-                    <div class="topbar-avatar"><i class="bi bi-person-fill"></i></div>
+                <span class="topbar-greeting d-none d-md-block"></span>
+                <div class="topbar-avatar"><i class="bi bi-person-fill"></i></div>
                 </div>
             </header>
 
@@ -96,106 +96,7 @@
                             </tr>
                         </thead>
                         <tbody id="tbodyAlunos">
-                            <tr>
-                                <td>
-                                    <div class="aluno-nome-cell d-flex align-items-center gap-2">
-                                        <div class="aluno-avatar">ME</div>
-                                        Maria Eduarda Silva
-                                    </div>
-                                </td>
-                                <td>123.456.789-00</td>
-                                <td>Turma A - Manhã</td>
-                                <td>Ana Paula Silva</td>
-                                <td>MAT-2024-001</td>
-                                <td><span class="badge-status badge-verde">Ativo</span></td>
-                                <td>
-                                    <div class="aluno-actions d-flex gap-2">
-                                        <button class="btn-action-sm" title="Editar" onclick="editarAluno(1)"><i class="bi bi-pencil"></i></button>
-                                        <button class="btn-action-sm" title="Visualizar" onclick="abrirDetalhesAluno(1)"><i class="bi bi-eye"></i></button>
-                                        <button class="btn-action-sm danger" title="Excluir" onclick="excluirAluno(1)"><i class="bi bi-trash"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="aluno-nome-cell d-flex align-items-center gap-2">
-                                        <div class="aluno-avatar">PH</div>
-                                        Pedro Henrique Costa
-                                    </div>
-                                </td>
-                                <td>987.654.321-00</td>
-                                <td>Turma B - Tarde</td>
-                                <td>Fernanda Costa</td>
-                                <td>MAT-2024-002</td>
-                                <td><span class="badge-status badge-verde">Ativo</span></td>
-                                <td>
-                                    <div class="aluno-actions d-flex gap-2">
-                                        <button class="btn-action-sm" title="Editar" onclick="editarAluno(2)"><i class="bi bi-pencil"></i></button>
-                                        <button class="btn-action-sm" title="Visualizar" onclick="abrirDetalhesAluno(2)"><i class="bi bi-eye"></i></button>
-                                        <button class="btn-action-sm danger" title="Excluir" onclick="excluirAluno(2)"><i class="bi bi-trash"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="aluno-nome-cell d-flex align-items-center gap-2">
-                                        <div class="aluno-avatar">LG</div>
-                                        Lucas Gabriel Oliveira
-                                    </div>
-                                </td>
-                                <td>456.789.123-00</td>
-                                <td>Turma C - Integral</td>
-                                <td>Mariana Oliveira</td>
-                                <td>MAT-2024-003</td>
-                                <td><span class="badge-status badge-laranja">Pendente</span></td>
-                                <td>
-                                    <div class="aluno-actions d-flex gap-2">
-                                        <button class="btn-action-sm" title="Editar" onclick="editarAluno(3)"><i class="bi bi-pencil"></i></button>
-                                        <button class="btn-action-sm" title="Visualizar" onclick="abrirDetalhesAluno(3)"><i class="bi bi-eye"></i></button>
-                                        <button class="btn-action-sm danger" title="Excluir" onclick="excluirAluno(3)"><i class="bi bi-trash"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="aluno-nome-cell d-flex align-items-center gap-2">
-                                        <div class="aluno-avatar">IS</div>
-                                        Isabela Santos Ferreira
-                                    </div>
-                                </td>
-                                <td>321.654.987-00</td>
-                                <td>Turma A - Manhã</td>
-                                <td>Roberto Ferreira</td>
-                                <td>MAT-2024-004</td>
-                                <td><span class="badge-status badge-verde">Ativo</span></td>
-                                <td>
-                                    <div class="aluno-actions d-flex gap-2">
-                                        <button class="btn-action-sm" title="Editar" onclick="editarAluno(4)"><i class="bi bi-pencil"></i></button>
-                                        <button class="btn-action-sm" title="Visualizar" onclick="abrirDetalhesAluno(4)"><i class="bi bi-eye"></i></button>
-                                        <button class="btn-action-sm danger" title="Excluir" onclick="excluirAluno(4)"><i class="bi bi-trash"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="aluno-nome-cell d-flex align-items-center gap-2">
-                                        <div class="aluno-avatar">JM</div>
-                                        João Miguel Almeida
-                                    </div>
-                                </td>
-                                <td>654.321.987-00</td>
-                                <td>Turma B - Tarde</td>
-                                <td>Carla Almeida</td>
-                                <td>MAT-2024-005</td>
-                                <td><span class="badge-status badge-vermelho">Inativo</span></td>
-                                <td>
-                                    <div class="aluno-actions d-flex gap-2">
-                                        <button class="btn-action-sm" title="Editar" onclick="editarAluno(5)"><i class="bi bi-pencil"></i></button>
-                                        <button class="btn-action-sm" title="Visualizar" onclick="abrirDetalhesAluno(5)"><i class="bi bi-eye"></i></button>
-                                        <button class="btn-action-sm danger" title="Excluir" onclick="excluirAluno(5)"><i class="bi bi-trash"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
+                            <tr><td colspan="7" class="text-center text-muted py-3">Carregando alunos...</td></tr>
                         </tbody>
                     </table>
                 </div>

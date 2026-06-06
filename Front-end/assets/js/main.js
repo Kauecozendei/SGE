@@ -20,6 +20,33 @@ document.addEventListener('DOMContentLoaded', () => {
         e.target?.querySelectorAll('input').forEach(aplicarMascara);
     });
 
+    // Verificar sessão do usuário (exceto em login.html e 404.html)
+    const paginaAtual = window.location.pathname.split('/').pop();
+    if (paginaAtual !== 'login.html' && paginaAtual !== '404.html' && paginaAtual !== '') {
+        verificarSessaoUsuario();
+    }
+
+    // Configurar botão de Sair globalmente
+    document.getElementById('btnSair')?.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopImmediatePropagation(); // Impede outros listeners locais duplicados de rodarem nas páginas
+        if (!confirm('Deseja realmente sair do sistema?')) return;
+        
+        showToast('Saindo do sistema...', 'warning');
+        showLoading();
+        
+        fetch('../../Back-End/api/logout.php')
+            .then(() => {
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+            })
+            .catch(err => {
+                console.error('Erro ao efetuar logout:', err);
+                window.location.href = 'login.html';
+            });
+    });
+
 });
 
 //   SIDEBAR
@@ -489,4 +516,70 @@ function escapeHtml(text) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+}
+
+/**
+ * Verifica se a sessão do usuário está ativa no PHP.
+ * Se sim, atualiza a saudação no topo. Se não, redireciona para a página de login.
+ */
+function verificarSessaoUsuario() {
+    fetch('../../Back-End/api/get_usuario_logado.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Atualiza saudação na topbar
+                const greetingEl = document.querySelector('.topbar-greeting');
+                if (greetingEl) {
+                    greetingEl.textContent = `Olá, ${data.nome} 👋`;
+                }
+
+                // Se estiver na tela de perfil, preenche os dados dinâmicos do usuário
+                const perfilNomeDisplay = document.getElementById('perfilNomeDisplay');
+                if (perfilNomeDisplay) {
+                    perfilNomeDisplay.textContent = data.nome;
+                    
+                    const perfilCargoLabel = perfilNomeDisplay.nextElementSibling;
+                    if (perfilCargoLabel && data.cargo) {
+                        perfilCargoLabel.innerHTML = `<i class="bi bi-shield-check-fill me-1 text-primary"></i>${escapeHtml(data.cargo)}`;
+                    }
+                    
+                    const perfilEmailLabel = perfilCargoLabel ? perfilCargoLabel.nextElementSibling : null;
+                    if (perfilEmailLabel && data.email) {
+                        perfilEmailLabel.innerHTML = `<i class="bi bi-envelope-fill me-1"></i>${escapeHtml(data.email)}`;
+                    }
+                }
+
+                const inputNome = document.getElementById('inputPerfilNome');
+                if (inputNome) inputNome.value = data.nome || '';
+
+                const inputEmail = document.getElementById('inputPerfilEmail');
+                if (inputEmail) inputEmail.value = data.email || '';
+
+                const inputCargo = document.getElementById('inputPerfilCargo');
+                if (inputCargo) {
+                    inputCargo.value = data.cargo || '';
+                    inputCargo.disabled = true; // Cargo não é editável pelo próprio usuário
+                }
+
+                const inputTel = document.getElementById('inputPerfilTel');
+                if (inputTel && data.telefone) {
+                    definirValorMascarado(inputTel, data.telefone);
+                }
+
+                const inputCpf = document.getElementById('inputPerfilCpf');
+                if (inputCpf && data.cpf) {
+                    definirValorMascarado(inputCpf, data.cpf);
+                }
+
+                const inputDataNasc = document.getElementById('inputPerfilDataNasc');
+                if (inputDataNasc && data.data_nascimento) {
+                    inputDataNasc.value = data.data_nascimento;
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
+        })
+        .catch(err => {
+            console.error('Erro ao validar sessão:', err);
+        });
 }

@@ -7,8 +7,10 @@ $response = [
     "total_alunos" => 0,
     "professores_ativos" => 0,
     "turmas_abertas" => 0,
-    "mensalidades_pendentes" => 12, // mock (sem tabela financeira no DB)
-    "ultimos_alunos" => []
+    "mensalidades_pendentes" => 0,
+    "ultimos_alunos" => [],
+    "agenda_hoje" => [],
+    "avisos" => []
 ];
 
 if ($pdo) {
@@ -25,6 +27,10 @@ if ($pdo) {
         $stmt = $pdo->query("SELECT COUNT(*) FROM turmas");
         $response['turmas_abertas'] = $stmt->fetchColumn();
 
+        // Mensalidades Pendentes (tabela financeira real)
+        $stmt = $pdo->query("SELECT COUNT(*) FROM financeiro WHERE status = 'pendente'");
+        $response['mensalidades_pendentes'] = $stmt->fetchColumn();
+
         // Últimos Alunos Cadastrados (limite 5)
         $sql = "
             SELECT a.nome, t.nome as turma, r.nome as responsavel 
@@ -39,6 +45,16 @@ if ($pdo) {
         $stmt = $pdo->query($sql);
         $response['ultimos_alunos'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        // Agenda de Hoje
+        $sqlAgenda = "SELECT titulo, TIME_FORMAT(hora, '%H:%i') as hora, tipo, descricao FROM agenda WHERE data = CURDATE() ORDER BY hora ASC";
+        $stmt = $pdo->query($sqlAgenda);
+        $response['agenda_hoje'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Avisos Importantes
+        $sqlAvisos = "SELECT texto, tipo FROM avisos ORDER BY id DESC LIMIT 5";
+        $stmt = $pdo->query($sqlAvisos);
+        $response['avisos'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
     } catch (PDOException $e) {
         $response['status'] = "error";
         $response['message'] = "Erro ao buscar dados: " . $e->getMessage();
@@ -48,13 +64,25 @@ if ($pdo) {
     $response['total_alunos'] = 245;
     $response['professores_ativos'] = 18;
     $response['turmas_abertas'] = 12;
+    $response['mensalidades_pendentes'] = 37;
     $response['ultimos_alunos'] = [
         ["nome" => "Maria Eduarda Silva", "turma" => "Turma A", "responsavel" => "Ana Paula Silva"],
         ["nome" => "Pedro Henrique Costa", "turma" => "Turma B", "responsavel" => "Fernanda Costa"],
         ["nome" => "Lucas Gabriel Oliveira", "turma" => "Turma C", "responsavel" => "Mariana Oliveira"]
     ];
+    $response['agenda_hoje'] = [
+        ["titulo" => "Reunião Pedagógica", "hora" => "08:30", "tipo" => "reuniao", "descricao" => "Reunião mensal"],
+        ["titulo" => "Aula de Reforço - Turma B", "hora" => "10:00", "tipo" => "evento", "descricao" => "Reforço escolar"],
+        ["titulo" => "Entrega de Boletins", "hora" => "14:00", "tipo" => "lembrete", "descricao" => "Entrega aos pais"]
+    ];
+    $response['avisos'] = [
+        ["texto" => "Prazo de matrícula aberto até 15/05", "tipo" => "success"],
+        ["texto" => "Reunião de pais na sexta-feira às 19h", "tipo" => "warning"],
+        ["texto" => "Atualização do sistema agendada para domingo", "tipo" => "info"]
+    ];
 }
 
 header('Content-Type: application/json');
 echo json_encode($response);
+exit;
 ?>

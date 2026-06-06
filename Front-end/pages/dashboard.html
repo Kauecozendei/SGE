@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div class="d-flex align-items-center gap-3 flex-shrink-0">
-                <span class="topbar-greeting d-none d-md-block">Olá, Administrador 👋</span>
+                <span class="topbar-greeting d-none d-md-block"></span>
                 <div class="topbar-avatar">
                     <i class="bi bi-person-fill"></i>
                 </div>
@@ -117,41 +117,16 @@
             <div class="col-lg-6">
                 <div class="card-padrao h-100">
                     <h5 class="mb-3"><i class="bi bi-calendar3 me-2"></i>Agenda de Hoje</h5>
-                    <ul class="dash-lista list-unstyled mb-0">
-                        <li class="d-flex align-items-center gap-2">
-                            <span class="dash-lista-hora flex-shrink-0">08:30</span>
-                            <span class="dash-lista-texto flex-grow-1 text-truncate">Reunião Pedagógica</span>
-                            <span class="badge-status badge-azul flex-shrink-0">Confirmado</span>
-                        </li>
-                        <li class="d-flex align-items-center gap-2">
-                            <span class="dash-lista-hora flex-shrink-0">10:00</span>
-                            <span class="dash-lista-texto flex-grow-1 text-truncate">Aula de Reforço - Turma B</span>
-                            <span class="badge-status badge-verde flex-shrink-0">Em andamento</span>
-                        </li>
-                        <li class="d-flex align-items-center gap-2">
-                            <span class="dash-lista-hora flex-shrink-0">14:00</span>
-                            <span class="dash-lista-texto flex-grow-1 text-truncate">Entrega de Boletins</span>
-                            <span class="badge-status badge-laranja flex-shrink-0">Pendente</span>
-                        </li>
+                    <ul class="dash-lista list-unstyled mb-0" id="listaAgendaHoje">
+                        <li class="text-center text-muted py-2 small">Carregando agenda...</li>
                     </ul>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="card-padrao h-100">
                     <h5 class="mb-3"><i class="bi bi-megaphone-fill me-2"></i>Avisos Importantes</h5>
-                    <ul class="dash-lista list-unstyled mb-0">
-                        <li class="d-flex align-items-center gap-2">
-                            <i class="bi bi-circle-fill text-success flex-shrink-0" style="font-size:.5rem"></i>
-                            <span class="dash-lista-texto">Prazo de matrícula aberto até 15/05</span>
-                        </li>
-                        <li class="d-flex align-items-center gap-2">
-                            <i class="bi bi-circle-fill text-warning flex-shrink-0" style="font-size:.5rem"></i>
-                            <span class="dash-lista-texto">Reunião de pais na sexta-feira às 19h</span>
-                        </li>
-                        <li class="d-flex align-items-center gap-2">
-                            <i class="bi bi-circle-fill text-primary flex-shrink-0" style="font-size:.5rem"></i>
-                            <span class="dash-lista-texto">Atualização do sistema agendada para domingo</span>
-                        </li>
+                    <ul class="dash-lista list-unstyled mb-0" id="listaAvisos">
+                        <li class="text-center text-muted py-2 small">Carregando avisos...</li>
                     </ul>
                 </div>
             </div>
@@ -174,36 +149,7 @@
                         </tr>
                     </thead>
                     <tbody id="tbodyUltimosAlunos">
-                        <tr>
-                            <td>Maria Eduarda Silva</td>
-                            <td>Turma A - Manhã</td>
-                            <td>Ana Paula Silva</td>
-                            <td><span class="badge-status badge-verde">Ativo</span></td>
-                        </tr>
-                        <tr>
-                            <td>Pedro Henrique Costa</td>
-                            <td>Turma B - Tarde</td>
-                            <td>Fernanda Costa</td>
-                            <td><span class="badge-status badge-verde">Ativo</span></td>
-                        </tr>
-                        <tr>
-                            <td>Lucas Gabriel Oliveira</td>
-                            <td>Turma C - Manhã</td>
-                            <td>Mariana Oliveira</td>
-                            <td><span class="badge-status badge-laranja">Pendente</span></td>
-                        </tr>
-                        <tr>
-                            <td>Isabela Santos Ferreira</td>
-                            <td>Turma A - Manhã</td>
-                            <td>Roberto Ferreira</td>
-                            <td><span class="badge-status badge-verde">Ativo</span></td>
-                        </tr>
-                        <tr>
-                            <td>João Miguel Almeida</td>
-                            <td>Turma B - Tarde</td>
-                            <td>Carla Almeida</td>
-                            <td><span class="badge-status badge-vermelho">Inativo</span></td>
-                        </tr>
+                        <tr><td colspan="4" class="text-center text-muted py-3">Carregando...</td></tr>
                     </tbody>
                 </table>
             </div>
