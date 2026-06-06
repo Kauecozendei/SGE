@@ -12,6 +12,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Carrega os alunos inicialmente
     carregarAlunos();
 
+    // Carrega as turmas dinamicamente nos selects
+    carregarTurmasSelects();
+
+    // Atualiza o período correspondente quando a turma é selecionada
+    document.getElementById('selectTurmaAluno')?.addEventListener('change', function () {
+        const selectedOption = this.options[this.selectedIndex];
+        const periodo = selectedOption?.getAttribute('data-periodo') || '';
+        const selectPeriodo = document.getElementById('selectPeriodo');
+        if (selectPeriodo) {
+            selectPeriodo.value = periodo;
+        }
+    });
+
     // Botão sair
     document.getElementById('btnSair')?.addEventListener('click', e => {
         e.preventDefault();
@@ -310,4 +323,42 @@ function validarFormAluno() {
 
     if (!ok) showToast('Preencha todos os campos obrigatórios.', 'warning');
     return ok;
+}
+
+// Carrega as turmas cadastradas do banco e popula os selects do formulário e filtro
+function carregarTurmasSelects() {
+    fetch('../../Back-End/api/listar_turmas.php')
+        .then(response => response.json())
+        .then(res => {
+            if (res.status === 'success') {
+                const selectTurma = document.getElementById('selectTurmaAluno');
+                const filterTurma = document.getElementById('filterTurmaAlunos');
+                
+                if (selectTurma) {
+                    selectTurma.innerHTML = '<option value="">Selecionar turma</option>';
+                    res.data.forEach(t => {
+                        const opt = document.createElement('option');
+                        opt.value = `${t.nome} - ${t.periodo}`;
+                        opt.textContent = `${t.nome} - ${t.periodo}`;
+                        opt.setAttribute('data-periodo', t.periodo);
+                        selectTurma.appendChild(opt);
+                    });
+                }
+                
+                if (filterTurma) {
+                    filterTurma.innerHTML = '<option value="">Todas as Turmas</option>';
+                    res.data.forEach(t => {
+                        const opt = document.createElement('option');
+                        opt.value = t.nome.toLowerCase();
+                        opt.textContent = `${t.nome} - ${t.periodo}`;
+                        filterTurma.appendChild(opt);
+                    });
+                }
+            } else {
+                console.error('Erro ao listar turmas:', res.message);
+            }
+        })
+        .catch(err => {
+            console.error('Erro de requisição ao buscar turmas:', err);
+        });
 }

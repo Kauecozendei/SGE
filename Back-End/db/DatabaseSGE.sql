@@ -96,6 +96,9 @@ CREATE TABLE IF NOT EXISTS funcionarios (
 	url_foto varchar(100),
 	email varchar(50) NOT NULL,
 	senha_hash varchar(255) NOT NULL,
+	status varchar(20) DEFAULT 'ativo',
+	formacao varchar(255) DEFAULT NULL,
+	disciplinas_estatico varchar(255) DEFAULT NULL,
 		CONSTRAINT fk_enderecos
 				FOREIGN KEY (enderecos_id) REFERENCES enderecos(id),
 		CONSTRAINT fk_instituicoes

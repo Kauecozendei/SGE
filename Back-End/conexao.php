@@ -20,7 +20,7 @@ foreach ($configs as $config) {
             PDO::ATTR_EMULATE_PREPARES   => false,
             PDO::ATTR_TIMEOUT            => 1 // Timeout rápido de 1 segundo por tentativa
         ];
-        $pdo = new PDO($dsn, $config['user'], $config['pass'], $options);
+        $pdo = @new PDO($dsn, $config['user'], $config['pass'], $options);
         $connected = true;
         
         // Define as constantes para manter compatibilidade
