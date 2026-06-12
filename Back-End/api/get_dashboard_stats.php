@@ -19,8 +19,8 @@ if ($pdo) {
         $stmt = $pdo->query("SELECT COUNT(*) FROM alunos");
         $response['total_alunos'] = $stmt->fetchColumn();
 
-        // Professores Ativos (cargos_id = 1)
-        $stmt = $pdo->query("SELECT COUNT(*) FROM funcionarios WHERE cargos_id = 1");
+        // Professores Ativos (cargos_id = 2)
+        $stmt = $pdo->query("SELECT COUNT(*) FROM funcionarios WHERE cargos_id = 2");
         $response['professores_ativos'] = $stmt->fetchColumn();
 
         // Turmas Abertas

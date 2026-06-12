@@ -307,7 +307,7 @@ function filtrarAlunos() {
 }
 
 function validarFormAluno() {
-    const campos = ['inputNomeAluno', 'inputDataNasc', 'selectTurmaAluno', 'selectPeriodo', 'inputNomeResp', 'inputTelResp'];
+    const campos = ['inputNomeAluno', 'inputCpfAluno', 'inputDataNasc', 'selectTurmaAluno', 'selectPeriodo', 'inputNomeResp', 'inputCpfResp', 'inputTelResp'];
     let ok = true;
 
     campos.forEach(id => {
@@ -338,7 +338,7 @@ function carregarTurmasSelects() {
                     selectTurma.innerHTML = '<option value="">Selecionar turma</option>';
                     res.data.forEach(t => {
                         const opt = document.createElement('option');
-                        opt.value = `${t.nome} - ${t.periodo}`;
+                        opt.value = t.id;
                         opt.textContent = `${t.nome} - ${t.periodo}`;
                         opt.setAttribute('data-periodo', t.periodo);
                         selectTurma.appendChild(opt);

@@ -6,7 +6,7 @@ header('Content-Type: application/json');
 
 if ($pdo) {
     try {
-        // cargos_id = 1 is Professor
+        // cargos_id = 2 is Professor
         $sql = "
             SELECT f.id, f.nome, f.CPF as cpf, f.telefone as tel, f.email, f.status, f.formacao,
                    COALESCE(
@@ -21,7 +21,7 @@ if ($pdo) {
                     JOIN turmas t ON t.id = pt.turmas_id 
                     WHERE pt.professores_id = f.id) as turmas
             FROM funcionarios f
-            WHERE f.cargos_id = 1
+            WHERE f.cargos_id = 2
             ORDER BY f.id DESC
         ";
         $stmt = $pdo->query($sql);

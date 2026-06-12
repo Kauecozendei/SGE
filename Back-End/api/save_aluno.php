@@ -12,6 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
 $nome_aluno = filter_input(INPUT_POST, 'nome_aluno', FILTER_SANITIZE_STRING);
 $cpf_aluno = filter_input(INPUT_POST, 'cpf_aluno', FILTER_SANITIZE_STRING);
+$cpf_aluno = !empty($cpf_aluno) ? trim($cpf_aluno) : null;
 $data_nascimento = filter_input(INPUT_POST, 'data_nascimento', FILTER_SANITIZE_STRING);
 $turma_id_str = filter_input(INPUT_POST, 'turma_id', FILTER_SANITIZE_STRING);
 $periodo = filter_input(INPUT_POST, 'periodo', FILTER_SANITIZE_STRING);
@@ -20,11 +21,12 @@ $observacoes = filter_input(INPUT_POST, 'observacoes', FILTER_SANITIZE_STRING);
 
 $nome_responsavel = filter_input(INPUT_POST, 'nome_responsavel', FILTER_SANITIZE_STRING);
 $cpf_responsavel = filter_input(INPUT_POST, 'cpf_responsavel', FILTER_SANITIZE_STRING);
+$cpf_responsavel = !empty($cpf_responsavel) ? trim($cpf_responsavel) : null;
 $telefone_responsavel = filter_input(INPUT_POST, 'telefone_responsavel', FILTER_SANITIZE_STRING);
 $email_responsavel = filter_input(INPUT_POST, 'email_responsavel', FILTER_SANITIZE_EMAIL);
 $parentesco = filter_input(INPUT_POST, 'parentesco', FILTER_SANITIZE_STRING);
 
-if (empty($nome_aluno) || empty($data_nascimento) || empty($nome_responsavel) || empty($telefone_responsavel)) {
+if (empty($nome_aluno) || empty($cpf_aluno) || empty($data_nascimento) || empty($nome_responsavel) || empty($cpf_responsavel) || empty($telefone_responsavel)) {
     echo json_encode(["status" => "error", "message" => "Por favor, preencha todos os campos obrigatórios."]);
     exit;
 }
@@ -64,25 +66,42 @@ try {
         $stmtRespUpdate = $pdo->prepare("UPDATE responsaveis SET nome = ?, telefone = ?, email = ? WHERE id = ?");
         $stmtRespUpdate->execute([$nome_responsavel, $telefone_responsavel, $email_responsavel, $responsavel_id]);
     } else {
+        // Se CPF do responsável for nulo/vazio, geramos um CPF fictício único para satisfazer a constraint UNIQUE e NOT NULL
+        if (empty($cpf_responsavel)) {
+            $cpf_responsavel = '999.' . rand(100, 999) . '.' . rand(100, 999) . '-' . rand(10, 99);
+            while (true) {
+                $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM responsaveis WHERE CPF = ?");
+                $stmtCheck->execute([$cpf_responsavel]);
+                if ($stmtCheck->fetchColumn() == 0) {
+                    break;
+                }
+                $cpf_responsavel = '999.' . rand(100, 999) . '.' . rand(100, 999) . '-' . rand(10, 99);
+            }
+        }
+
         // Insere novo responsável
         $stmtRespInsert = $pdo->prepare("INSERT INTO responsaveis (nome, CPF, telefone, email, data_nascimento) VALUES (?, ?, ?, ?, ?)");
-        $stmtRespInsert->execute([$nome_responsavel, $cpf_responsavel ? $cpf_responsavel : '000.000.000-00', $telefone_responsavel, $email_responsavel, '1980-01-01']);
+        $stmtRespInsert->execute([$nome_responsavel, $cpf_responsavel, $telefone_responsavel, $email_responsavel, '1980-01-01']);
         $responsavel_id = $pdo->lastInsertId();
     }
 
     // 3. Resolver Turma
     $turma_db_id = null;
     if (!empty($turma_id_str)) {
-        $turma_nome = trim(explode('-', $turma_id_str)[0]);
-        $stmtTurma = $pdo->prepare("SELECT id FROM turmas WHERE nome = ? OR nome = ? LIMIT 1");
-        $stmtTurma->execute([$turma_nome, $turma_id_str]);
-        $turma_db_id = $stmtTurma->fetchColumn();
+        if (is_numeric($turma_id_str)) {
+            $turma_db_id = (int)$turma_id_str;
+        } else {
+            $turma_nome = trim(explode('-', $turma_id_str)[0]);
+            $stmtTurma = $pdo->prepare("SELECT id FROM turmas WHERE nome = ? OR nome = ? LIMIT 1");
+            $stmtTurma->execute([$turma_nome, $turma_id_str]);
+            $turma_db_id = $stmtTurma->fetchColumn();
 
-        if (!$turma_db_id) {
-            // Insere turma se não existir
-            $stmtTurmaInsert = $pdo->prepare("INSERT INTO turmas (nome, periodo, instituicoes_id) VALUES (?, ?, 1)");
-            $stmtTurmaInsert->execute([$turma_nome, $periodo ? $periodo : 'Manhã', 1]);
-            $turma_db_id = $pdo->lastInsertId();
+            if (!$turma_db_id) {
+                // Insere turma se não existir
+                $stmtTurmaInsert = $pdo->prepare("INSERT INTO turmas (nome, periodo, instituicoes_id) VALUES (?, ?, 1)");
+                $stmtTurmaInsert->execute([$turma_nome, $periodo ? $periodo : 'Manhã', 1]);
+                $turma_db_id = $pdo->lastInsertId();
+            }
         }
     }
 

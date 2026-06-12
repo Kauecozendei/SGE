@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $pdo->prepare("DELETE FROM alimentacao WHERE funcionarios_id = ?")->execute([$id]);
             $pdo->prepare("DELETE FROM banhos WHERE funcionarios_id = ?")->execute([$id]);
             
-            $stmt = $pdo->prepare("DELETE FROM funcionarios WHERE id = ? AND cargos_id = 1");
+            $stmt = $pdo->prepare("DELETE FROM funcionarios WHERE id = ? AND cargos_id = 2");
             $stmt->execute([$id]);
 
             $pdo->commit();

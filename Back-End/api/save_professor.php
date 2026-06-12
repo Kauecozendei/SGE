@@ -54,13 +54,13 @@ try {
             $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
             $sql = "UPDATE funcionarios 
                     SET nome = ?, CPF = ?, telefone = ?, email = ?, status = ?, formacao = ?, disciplinas_estatico = ?, senha_hash = ?
-                    WHERE id = ? AND cargos_id = 1";
+                    WHERE id = ?";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([$nome, $cpf, $telefone, $email, $status, $formacao, $disciplinas, $senhaHash, $id]);
         } else {
             $sql = "UPDATE funcionarios 
                     SET nome = ?, CPF = ?, telefone = ?, email = ?, status = ?, formacao = ?, disciplinas_estatico = ?
-                    WHERE id = ? AND cargos_id = 1";
+                    WHERE id = ?";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([$nome, $cpf, $telefone, $email, $status, $formacao, $disciplinas, $id]);
         }

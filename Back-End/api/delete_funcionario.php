@@ -24,8 +24,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $pdo->prepare("DELETE FROM banhos WHERE funcionarios_id = ?")->execute([$id]);
             $pdo->prepare("DELETE FROM log_registros WHERE funcionarios_id = ?")->execute([$id]);
 
-            // Remove da tabela funcionarios (cargos_id != 1, garantindo que não estamos removendo um professor acidentalmente por este endpoint)
-            $stmt = $pdo->prepare("DELETE FROM funcionarios WHERE id = ? AND cargos_id != 1");
+            // Remove da tabela funcionarios (cargos_id != 2, garantindo que não estamos removendo um professor acidentalmente por este endpoint)
+            $stmt = $pdo->prepare("DELETE FROM funcionarios WHERE id = ? AND cargos_id != 2");
             $stmt->execute([$id]);
 
             if ($stmt->rowCount() > 0) {

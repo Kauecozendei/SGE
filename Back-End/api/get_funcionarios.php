@@ -6,12 +6,12 @@ header('Content-Type: application/json');
 
 if ($pdo) {
     try {
-        // Seleciona todos os funcionários que NÃO são professores (cargos_id != 1)
+        // Seleciona todos os funcionários que NÃO são professores (cargos_id != 2)
         $sql = "
             SELECT f.id, f.nome, f.CPF as cpf, f.telefone as tel, f.email, f.status, f.formacao, c.nome as cargo
             FROM funcionarios f
             INNER JOIN cargos c ON f.cargos_id = c.id
-            WHERE f.cargos_id != 1
+            WHERE f.cargos_id != 2
             ORDER BY f.id DESC
         ";
         $stmt = $pdo->query($sql);
