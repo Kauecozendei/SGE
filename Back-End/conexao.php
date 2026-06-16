@@ -3,9 +3,6 @@
 $configs = [
     // 1. Configuração para quando o PHP roda DENTRO do Docker (comunicação container-container)
     ['host' => 'mariadb', 'port' => '3306', 'user' => 'fatec', 'pass' => 'GKY59jfiyn'],
-    // 2. Configuração para quando o PHP roda FORA do Docker (XAMPP/Host) acessando o MariaDB do Docker
-    ['host' => '127.0.0.1', 'port' => '3308', 'user' => 'fatec', 'pass' => 'GKY59jfiyn'],
-    ['host' => 'localhost', 'port' => '3308', 'user' => 'fatec', 'pass' => 'GKY59jfiyn'],
 ];
 
 $pdo = null;
