@@ -21,7 +21,7 @@ services:
       dockerfile: db/Dockerfile
     container_name: php-SGE
     ports:
-      - "8080:8000"
+      - "8000:8000"
     volumes:
       # Mapeia a pasta raiz SGE inteira para servir o Front-end e o Back-End juntos:
       - ../../:/app
