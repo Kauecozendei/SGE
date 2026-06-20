@@ -20,9 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const nome = document.getElementById('inputNomeTurma')?.value.trim();
         const serie = document.getElementById('inputSerieTurma')?.value;
         const periodo = document.getElementById('selectPeriodoTurma')?.value;
+        const entrada = document.getElementById('inputHorarioEntrada')?.value;
+        const saida = document.getElementById('inputHorarioSaida')?.value;
         
-        if (!nome || !serie || !periodo) {
-            showToast('Preencha nome, série e período da turma.', 'warning');
+        if (!nome || !serie || !periodo || !entrada || !saida) {
+            showToast('Preencha nome, série, período e horários da turma.', 'warning');
             return;
         }
         await salvarTurma();
@@ -35,6 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
             form.reset();
             delete form.dataset.editId;
         }
+        const elEntrada = document.getElementById('inputHorarioEntrada');
+        const elSaida = document.getElementById('inputHorarioSaida');
+        if (elEntrada) elEntrada.value = '';
+        if (elSaida) elSaida.value = '';
     });
 
 });
@@ -124,7 +130,10 @@ async function salvarTurma() {
         formData.append('capacidade', document.getElementById('inputCapacidade').value);
         formData.append('periodo', document.getElementById('selectPeriodoTurma').value);
         formData.append('professor_id', document.getElementById('selectProfTurma').value);
-        formData.append('horario', document.getElementById('inputHorarioTurma').value);
+        
+        const entradaVal = document.getElementById('inputHorarioEntrada').value;
+        const saidaVal = document.getElementById('inputHorarioSaida').value;
+        formData.append('horario', `${entradaVal} - ${saidaVal}`);
 
         if (isEdit) {
             url = '../../Back-End/edicoes/edicao_turma.php';
@@ -167,7 +176,21 @@ function editarTurma(id) {
     document.getElementById('inputSalaTurma').value = t.sala || '';
     document.getElementById('inputCapacidade').value = t.capacidade || '';
     document.getElementById('selectPeriodoTurma').value = t.periodo || 'Manhã';
-    document.getElementById('inputHorarioTurma').value = t.horario || '';
+    
+    const hor = t.horario || '';
+    let entrada = '';
+    let saida = '';
+    if (hor.includes('-')) {
+        const partes = hor.split('-');
+        if (partes.length === 2) {
+            entrada = partes[0].trim();
+            saida = partes[1].trim();
+        }
+    }
+    const elEntrada = document.getElementById('inputHorarioEntrada');
+    const elSaida = document.getElementById('inputHorarioSaida');
+    if (elEntrada) elEntrada.value = entrada;
+    if (elSaida) elSaida.value = saida;
     
     // Seleciona o professor
     const selectProf = document.getElementById('selectProfTurma');

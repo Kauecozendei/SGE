@@ -6,12 +6,12 @@ header('Content-Type: application/json');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    $nome = filter_input(INPUT_POST, 'nome_turma', FILTER_SANITIZE_STRING);
-    $periodo = filter_input(INPUT_POST, 'periodo', FILTER_SANITIZE_STRING);
-    $serie = filter_input(INPUT_POST, 'serie', FILTER_SANITIZE_STRING);
-    $sala = filter_input(INPUT_POST, 'sala', FILTER_SANITIZE_STRING);
+    $nome = filter_input(INPUT_POST, 'nome_turma', FILTER_DEFAULT);
+    $periodo = filter_input(INPUT_POST, 'periodo', FILTER_DEFAULT);
+    $serie = filter_input(INPUT_POST, 'serie', FILTER_DEFAULT);
+    $sala = filter_input(INPUT_POST, 'sala', FILTER_DEFAULT);
     $capacidade = filter_input(INPUT_POST, 'capacidade', FILTER_VALIDATE_INT);
-    $horario = filter_input(INPUT_POST, 'horario', FILTER_SANITIZE_STRING);
+    $horario = filter_input(INPUT_POST, 'horario', FILTER_DEFAULT);
     $professor_id = filter_input(INPUT_POST, 'professor_id', FILTER_VALIDATE_INT);
     
     $instituicoes_id = 1; // Default

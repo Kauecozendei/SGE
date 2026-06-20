@@ -130,8 +130,12 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label" for="inputHorarioTurma">Horário</label>
-                            <input type="text" class="form-control-custom" id="inputHorarioTurma" name="horario" placeholder="Ex: 07h30 – 11h30">
+                            <label class="form-label">Horário de Funcionamento *</label>
+                            <div class="d-flex gap-2 align-items-center">
+                                <input type="time" class="form-control-custom" id="inputHorarioEntrada" required>
+                                <span class="text-muted">até</span>
+                                <input type="time" class="form-control-custom" id="inputHorarioSaida" required>
+                            </div>
                         </div>
                     </div>
                 </form>

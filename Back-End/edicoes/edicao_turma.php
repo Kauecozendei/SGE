@@ -17,25 +17,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST['nome_turma'])) {
         $updates[] = "nome = :nome";
-        $params[':nome'] = filter_input(INPUT_POST, 'nome_turma', FILTER_SANITIZE_STRING);
+        $params[':nome'] = filter_input(INPUT_POST, 'nome_turma', FILTER_DEFAULT);
     } else if (isset($_POST['nome'])) {
         $updates[] = "nome = :nome";
-        $params[':nome'] = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
+        $params[':nome'] = filter_input(INPUT_POST, 'nome', FILTER_DEFAULT);
     }
     
     if (isset($_POST['periodo'])) {
         $updates[] = "periodo = :periodo";
-        $params[':periodo'] = filter_input(INPUT_POST, 'periodo', FILTER_SANITIZE_STRING);
+        $params[':periodo'] = filter_input(INPUT_POST, 'periodo', FILTER_DEFAULT);
     }
 
     if (isset($_POST['serie'])) {
         $updates[] = "serie = :serie";
-        $params[':serie'] = filter_input(INPUT_POST, 'serie', FILTER_SANITIZE_STRING);
+        $params[':serie'] = filter_input(INPUT_POST, 'serie', FILTER_DEFAULT);
     }
 
     if (isset($_POST['sala'])) {
         $updates[] = "sala = :sala";
-        $params[':sala'] = filter_input(INPUT_POST, 'sala', FILTER_SANITIZE_STRING);
+        $params[':sala'] = filter_input(INPUT_POST, 'sala', FILTER_DEFAULT);
     }
 
     if (isset($_POST['capacidade'])) {
@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST['horario'])) {
         $updates[] = "horario = :horario";
-        $params[':horario'] = filter_input(INPUT_POST, 'horario', FILTER_SANITIZE_STRING);
+        $params[':horario'] = filter_input(INPUT_POST, 'horario', FILTER_DEFAULT);
     }
 
     if ($pdo) {
