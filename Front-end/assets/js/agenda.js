@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Salvar evento
+    // Salvar/Editar evento
     document.getElementById('btnSalvarEvento')?.addEventListener('click', async () => {
         const titulo = document.getElementById('inputTituloEvento')?.value.trim();
         const data   = document.getElementById('inputDataEvento')?.value;
@@ -81,6 +81,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Resetar modal de eventos ao fechar
+    document.getElementById('modalEvento')?.addEventListener('hidden.bs.modal', () => {
+        const form = document.getElementById('formEvento');
+        if (form) form.reset();
+        
+        const inputId = document.getElementById('inputIdEvento');
+        if (inputId) inputId.value = '';
+
+        document.getElementById('modalEventoTitle').innerHTML =
+            '<i class="bi bi-calendar-plus-fill me-2"></i>Novo Evento';
+    });
+
 });
 
 /**
@@ -108,7 +120,7 @@ async function carregarEventos() {
 }
 
 /**
- * Alinha a altura máxima do painel lateral à do calendário (desktop).
+ * Alinha a altura do painel de eventos
  */
 function syncPainelEventosAltura() {
     const painel  = document.querySelector('.agenda-painel-eventos');
@@ -155,14 +167,13 @@ function setDataAtualAgenda() {
 }
 
 /**
- * Renderiza o grid do calendário mensal
+ * Renderiza o calendário
  */
 function renderCalendario() {
     const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
     const mes = window.agendaMesAtual;
     const ano = window.agendaAnoAtual;
 
-    // Atualizar título
     document.getElementById('agendaMesTitulo').textContent = `${meses[mes]} ${ano}`;
 
     const grid = document.getElementById('calendarioGrid');
@@ -174,20 +185,17 @@ function renderCalendario() {
     const hoje          = new Date();
     const ehMesAtual    = (hoje.getMonth() === mes && hoje.getFullYear() === ano);
 
-    // Dias do mês anterior (preenchimento)
     for (let i = primeiroDia - 1; i >= 0; i--) {
         const dia = diasMesAnt - i;
         grid.appendChild(criarCelula(dia, true, false, []));
     }
 
-    // Dias do mês atual
     for (let d = 1; d <= diasNoMes; d++) {
         const ehHoje = ehMesAtual && d === hoje.getDate();
         const evtsDia = eventosData.filter(e => e.dia === d);
         grid.appendChild(criarCelula(d, false, ehHoje, evtsDia));
     }
 
-    // Preencher próximo mês
     const totalCelulas = grid.children.length;
     const faltam = (Math.ceil(totalCelulas / 7) * 7) - totalCelulas;
     for (let i = 1; i <= faltam; i++) {
@@ -198,7 +206,7 @@ function renderCalendario() {
 }
 
 /**
- * Cria uma célula do calendário
+ * Cria cada célula no grid do calendário
  */
 function criarCelula(dia, outroMes, ehHoje, eventos) {
     const cell = document.createElement('div');
@@ -235,9 +243,11 @@ function criarCelula(dia, outroMes, ehHoje, eventos) {
         if (outroMes) return;
         const evts = eventosData.filter(e => e.dia === dia);
         if (evts.length > 0) {
-            showToast(`Dia ${dia}: ${evts.map(e => e.titulo).join(', ')}`, 'info');
+            // Se houver eventos, destaca-os na lista lateral
+            showToast(`Exibindo ${evts.length} evento(s) do dia ${dia}.`, 'info');
+            renderEventosLista('', dia);
         } else {
-            // Abrir modal novo evento com data preenchida
+            // Novo evento pré-preenchendo a data
             const dateStr = `${window.agendaAnoAtual}-${String(window.agendaMesAtual + 1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
             document.getElementById('inputDataEvento').value = dateStr;
             toggleModal('modalEvento', 'show');
@@ -248,35 +258,98 @@ function criarCelula(dia, outroMes, ehHoje, eventos) {
 }
 
 /**
- * Renderiza a lista lateral de eventos
- * @param {string} filtroTipo
+ * Renderiza a lista lateral de eventos do mês ou de um dia específico
  */
-function renderEventosLista(filtroTipo = '') {
+function renderEventosLista(filtroTipo = '', filtroDia = null) {
     const lista = document.getElementById('eventosLista');
     if (!lista) return;
 
-    const eventosFiltrados = filtroTipo
-        ? eventosData.filter(e => e.tipo === filtroTipo)
-        : eventosData;
+    let filtrados = eventosData;
+    if (filtroTipo) {
+        filtrados = eventosData.filter(e => e.tipo === filtroTipo);
+    }
+    if (filtroDia) {
+        filtrados = filtrados.filter(e => e.dia === filtroDia);
+    }
 
-    if (eventosFiltrados.length === 0) {
+    if (filtrados.length === 0) {
         lista.innerHTML = '<p class="eventos-lista-vazio">Nenhum evento encontrado.</p>';
         syncPainelEventosAltura();
         return;
     }
 
-    lista.innerHTML = eventosFiltrados.map(ev => `
-        <div class="evento-item" role="listitem">
-            <div class="evento-dot ${ev.tipo}"></div>
-            <div class="evento-info">
-                <div class="evento-titulo">${escapeHtml(ev.titulo)}</div>
-                <div class="evento-detalhe">Dia ${ev.dia} · ${ev.tipo.charAt(0).toUpperCase() + ev.tipo.slice(1)}</div>
+    lista.innerHTML = filtrados.map(ev => {
+        const horaExibir = ev.hora && ev.hora !== '—' && ev.hora !== '00:00' ? ev.hora : 'Dia Todo';
+        return `
+            <div class="evento-item d-flex align-items-center justify-content-between p-2 mb-2 rounded" style="background: rgba(0, 0, 0, 0.02);" role="listitem">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="evento-dot ${ev.tipo}"></div>
+                    <div class="evento-info">
+                        <div class="evento-titulo fw-bold" style="font-size:0.85rem; color:var(--cor-texto-principal);">${escapeHtml(ev.titulo)}</div>
+                        <div class="evento-detalhe" style="font-size:0.72rem; color:var(--cor-texto-secundario);">Dia ${ev.dia} · ${ev.tipo.charAt(0).toUpperCase() + ev.tipo.slice(1)}</div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="evento-hora badge bg-light text-dark text-xs p-1" style="font-size:0.7rem;">${escapeHtml(horaExibir)}</span>
+                    <button class="btn btn-sm btn-outline-primary border-0 p-1" style="line-height:1;" onclick="editarEvento(${ev.id})" title="Editar"><i class="bi bi-pencil" style="font-size:0.75rem;"></i></button>
+                    <button class="btn btn-sm btn-outline-danger border-0 p-1" style="line-height:1;" onclick="excluirEvento(${ev.id})" title="Excluir"><i class="bi bi-trash" style="font-size:0.75rem;"></i></button>
+                </div>
             </div>
-            <span class="evento-hora">${escapeHtml(ev.hora)}</span>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 
     syncPainelEventosAltura();
+}
+
+/**
+ * Preenche o modal com as informações do evento para edição
+ */
+function editarEvento(id) {
+    const ev = eventosData.find(e => parseInt(e.id) === parseInt(id));
+    if (!ev) return;
+
+    document.getElementById('inputIdEvento').value = ev.id;
+    document.getElementById('inputTituloEvento').value = ev.titulo || '';
+    document.getElementById('inputDataEvento').value = ev.data || '';
+    document.getElementById('inputHoraEvento').value = ev.hora !== '—' && ev.hora !== '00:00' ? ev.hora : '';
+    document.getElementById('selectTipoEvento').value = ev.tipo || '';
+    document.getElementById('inputDescEvento').value = ev.descricao || '';
+
+    document.getElementById('modalEventoTitle').innerHTML =
+        '<i class="bi bi-pencil-fill me-2"></i>Editar Evento';
+
+    toggleModal('modalEvento', 'show');
+}
+
+/**
+ * Exclui o evento chamando a API delete_evento.php
+ */
+async function excluirEvento(id) {
+    if (!confirm('Deseja realmente cancelar/excluir este evento? Esta ação não pode ser desfeita.')) return;
+
+    showLoading();
+    try {
+        const formData = new FormData();
+        formData.append('id', id);
+
+        const response = await fetch('../../Back-End/api/delete_evento.php', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        hideLoading();
+
+        if (data.status === 'success' || data.status === 'warning') {
+            showToast(data.message, data.status === 'warning' ? 'warning' : 'success');
+            carregarEventos();
+        } else {
+            showToast('Erro ao excluir evento: ' + data.message, 'danger');
+        }
+    } catch (error) {
+        hideLoading();
+        console.error("Erro ao cancelar evento:", error);
+        showToast('Erro de conexão ao cancelar evento.', 'danger');
+    }
 }
 
 function escapeHtml(text) {
