@@ -1,8 +1,12 @@
 <?php
-// Configuração do Banco de Dados para Docker (somente contêineres)
+// Configuração do Banco de Dados para Docker e Local (XAMPP/Windows)
 $configs = [
     // 1. Configuração para quando o PHP roda DENTRO do Docker (comunicação container-container)
     ['host' => 'mariadb', 'port' => '3306', 'user' => 'fatec', 'pass' => 'GKY59jfiyn'],
+    // 2. Configuração para quando o PHP roda no XAMPP/Windows local (acessando a porta mapeada 3308)
+    ['host' => '127.0.0.1', 'port' => '3308', 'user' => 'fatec', 'pass' => 'GKY59jfiyn'],
+    // 3. Fallback para banco local padrão do XAMPP (porta 3306 com root e sem senha)
+    ['host' => '127.0.0.1', 'port' => '3306', 'user' => 'root', 'pass' => ''],
 ];
 
 $pdo = null;

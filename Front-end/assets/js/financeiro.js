@@ -57,10 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const data = await response.json();
 
-            if (data.status === 'success') {
+            if (data.status === 'success' || data.status === 'warning') {
                 toggleModal('modalCobranca', 'hide');
                 form.reset();
-                showToast(data.message, 'success');
+                showToast(data.message, data.status === 'warning' ? 'warning' : 'success');
                 carregarDadosFinanceiros();
             } else {
                 showToast(data.message, 'danger');
@@ -92,7 +92,7 @@ async function carregarDadosFinanceiros() {
         const res = await response.json();
         hideLoading();
 
-        if (res.status === 'success') {
+        if (res.status === 'success' || res.status === 'warning') {
             listCobrancas = res.data;
 
             // Atualizar valores nos cards
@@ -288,8 +288,8 @@ async function confirmarPagamento(id, nome) {
         const data = await response.json();
         hideLoading();
 
-        if (data.status === 'success') {
-            showToast(data.message, 'success');
+        if (data.status === 'success' || data.status === 'warning') {
+            showToast(data.message, data.status === 'warning' ? 'warning' : 'success');
             carregarDadosFinanceiros();
         } else {
             showToast(data.message, 'danger');
@@ -319,8 +319,8 @@ async function cancelarCobranca(id) {
         const data = await response.json();
         hideLoading();
 
-        if (data.status === 'success') {
-            showToast(data.message, 'success');
+        if (data.status === 'success' || data.status === 'warning') {
+            showToast(data.message, data.status === 'warning' ? 'warning' : 'success');
             carregarDadosFinanceiros();
         } else {
             showToast(data.message, 'danger');

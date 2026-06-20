@@ -64,10 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const res = await response.json();
 
-            if (res.status === 'success') {
+            if (res.status === 'success' || res.status === 'warning') {
                 toggleModal('modalEvento', 'hide');
                 form.reset();
-                showToast(res.message, 'success');
+                showToast(res.message, res.status === 'warning' ? 'warning' : 'success');
                 carregarEventos();
             } else {
                 showToast(res.message, 'danger');
@@ -93,7 +93,7 @@ async function carregarEventos() {
         const res = await response.json();
         hideLoading();
 
-        if (res.status === 'success') {
+        if (res.status === 'success' || res.status === 'warning') {
             eventosData = res.data || [];
             renderCalendario();
             renderEventosLista();

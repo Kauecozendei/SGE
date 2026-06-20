@@ -85,8 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
 
-            if (data.status === 'success') {
-                showToast(data.message, 'success');
+            if (data.status === 'success' || data.status === 'warning') {
+                showToast(data.message, data.status === 'warning' ? 'warning' : 'success');
                 carregarFuncionarios();
             } else {
                 showToast(data.message, 'danger');
@@ -200,8 +200,8 @@ async function salvarFuncionario() {
 
         const data = await response.json();
 
-        if (data.status === 'success') {
-            showToast(data.message, 'success');
+        if (data.status === 'success' || data.status === 'warning') {
+            showToast(data.message, data.status === 'warning' ? 'warning' : 'success');
             toggleModal('modalFuncionario', 'hide');
             form.reset();
             carregarFuncionarios();
@@ -231,7 +231,7 @@ async function carregarFuncionarios() {
         const response = await fetch('../../Back-End/api/get_funcionarios.php');
         const res = await response.json();
 
-        if (res.status === 'success') {
+        if (res.status === 'success' || res.status === 'warning') {
             rowCards.innerHTML = '';
             funcsListCache = res.data;
 

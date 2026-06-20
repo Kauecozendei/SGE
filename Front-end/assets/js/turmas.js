@@ -93,8 +93,8 @@ async function excluirTurma(id) {
 
         const data = await response.json();
 
-        if (data.status === 'success') {
-            showToast('Turma removida com sucesso.', 'success');
+        if (data.status === 'success' || data.status === 'warning') {
+            showToast(data.message || 'Turma removida com sucesso.', data.status === 'warning' ? 'warning' : 'success');
             carregarTurmas();
         } else {
             showToast(data.message, 'danger');
@@ -138,8 +138,8 @@ async function salvarTurma() {
 
         const data = await response.json();
 
-        if (data.status === 'success') {
-            showToast(data.message, 'success');
+        if (data.status === 'success' || data.status === 'warning') {
+            showToast(data.message, data.status === 'warning' ? 'warning' : 'success');
             toggleModal('modalTurma', 'hide');
             if(form) form.reset();
             carregarTurmas();
@@ -198,7 +198,7 @@ async function carregarTurmas() {
         const response = await fetch('../../Back-End/api/listar_turmas.php');
         const res = await response.json();
 
-        if (res.status === 'success') {
+        if (res.status === 'success' || res.status === 'warning') {
             turmasListCache = res.data;
             
             if (res.data.length === 0) {
@@ -323,7 +323,7 @@ async function gerenciarTurma(turmaId, turmaNome) {
         const response = await fetch(`../../Back-End/api/get_alunos_turma.php?turma_id=${turmaId}`);
         const res = await response.json();
 
-        if (res.status === 'success') {
+        if (res.status === 'success' || res.status === 'warning') {
             if (res.data.length === 0) {
                 body.innerHTML = '<div class="text-center text-muted py-3">Nenhum aluno matriculado nesta turma.</div>';
                 return;
@@ -370,8 +370,8 @@ async function removerAlunoDeTurma(alunoId, turmaId, alunoNome, turmaNome) {
 
         const res = await response.json();
 
-        if (res.status === 'success') {
-            showToast('Aluno removido com sucesso.', 'success');
+        if (res.status === 'success' || res.status === 'warning') {
+            showToast(res.message || 'Aluno removido com sucesso.', res.status === 'warning' ? 'warning' : 'success');
             // Recarrega o modal e atualiza a grid principal em background
             gerenciarTurma(turmaId, turmaNome);
             carregarTurmas();
