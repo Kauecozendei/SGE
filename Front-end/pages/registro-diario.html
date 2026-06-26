@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Diário - Mundo Encantado</title>
+    <meta name="description" content="Registro diário de alimentação e banho dos alunos - Sistema de Gestão Escolar Mundo Encantado">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/dashboard.css" rel="stylesheet">
+    <link href="../assets/css/alunos.css" rel="stylesheet">
+    <link href="../assets/css/registro-diario.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="main-wrapper">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header d-flex align-items-center gap-3">
+            <img src="../assets/img/Logo.jpg" alt="Mundo Encantado"
+                 class="sidebar-logo" onerror="this.style.display='none'">
+            <span class="sidebar-title">Mundo Encantado</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html"     class="sidebar-link"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></a>
+            <a href="alunos.html"        class="sidebar-link"><i class="bi bi-people-fill"></i><span>Alunos</span></a>
+            <a href="professores.html"   class="sidebar-link"><i class="bi bi-person-video3"></i><span>Professores</span></a>
+            <a href="funcionarios.html"  class="sidebar-link"><i class="bi bi-person-workspace"></i><span>Funcionários</span></a>
+            <a href="turmas.html"        class="sidebar-link"><i class="bi bi-bookmark-star-fill"></i><span>Turmas</span></a>
+            <a href="entrada-saida.html" class="sidebar-link"><i class="bi bi-door-open-fill"></i><span>Entrada / Saída</span></a>
+            <a href="registro-diario.html" class="sidebar-link active"><i class="bi bi-journal-check"></i><span>Registro Diário</span></a>
+            <a href="agenda.html"        class="sidebar-link"><i class="bi bi-calendar-event-fill"></i><span>Agenda</span></a>
+            <a href="financeiro.html"    class="sidebar-link"><i class="bi bi-cash-coin"></i><span>Financeiro</span></a>
+            <a href="relatorios.html"    class="sidebar-link"><i class="bi bi-file-earmark-bar-graph-fill"></i><span>Relatórios</span></a>
+            <a href="perfil.html"        class="sidebar-link"><i class="bi bi-gear-fill"></i><span>Configurações</span></a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" class="sidebar-link text-danger" id="btnSair">
+                <i class="bi bi-box-arrow-left"></i><span>Sair</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="content-area">
+
+        <!-- Topbar -->
+        <header class="topbar d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+            <div class="d-flex align-items-center gap-3 min-width-0">
+                <button class="btn-menu" id="btnMenu" onclick="toggleSidebar()">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="overflow-hidden">
+                    <h1 class="topbar-title mb-0">Registro Diário</h1>
+                    <small class="topbar-date text-muted" id="dataAtual"></small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-3 flex-shrink-0">
+                <span class="topbar-greeting d-none d-md-block">Olá, Administrador 👋</span>
+                <div class="topbar-avatar">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Abas Principais -->
+        <div class="rd-tabs" id="rdTabs" role="tablist">
+            <button class="rd-tab-btn active" id="tab-alimentacao" data-target="painel-alimentacao" onclick="trocarAba(this)">
+                <i class="bi bi-cup-straw"></i> Alimentação
+            </button>
+            <button class="rd-tab-btn" id="tab-banho" data-target="painel-banho" onclick="trocarAba(this)">
+                <i class="bi bi-droplet-fill"></i> Banho
+            </button>
+            <button class="rd-tab-btn" id="tab-historico" data-target="painel-historico" onclick="trocarAba(this)">
+                <i class="bi bi-clock-history"></i> Histórico por Aluno
+            </button>
+        </div>
+
+        <!-- ════════════════════════════════════
+             PAINEL ALIMENTAÇÃO
+        ════════════════════════════════════ -->
+        <div id="painel-alimentacao" class="rd-painel">
+
+            <!-- Data / hora + sub-abas de refeição -->
+            <div class="card-padrao mb-3">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                        <div>
+                            <label class="form-label mb-1" for="rdDataAlim">Data</label>
+                            <input type="date" class="form-control-custom" id="rdDataAlim" name="data_alimentacao" style="width:auto;">
+                        </div>
+                        <div>
+                            <label class="form-label mb-1" for="rdHoraAlim">Hora</label>
+                            <input type="time" class="form-control-custom" id="rdHoraAlim" name="hora_alimentacao" style="width:auto;">
+                        </div>
+                    </div>
+                    <button class="rd-btn-novo" id="btnNovaAlimentacao" data-bs-toggle="modal" data-bs-target="#modalAlimentacao">
+                        <i class="bi bi-plus-lg"></i> Nova Refeição
+                    </button>
+                </div>
+
+                <!-- Sub-abas de período da refeição -->
+                <div class="rd-subtabs" id="rdSubtabs">
+                    <button class="rd-subtab-btn active" data-refeicao="cafe-manha" onclick="trocarSubAba(this)">Café da Manhã</button>
+                    <button class="rd-subtab-btn" data-refeicao="lanche" onclick="trocarSubAba(this)">Lanche</button>
+                    <button class="rd-subtab-btn" data-refeicao="almoco" onclick="trocarSubAba(this)">Almoço</button>
+                    <button class="rd-subtab-btn" data-refeicao="cafe-tarde" onclick="trocarSubAba(this)">Café da Tarde</button>
+                    <button class="rd-subtab-btn" data-refeicao="jantar" onclick="trocarSubAba(this)">Jantar</button>
+                </div>
+            </div>
+
+            <!-- Aviso de restrições -->
+            <div class="rd-aviso-restricao" id="rdAvisoRestricao">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>3 alunos com restrições alimentares nesta turma. Verifique os alertas em vermelho.</span>
+            </div>
+
+            <!-- Contadores -->
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+                <div class="rd-counters" style="flex:1; margin-bottom:0;">
+                    <div class="rd-counter-box">
+                        <div class="rd-counter-box-num" id="cntAlimFinalizados">12</div>
+                        <div class="rd-counter-box-label">Finalizados</div>
+                    </div>
+                    <div class="rd-counter-box pendente">
+                        <div class="rd-counter-box-num" id="cntAlimPendentes">6</div>
+                        <div class="rd-counter-box-label">Pendentes</div>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <div class="rd-quick-filters">
+                        <button class="rd-quick-filter-btn active" onclick="filtrarAlim('todos', this)">Todos</button>
+                        <button class="rd-quick-filter-btn" onclick="filtrarAlim('pendente', this)">Pendentes</button>
+                        <button class="rd-quick-filter-btn" onclick="filtrarAlim('realizado', this)">Realizados</button>
+                    </div>
+                    <button class="rd-btn-marcar-todos" id="btnMarcarTodosAlim" onclick="marcarTodosAlim()">
+                        Marcar todos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Toolbar busca + turma -->
+            <div class="rd-toolbar mb-3">
+                <input type="text" class="rd-search" id="searchAlim" placeholder="Buscar aluno por nome ou matrícula..." oninput="buscarAluno('alim', this.value)">
+                <select class="rd-filter" id="filterTurmaAlim" onchange="filtrarTurmaAlim(this.value)">
+                    <option value="">Todas as Turmas</option>
+                    <option value="turma-a">Turma A - Manhã</option>
+                    <option value="turma-b">Turma B - Tarde</option>
+                    <option value="turma-c">Turma C - Integral</option>
+                </select>
+            </div>
+
+            <!-- Lista de alunos – Alimentação -->
+            <div id="listaAlim">
+
+                <!-- Card aluno – com restrição -->
+                <div class="rd-aluno-card restricao d-flex align-items-start gap-3" data-status="realizado" data-turma="turma-a" data-id="1">
+                    <input type="checkbox" class="rd-checkbox-custom mt-1" id="chkAlim1" title="Marcar como realizado" checked>
+                    <div class="rd-aluno-avatar flex-shrink-0">LM</div>
+                    <div class="flex-grow-1 min-width-0">
+                        <div class="rd-aluno-nome">Lucas Martins</div>
+                        <div class="rd-aluno-info">Turma: Girassol &bull; Pacote alimentação: Sim.</div>
+                        <div class="rd-obs-geral mt-1" style="background:transparent;border:none;padding:0;margin:0;">
+                            <textarea class="rd-obs-geral" rows="1" placeholder="Observação..." style="background:transparent;border:none;font-style:italic;font-size:.8rem;width:100%;resize:none;outline:none;padding:0;">Observação: (eu comeu pouco)</textarea>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0 d-flex flex-column align-items-end gap-2">
+                        <span class="rd-status-alimentou">ALIMENTOU</span>
+                        <div class="d-flex gap-1">
+                            <button class="rd-btn-action" title="Editar" onclick="editarRegistroAlim(1)"><i class="bi bi-pencil"></i></button>
+                            <button class="rd-btn-action danger" title="Excluir" onclick="excluirRegistroAlim(1)"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card aluno – com restrição + aviso -->
+                <div class="rd-aluno-card restricao d-flex align-items-start gap-3" data-status="realizado" data-turma="turma-a" data-id="2">
+                    <input type="checkbox" class="rd-checkbox-custom mt-1" id="chkAlim2" title="Marcar como realizado" checked>
+                    <div class="rd-aluno-avatar flex-shrink-0" style="background:linear-gradient(135deg,#ef4444,#f97316);">EA</div>
+                    <div class="flex-grow-1 min-width-0">
+                        <div class="rd-aluno-nome">
+                            Elena Alves
+                            <span class="rd-restricao-tag ms-1"><i class="bi bi-exclamation-triangle-fill"></i> RESTRIÇÃO: Alergia a glúten e lactose.</span>
+                        </div>
+                        <div class="rd-aluno-info">Turma: Girassol &bull; Pacote alimentação: Sim.</div>
+                        <div class="rd-aluno-obs">Observação obrigatória para aluno com restrição...</div>
+                    </div>
+                    <div class="flex-shrink-0 d-flex flex-column align-items-end gap-2">
+                        <span class="rd-status-alimentou">ALIMENTOU</span>
+                        <div class="d-flex gap-1">
+                            <button class="rd-btn-action" title="Editar" onclick="editarRegistroAlim(2)"><i class="bi bi-pencil"></i></button>
+                            <button class="rd-btn-action danger" title="Excluir" onclick="excluirRegistroAlim(2)"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card aluno – sem pacote -->
+                <div class="rd-aluno-card d-flex align-items-start gap-3" data-status="sem-pacote" data-turma="turma-b" data-id="3">
+                    <input type="checkbox" class="rd-checkbox-custom mt-1" id="chkAlim3" title="Marcar como realizado">
+                    <div class="rd-aluno-avatar flex-shrink-0" style="background:linear-gradient(135deg,#64748b,#94a3b8);">FR</div>
+                    <div class="flex-grow-1 min-width-0">
+                        <div class="rd-aluno-nome">Felipe Rocha</div>
+                        <div class="rd-aluno-info">Turma: Girassol &bull; Pacote alimentação: Não.</div>
+                    </div>
+                    <div class="flex-shrink-0 d-flex flex-column align-items-end gap-2">
+                        <span class="rd-status-sem-pacote">SEM PACOTE</span>
+                        <div class="d-flex gap-1">
+                            <button class="rd-btn-action" title="Registrar" onclick="editarRegistroAlim(3)"><i class="bi bi-plus-circle"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card aluno – pendente -->
+                <div class="rd-aluno-card pendente d-flex align-items-start gap-3" data-status="pendente" data-turma="turma-b" data-id="4">
+                    <input type="checkbox" class="rd-checkbox-custom mt-1" id="chkAlim4" title="Marcar como realizado">
+                    <div class="rd-aluno-avatar flex-shrink-0" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);">CR</div>
+                    <div class="flex-grow-1 min-width-0">
+                        <div class="rd-aluno-nome">Cristiano Ronaldo</div>
+                        <div class="rd-aluno-info">Turma: Girassol &bull; Pacote alimentação: Sim.</div>
+                    </div>
+                    <div class="flex-shrink-0 d-flex flex-column align-items-end gap-2">
+                        <span class="rd-status-pendente">PENDENTE</span>
+                        <div class="d-flex gap-1">
+                            <button class="rd-btn-action" title="Registrar" onclick="editarRegistroAlim(4)"><i class="bi bi-plus-circle"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card aluno – recusou -->
+                <div class="rd-aluno-card d-flex align-items-start gap-3" data-status="realizado" data-turma="turma-c" data-id="5">
+                    <input type="checkbox" class="rd-checkbox-custom mt-1" id="chkAlim5" title="Marcar como realizado" checked>
+                    <div class="rd-aluno-avatar flex-shrink-0" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa);">IS</div>
+                    <div class="flex-grow-1 min-width-0">
+                        <div class="rd-aluno-nome">Isabela Santos</div>
+                        <div class="rd-aluno-info">Turma: Girassol &bull; Pacote alimentação: Sim.</div>
+                        <div class="rd-aluno-obs">Recusou o alimento hoje.</div>
+                    </div>
+                    <div class="flex-shrink-0 d-flex flex-column align-items-end gap-2">
+                        <span class="rd-status-recusou">RECUSOU</span>
+                        <div class="d-flex gap-1">
+                            <button class="rd-btn-action" title="Editar" onclick="editarRegistroAlim(5)"><i class="bi bi-pencil"></i></button>
+                            <button class="rd-btn-action danger" title="Excluir" onclick="excluirRegistroAlim(5)"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Observação geral -->
+            <div class="rd-obs-geral mt-3">
+                <label for="rdObsGeralAlim">Observação geral do período:</label>
+                <textarea id="rdObsGeralAlim" name="obs_geral_alimentacao" placeholder="Observação sobre as refeições..."></textarea>
+            </div>
+
+            <!-- Botão salvar -->
+            <div class="mt-3">
+                <button class="rd-btn-salvar-todos" id="btnSalvarAlim" onclick="salvarRegistrosAlim()">
+                    <i class="bi bi-check-circle-fill me-2"></i>SALVAR TODOS OS REGISTROS
+                </button>
+            </div>
+        </div>
+        <!-- /PAINEL ALIMENTAÇÃO -->
+
+
+        <!-- ════════════════════════════════════
+             PAINEL BANHO
+        ════════════════════════════════════ -->
+        <div id="painel-banho" class="rd-painel" style="display:none;">
+
+            <!-- Data / hora + botão novo -->
+            <div class="card-padrao mb-3">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                        <div>
+                            <label class="form-label mb-1" for="rdDataBanho">Data</label>
+                            <input type="date" class="form-control-custom" id="rdDataBanho" name="data_banho" style="width:auto;">
+                        </div>
+                        <div>
+                            <label class="form-label mb-1" for="rdHoraBanho">Hora</label>
+                            <input type="time" class="form-control-custom" id="rdHoraBanho" name="hora_banho" style="width:auto;">
+                        </div>
+                    </div>
+                    <button class="rd-btn-novo" id="btnNovoBanho" data-bs-toggle="modal" data-bs-target="#modalBanho">
+                        <i class="bi bi-plus-lg"></i> Novo Registro
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contadores -->
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+                <div class="rd-counters" style="flex:1; margin-bottom:0;">
+                    <div class="rd-counter-box">
+                        <div class="rd-counter-box-num" id="cntBanhoFinalizados">12</div>
+                        <div class="rd-counter-box-label">Finalizados</div>
+                    </div>
+                    <div class="rd-counter-box pendente">
+                        <div class="rd-counter-box-num" id="cntBanhoPendentes">6</div>
+                        <div class="rd-counter-box-label">Pendentes</div>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <div class="rd-quick-filters">
+                        <button class="rd-quick-filter-btn active" onclick="filtrarBanho('todos', this)">Todos</button>
+                        <button class="rd-quick-filter-btn" onclick="filtrarBanho('pendente', this)">Pendentes</button>
+                        <button class="rd-quick-filter-btn" onclick="filtrarBanho('realizado', this)">Realizados</button>
+                    </div>
+                    <button class="rd-btn-marcar-todos" id="btnMarcarTodosBanho" onclick="marcarTodosBanho()">
+                        Marcar todos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Toolbar busca -->
+            <div class="rd-toolbar mb-3">
+                <input type="text" class="rd-search" id="searchBanho" placeholder="Buscar aluno por nome ou matrícula..." oninput="buscarAluno('banho', this.value)">
+                <select class="rd-filter" id="filterTurmaBanho" onchange="filtrarTurmaBanho(this.value)">
+                    <option value="">Todas as Turmas</option>
+                    <option value="turma-a">Turma A - Manhã</option>
+                    <option value="turma-b">Turma B - Tarde</option>
+                    <option value="turma-c">Turma C - Integral</option>
+                </select>
+            </div>
+
+            <!-- Lista de alunos – Banho -->
+            <div id="listaBanho">
+
+                <div class="rd-aluno-card ok d-flex align-items-start gap-3" data-status="realizado" data-turma="turma-a" data-id="1">
+                    <input type="checkbox" class="rd-checkbox-custom mt-1" id="chkBanho1" title="Marcar como realizado" checked>
+                    <div class="rd-aluno-avatar flex-shrink-0">PM</div>
+                    <div class="flex-grow-1 min-width-0">
+                        <div class="rd-aluno-nome">Pedro Mendes</div>
+                        <div class="rd-aluno-info">Turma: Girassol &bull; Realizado às 10:30.</div>
+                        <div class="d-flex flex-wrap gap-2 mt-1">
+                            <span class="badge-status badge-verde" style="font-size:.72rem;">Banho: Sim</span>
+                            <span class="badge-status badge-verde" style="font-size:.72rem;">Troca de Roupa: Sim</span>
+                            <span class="badge-status badge-azul" style="font-size:.72rem;">Fralda: Sim</span>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0 d-flex flex-column align-items-end gap-2">
+                        <span class="rd-status-ok">OK</span>
+                        <div class="d-flex gap-1">
+                            <button class="rd-btn-action" title="Editar" onclick="editarRegistroBanho(1)"><i class="bi bi-pencil"></i></button>
+                            <button class="rd-btn-action danger" title="Excluir" onclick="excluirRegistroBanho(1)"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rd-aluno-card pendente d-flex align-items-start gap-3" data-status="pendente" data-turma="turma-a" data-id="2">
+                    <input type="checkbox" class="rd-checkbox-custom mt-1" id="chkBanho2" title="Marcar como realizado">
+                    <div class="rd-aluno-avatar flex-shrink-0" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa);">IS</div>
+                    <div class="flex-grow-1 min-width-0">
+                        <div class="rd-aluno-nome">Isabela Silva</div>
+                        <div class="rd-aluno-info">Turma: Girassol &bull; Aguardando.</div>
+                    </div>
+                    <div class="flex-shrink-0 d-flex flex-column align-items-end gap-2">
+                        <span class="rd-status-pendente">PENDENTE</span>
+                        <div class="d-flex gap-1">
+                            <button class="rd-btn-action" title="Registrar" onclick="editarRegistroBanho(2)"><i class="bi bi-plus-circle"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rd-aluno-card ok d-flex align-items-start gap-3" data-status="realizado" data-turma="turma-b" data-id="3">
+                    <input type="checkbox" class="rd-checkbox-custom mt-1" id="chkBanho3" checked>
+                    <div class="rd-aluno-avatar flex-shrink-0" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);">EA</div>
+                    <div class="flex-grow-1 min-width-0">
+                        <div class="rd-aluno-nome">Elena Alves</div>
+                        <div class="rd-aluno-info">Turma: Girassol &bull; Realizado às 10:45.</div>
+                        <div class="d-flex flex-wrap gap-2 mt-1">
+                            <span class="badge-status badge-verde" style="font-size:.72rem;">Banho: Sim</span>
+                            <span class="badge-status badge-verde" style="font-size:.72rem;">Troca de Roupa: Sim</span>
+                            <span class="badge-status badge-laranja" style="font-size:.72rem;">Fralda: Não</span>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0 d-flex flex-column align-items-end gap-2">
+                        <span class="rd-status-ok">OK</span>
+                        <div class="d-flex gap-1">
+                            <button class="rd-btn-action" title="Editar" onclick="editarRegistroBanho(3)"><i class="bi bi-pencil"></i></button>
+                            <button class="rd-btn-action danger" title="Excluir" onclick="excluirRegistroBanho(3)"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Observação geral do banho -->
+            <div class="rd-obs-geral mt-3">
+                <label for="rdObsGeralBanho">Observação geral do período:</label>
+                <textarea id="rdObsGeralBanho" name="obs_geral_banho" placeholder="Observação sobre os banhos..."></textarea>
+            </div>
+
+            <div class="mt-3">
+                <button class="rd-btn-salvar-todos" id="btnSalvarBanho" onclick="salvarRegistrosBanho()">
+                    <i class="bi bi-check-circle-fill me-2"></i>SALVAR TODOS OS REGISTROS
+                </button>
+            </div>
+        </div>
+        <!-- /PAINEL BANHO -->
+
+
+        <!-- ════════════════════════════════════
+             PAINEL HISTÓRICO POR ALUNO
+        ════════════════════════════════════ -->
+        <div id="painel-historico" class="rd-painel" style="display:none;">
+
+            <!-- Filtros do histórico -->
+            <div class="card-padrao mb-3">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label" for="histAluno">Aluno</label>
+                        <select class="form-control-custom" id="histAluno" name="hist_aluno">
+                            <option value="">Selecionar aluno...</option>
+                            <option>Lucas Martins</option>
+                            <option>Elena Alves</option>
+                            <option>Felipe Rocha</option>
+                            <option>Isabela Santos</option>
+                            <option>Pedro Mendes</option>
+                            <option>Cristiano Ronaldo</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" for="histDataInicio">Data Início</label>
+                        <input type="date" class="form-control-custom" id="histDataInicio" name="hist_data_inicio">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" for="histDataFim">Data Fim</label>
+                        <input type="date" class="form-control-custom" id="histDataFim" name="hist_data_fim">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label" for="histTipo">Tipo</label>
+                        <select class="form-control-custom" id="histTipo" name="hist_tipo">
+                            <option value="">Todos</option>
+                            <option value="alimentacao">Alimentação</option>
+                            <option value="banho">Banho</option>
+                        </select>
+                    </div>
+                    <div class="col-12 d-flex gap-2">
+                        <button class="rd-btn-novo" onclick="filtrarHistorico()">
+                            <i class="bi bi-search"></i> Filtrar
+                        </button>
+                        <button class="btn-primario" onclick="limparFiltroHistorico()">
+                            <i class="bi bi-x-circle"></i> Limpar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Painel de resultados do histórico -->
+            <div id="painelHistoricoResultados">
+
+                <!-- Divisor de período -->
+                <div class="rd-periodo-divider">
+                    <span>18/07/2025</span>
+                </div>
+
+                <!-- Sub-título Alimentação -->
+                <div class="card-padrao mb-3">
+                    <h5 class="mb-3"><i class="bi bi-cup-straw me-2 text-warning"></i>Alimentação</h5>
+                    <div class="table-responsive">
+                        <table class="rd-table">
+                            <thead>
+                                <tr>
+                                    <th>Horário</th>
+                                    <th>Refeição</th>
+                                    <th>Quantidade</th>
+                                    <th>Observações</th>
+                                    <th>Responsável</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>08:00</td>
+                                    <td><span class="badge-status badge-laranja">Café da Manhã</span></td>
+                                    <td><span class="badge-status badge-verde">Comeu tudo</span></td>
+                                    <td>—</td>
+                                    <td>Prof.ª Ana</td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <button class="rd-btn-action" title="Editar"><i class="bi bi-pencil"></i></button>
+                                            <button class="rd-btn-action danger" title="Excluir"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>12:00</td>
+                                    <td><span class="badge-status badge-azul">Almoço</span></td>
+                                    <td><span class="badge-status badge-laranja">Comeu metade</span></td>
+                                    <td>Não gostou da salada</td>
+                                    <td>Prof.ª Ana</td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <button class="rd-btn-action" title="Editar"><i class="bi bi-pencil"></i></button>
+                                            <button class="rd-btn-action danger" title="Excluir"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>15:30</td>
+                                    <td><span class="badge-status badge-laranja">Lanche</span></td>
+                                    <td><span class="badge-status badge-verde">Comeu tudo</span></td>
+                                    <td>—</td>
+                                    <td>Prof.ª Carla</td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <button class="rd-btn-action" title="Editar"><i class="bi bi-pencil"></i></button>
+                                            <button class="rd-btn-action danger" title="Excluir"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sub-título Banho -->
+                <div class="card-padrao mb-3">
+                    <h5 class="mb-3"><i class="bi bi-droplet-fill me-2 text-primary"></i>Banho</h5>
+                    <div class="table-responsive">
+                        <table class="rd-table">
+                            <thead>
+                                <tr>
+                                    <th>Horário</th>
+                                    <th>Banho</th>
+                                    <th>Troca de Roupa</th>
+                                    <th>Fralda</th>
+                                    <th>Observações</th>
+                                    <th>Responsável</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>10:30</td>
+                                    <td><span class="badge-status badge-verde">Sim</span></td>
+                                    <td><span class="badge-status badge-verde">Sim</span></td>
+                                    <td><span class="badge-status badge-azul">Sim</span></td>
+                                    <td>—</td>
+                                    <td>Prof.ª Ana</td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <button class="rd-btn-action" title="Editar"><i class="bi bi-pencil"></i></button>
+                                            <button class="rd-btn-action danger" title="Excluir"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Divisor de período anterior -->
+                <div class="rd-periodo-divider">
+                    <span>17/07/2025</span>
+                </div>
+
+                <div class="card-padrao mb-3">
+                    <h5 class="mb-3"><i class="bi bi-cup-straw me-2 text-warning"></i>Alimentação</h5>
+                    <div class="table-responsive">
+                        <table class="rd-table">
+                            <thead>
+                                <tr>
+                                    <th>Horário</th>
+                                    <th>Refeição</th>
+                                    <th>Quantidade</th>
+                                    <th>Observações</th>
+                                    <th>Responsável</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>08:15</td>
+                                    <td><span class="badge-status badge-laranja">Café da Manhã</span></td>
+                                    <td><span class="badge-status badge-vermelho">Recusou</span></td>
+                                    <td>Disse que não estava com fome</td>
+                                    <td>Prof.ª Ana</td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <button class="rd-btn-action" title="Editar"><i class="bi bi-pencil"></i></button>
+                                            <button class="rd-btn-action danger" title="Excluir"><i class="bi bi-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- /PAINEL HISTÓRICO -->
+
+    </main>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     MODAL ALIMENTAÇÃO
+══════════════════════════════════════════════ -->
+<div class="modal fade" id="modalAlimentacao" tabindex="-1" aria-labelledby="modalAlimTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAlimTitle">
+                    <i class="bi bi-cup-straw me-2"></i>Registrar Alimentação
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formAlimentacao" method="POST" action="../api/alimentacao/salvar.php" novalidate>
+                    <input type="hidden" name="registro_id" id="alimRegistroId" value="">
+
+                    <div class="rd-form-section"><i class="bi bi-person-fill"></i> Dados do Registro</div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="alimAluno">Aluno *</label>
+                            <select class="form-control-custom" id="alimAluno" name="aluno_id" required>
+                                <option value="">Selecionar aluno...</option>
+                                <option value="1">Lucas Martins</option>
+                                <option value="2">Elena Alves</option>
+                                <option value="3">Felipe Rocha</option>
+                                <option value="4">Isabela Santos</option>
+                                <option value="5">Pedro Mendes</option>
+                            </select>
+                            <div class="invalid-feedback">Selecione um aluno.</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="alimData">Data *</label>
+                            <input type="date" class="form-control-custom" id="alimData" name="data" required>
+                            <div class="invalid-feedback">Informe a data.</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="alimHora">Horário *</label>
+                            <input type="time" class="form-control-custom" id="alimHora" name="hora" required>
+                            <div class="invalid-feedback">Informe o horário.</div>
+                        </div>
+                    </div>
+
+                    <div class="rd-form-section mt-3"><i class="bi bi-egg-fried"></i> Refeição</div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Tipo de Refeição *</label>
+                            <div class="rd-radio-group" id="alimTipoRefeicao">
+                                <label class="rd-radio-option">
+                                    <input type="radio" name="tipo_refeicao" value="cafe_manha" required>
+                                    <span class="rd-radio-label"><i class="bi bi-sun"></i> Café da Manhã</span>
+                                </label>
+                                <label class="rd-radio-option">
+                                    <input type="radio" name="tipo_refeicao" value="lanche">
+                                    <span class="rd-radio-label"><i class="bi bi-apple"></i> Lanche</span>
+                                </label>
+                                <label class="rd-radio-option">
+                                    <input type="radio" name="tipo_refeicao" value="almoco">
+                                    <span class="rd-radio-label"><i class="bi bi-egg-fried"></i> Almoço</span>
+                                </label>
+                                <label class="rd-radio-option">
+                                    <input type="radio" name="tipo_refeicao" value="cafe_tarde">
+                                    <span class="rd-radio-label"><i class="bi bi-cup-hot"></i> Café da Tarde</span>
+                                </label>
+                                <label class="rd-radio-option">
+                                    <input type="radio" name="tipo_refeicao" value="jantar">
+                                    <span class="rd-radio-label"><i class="bi bi-moon-stars"></i> Jantar</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Quantidade Consumida *</label>
+                            <div class="rd-radio-group" id="alimQuantidade">
+                                <label class="rd-radio-option">
+                                    <input type="radio" name="quantidade" value="comeu_tudo" required>
+                                    <span class="rd-radio-label">✅ Comeu tudo</span>
+                                </label>
+                                <label class="rd-radio-option">
+                                    <input type="radio" name="quantidade" value="comeu_metade">
+                                    <span class="rd-radio-label">🍽️ Comeu metade</span>
+                                </label>
+                                <label class="rd-radio-option">
+                                    <input type="radio" name="quantidade" value="comeu_pouco">
+                                    <span class="rd-radio-label">🤏 Comeu pouco</span>
+                                </label>
+                                <label class="rd-radio-option">
+                                    <input type="radio" name="quantidade" value="recusou">
+                                    <span class="rd-radio-label">❌ Recusou</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="alimObservacoes">Observações</label>
+                            <textarea class="form-control-custom" id="alimObservacoes" name="observacoes" rows="3" placeholder="Reações, preferências, observações importantes..."></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="alimResponsavel">Responsável pelo Registro *</label>
+                            <input type="text" class="form-control-custom" id="alimResponsavel" name="responsavel" placeholder="Nome do responsável" required>
+                            <div class="invalid-feedback">Informe o responsável.</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancelar" data-bs-dismiss="modal">CANCELAR</button>
+                <button class="btn-salvar" id="btnSalvarAlimentacao" onclick="salvarFormAlimentacao()">
+                    <i class="bi bi-check-lg me-1"></i>SALVAR REGISTRO
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     MODAL BANHO
+══════════════════════════════════════════════ -->
+<div class="modal fade" id="modalBanho" tabindex="-1" aria-labelledby="modalBanhoTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalBanhoTitle">
+                    <i class="bi bi-droplet-fill me-2"></i>Registrar Banho
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formBanho" method="POST" action="../api/banho/salvar.php" novalidate>
+                    <input type="hidden" name="registro_id" id="banhoRegistroId" value="">
+
+                    <div class="rd-form-section"><i class="bi bi-person-fill"></i> Dados do Registro</div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="banhoAluno">Aluno *</label>
+                            <select class="form-control-custom" id="banhoAluno" name="aluno_id" required>
+                                <option value="">Selecionar aluno...</option>
+                                <option value="1">Lucas Martins</option>
+                                <option value="2">Elena Alves</option>
+                                <option value="3">Felipe Rocha</option>
+                                <option value="4">Isabela Santos</option>
+                                <option value="5">Pedro Mendes</option>
+                            </select>
+                            <div class="invalid-feedback">Selecione um aluno.</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="banhoData">Data *</label>
+                            <input type="date" class="form-control-custom" id="banhoData" name="data" required>
+                            <div class="invalid-feedback">Informe a data.</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="banhoHora">Horário *</label>
+                            <input type="time" class="form-control-custom" id="banhoHora" name="hora" required>
+                            <div class="invalid-feedback">Informe o horário.</div>
+                        </div>
+                    </div>
+
+                    <div class="rd-form-section mt-3"><i class="bi bi-droplet-fill"></i> Informações do Banho</div>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Banho Realizado *</label>
+                            <div class="rd-toggle-group" id="banhoBanhoRealizado">
+                                <button type="button" class="rd-toggle-btn sim" data-value="sim" onclick="ativarToggle(this, 'banho_realizado')">Sim</button>
+                                <button type="button" class="rd-toggle-btn nao" data-value="nao" onclick="ativarToggle(this, 'banho_realizado')">Não</button>
+                            </div>
+                            <input type="hidden" name="banho_realizado" id="inputBanhoRealizado" value="" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Troca de Roupa</label>
+                            <div class="rd-toggle-group" id="banhoTrocaRoupa">
+                                <button type="button" class="rd-toggle-btn sim" data-value="sim" onclick="ativarToggle(this, 'troca_roupa')">Sim</button>
+                                <button type="button" class="rd-toggle-btn nao" data-value="nao" onclick="ativarToggle(this, 'troca_roupa')">Não</button>
+                            </div>
+                            <input type="hidden" name="troca_roupa" id="inputTrocaRoupa" value="">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Troca de Fralda</label>
+                            <div class="rd-toggle-group" id="banhoTrocaFralda">
+                                <button type="button" class="rd-toggle-btn sim" data-value="sim" onclick="ativarToggle(this, 'troca_fralda')">Sim</button>
+                                <button type="button" class="rd-toggle-btn nao" data-value="nao" onclick="ativarToggle(this, 'troca_fralda')">Não</button>
+                                <button type="button" class="rd-toggle-btn" data-value="nao_aplica" onclick="ativarToggle(this, 'troca_fralda')">N/A</button>
+                            </div>
+                            <input type="hidden" name="troca_fralda" id="inputTrocaFralda" value="">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="banhoObservacoes">Observações</label>
+                            <textarea class="form-control-custom" id="banhoObservacoes" name="observacoes" rows="3" placeholder="Intercorrências, produtos utilizados, observações..."></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="banhoResponsavel">Responsável pelo Registro *</label>
+                            <input type="text" class="form-control-custom" id="banhoResponsavel" name="responsavel" placeholder="Nome do responsável" required>
+                            <div class="invalid-feedback">Informe o responsável.</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancelar" data-bs-dismiss="modal">CANCELAR</button>
+                <button class="btn-salvar" id="btnSalvarBanho" onclick="salvarFormBanho()">
+                    <i class="bi bi-check-lg me-1"></i>SALVAR REGISTRO
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal de confirmação de exclusão -->
+<div class="modal fade" id="modalConfirmExclusao" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0" id="msgConfirmExclusao">Tem certeza que deseja excluir este registro? Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancelar" style="width:auto;" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn-salvar" style="background:var(--cor-erro);border-color:var(--cor-erro);width:auto;" id="btnConfirmExclusao">
+                    <i class="bi bi-trash me-1"></i>Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast de feedback -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index:1100">
+    <div id="rdToast" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body fw-bold" id="rdToastMsg">Registro salvo com sucesso!</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/registro-diario.js"></script>
+</body>
+</html>
