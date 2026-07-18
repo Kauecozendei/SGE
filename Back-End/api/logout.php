@@ -1,9 +1,10 @@
 <?php
-session_start();
+require_once __DIR__ . '/../auth_guard.php';
+
 // Limpa todas as variáveis de sessão
 $_SESSION = array();
 
-// Se desejar destruir a sessão completamente, apague também o cookie de sessão.
+// Apaga o cookie de sessão
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
     setcookie(session_name(), '', time() - 42000,
@@ -12,10 +13,9 @@ if (ini_get("session.use_cookies")) {
     );
 }
 
-// Por fim, destrói a sessão
+// Destrói a sessão
 session_destroy();
 
-header('Content-Type: application/json');
 echo json_encode(["status" => "success", "message" => "Sessão encerrada com sucesso."]);
 exit;
 ?>

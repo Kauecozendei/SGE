@@ -1,28 +1,43 @@
 <?php
-session_start();
+require_once __DIR__ . '/../auth_guard.php';
 require_once __DIR__ . '/../conexao.php';
 
-header('Content-Type: application/json');
+verificarAutenticacao();
+validarCSRF();
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    http_response_code(405);
     echo json_encode(["status" => "error", "message" => "Método inválido."]);
     exit;
 }
 
 if (!$pdo) {
-    echo json_encode(["status" => "error", "message" => "Erro de conexão com o banco de dados."]);
+    http_response_code(503);
+    echo json_encode(["status" => "error", "message" => "Serviço temporariamente indisponível."]);
     exit;
 }
 
 $aluno_id = filter_input(INPUT_POST, 'aluno_id', FILTER_VALIDATE_INT);
-$tipo = filter_input(INPUT_POST, 'tipo', FILTER_DEFAULT);
+$tipo = sanitizarEntrada(filter_input(INPUT_POST, 'tipo', FILTER_DEFAULT));
 $valor = filter_input(INPUT_POST, 'valor', FILTER_VALIDATE_FLOAT);
-$vencimento = filter_input(INPUT_POST, 'vencimento', FILTER_DEFAULT);
-$status = filter_input(INPUT_POST, 'status', FILTER_DEFAULT) ?: 'pendente';
-$observacao = filter_input(INPUT_POST, 'observacao', FILTER_DEFAULT);
+$vencimento = sanitizarEntrada(filter_input(INPUT_POST, 'vencimento', FILTER_DEFAULT));
+$status = sanitizarEntrada(filter_input(INPUT_POST, 'status', FILTER_DEFAULT)) ?: 'pendente';
+$observacao = sanitizarEntrada(filter_input(INPUT_POST, 'observacao', FILTER_DEFAULT));
 
 if (empty($aluno_id) || empty($tipo) || $valor === false || empty($vencimento)) {
     echo json_encode(["status" => "error", "message" => "Por favor, preencha todos os campos obrigatórios."]);
+    exit;
+}
+
+// Validar data de vencimento
+if (!validarData($vencimento)) {
+    echo json_encode(["status" => "error", "message" => "Data de vencimento inválida."]);
+    exit;
+}
+
+// Validar valor positivo
+if ($valor <= 0) {
+    echo json_encode(["status" => "error", "message" => "O valor deve ser maior que zero."]);
     exit;
 }
 
@@ -36,6 +51,6 @@ try {
 
     echo json_encode(["status" => "success", "message" => "Cobrança registrada com sucesso!"]);
 } catch (PDOException $e) {
-    echo json_encode(["status" => "error", "message" => "Erro ao salvar cobrança: " . $e->getMessage()]);
+    tratarErroBanco($e, 'save_cobranca');
 }
 ?>

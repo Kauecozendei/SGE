@@ -1,11 +1,12 @@
 <?php
-session_start();
+require_once __DIR__ . '/../auth_guard.php';
 require_once __DIR__ . '/../conexao.php';
 
-header('Content-Type: application/json');
+verificarAutenticacao();
 
 if (!$pdo) {
-    echo json_encode(["status" => "error", "message" => "Erro de conexão com o banco de dados."]);
+    http_response_code(503);
+    echo json_encode(["status" => "error", "message" => "Serviço temporariamente indisponível."]);
     exit;
 }
 
@@ -34,7 +35,11 @@ try {
     ");
     $counts = $stmtCounts->fetch(PDO::FETCH_ASSOC);
 
-    // 3. Listar todas as cobranças
+    // 3. Listar cobranças com paginação
+    $pagina = max(1, filter_input(INPUT_GET, 'pagina', FILTER_VALIDATE_INT) ?: 1);
+    $limite = min(100, max(10, filter_input(INPUT_GET, 'limite', FILTER_VALIDATE_INT) ?: 50));
+    $offset = ($pagina - 1) * $limite;
+
     $sql = "
         SELECT 
             f.id,
@@ -51,8 +56,12 @@ try {
         LEFT JOIN aluno_turma atu ON a.id = atu.alunos_id AND atu.data_fim IS NULL
         LEFT JOIN turmas t ON atu.turmas_id = t.id
         ORDER BY f.data_vencimento DESC, f.id DESC
+        LIMIT :limite OFFSET :offset
     ";
-    $stmtData = $pdo->query($sql);
+    $stmtData = $pdo->prepare($sql);
+    $stmtData->bindValue(':limite', $limite, PDO::PARAM_INT);
+    $stmtData->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmtData->execute();
     $cobrancas = $stmtData->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
@@ -71,6 +80,6 @@ try {
     ]);
 
 } catch (PDOException $e) {
-    echo json_encode(["status" => "error", "message" => "Erro ao buscar dados financeiros: " . $e->getMessage()]);
+    tratarErroBanco($e, 'get_financeiro');
 }
 ?>

@@ -135,12 +135,14 @@ function showToast(message, type = 'success') {
     const { bg, icon } = map[type] || map.info;
     const id = 'toast-' + Date.now();
 
+    // Sanitizar mensagem para prevenir XSS
+    const safeMessage = escapeHtml(message);
     container.insertAdjacentHTML('beforeend', `
         <div id="${id}" class="toast align-items-center text-white ${bg} border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body d-flex align-items-center gap-2">
                     <i class="bi ${icon}" style="font-size:1.1rem;"></i>
-                    <span style="font-weight:700;font-size:0.88rem;">${message}</span>
+                    <span style="font-weight:700;font-size:0.88rem;">${safeMessage}</span>
                 </div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
             </div>
@@ -518,6 +520,37 @@ function escapeHtml(text) {
         .replace(/'/g, "&#039;");
 }
 
+// ── CSRF TOKEN ──────────────────────────────────────────────────
+// Armazenado em memória após login/verificação de sessão
+let _csrfToken = '';
+
+/**
+ * Retorna o token CSRF armazenado.
+ * @returns {string}
+ */
+function getCsrfToken() {
+    return _csrfToken;
+}
+
+/**
+ * Wrapper global para fetch com CSRF automático.
+ * Use no lugar de fetch() para requisições POST ao backend.
+ * @param {string} url
+ * @param {Object} options - opções do fetch (body, method, etc.)
+ * @returns {Promise<Response>}
+ */
+function sgeFetch(url, options = {}) {
+    const method = (options.method || 'GET').toUpperCase();
+    const headers = options.headers || {};
+
+    // Adicionar CSRF token em requisições POST
+    if (method === 'POST' && _csrfToken) {
+        headers['X-CSRF-Token'] = _csrfToken;
+    }
+
+    return fetch(url, { ...options, method, headers });
+}
+
 /**
  * Verifica se a sessão do usuário está ativa no PHP.
  * Se sim, atualiza a saudação no topo. Se não, redireciona para a página de login.
@@ -527,6 +560,11 @@ function verificarSessaoUsuario() {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
+                // Armazenar CSRF token retornado pelo servidor
+                if (data.csrf_token) {
+                    _csrfToken = data.csrf_token;
+                }
+
                 // Atualiza saudação na topbar
                 const greetingEl = document.querySelector('.topbar-greeting');
                 if (greetingEl) {

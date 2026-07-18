@@ -1,7 +1,9 @@
 <?php
-session_start();
+require_once __DIR__ . '/../auth_guard.php';
 require_once __DIR__ . '/../conexao.php';
-header('Content-Type: application/json');
+
+// Este endpoint é especial: verifica a sessão MAS não redireciona se não logado
+// Retorna os dados do usuário logado ou erro de autenticação.
 
 if (isset($_SESSION['usuario_id']) && $pdo) {
     try {
@@ -16,41 +18,47 @@ if (isset($_SESSION['usuario_id']) && $pdo) {
 
         if ($user) {
             echo json_encode([
-                "status" => "success",
-                "id" => $user['id'],
-                "nome" => $user['nome'],
-                "cpf" => $user['CPF'],
+                "status"          => "success",
+                "id"              => $user['id'],
+                "nome"            => $user['nome'],
+                "cpf"             => $user['CPF'],
                 "data_nascimento" => $user['data_nascimento'],
-                "telefone" => $user['telefone'],
-                "email" => $user['email'],
-                "cargo" => $user['cargo']
+                "telefone"        => $user['telefone'],
+                "email"           => $user['email'],
+                "cargo"           => $user['cargo'],
+                "csrf_token"      => gerarTokenCSRF()
             ]);
         } else {
             echo json_encode([
-                "status" => "success",
-                "nome" => $_SESSION['usuario_nome'],
-                "email" => $_SESSION['usuario_email'],
-                "cargo" => "Funcionário"
+                "status"     => "success",
+                "nome"       => $_SESSION['usuario_nome'] ?? 'Usuário',
+                "email"      => $_SESSION['usuario_email'] ?? '',
+                "cargo"      => "Funcionário",
+                "csrf_token" => gerarTokenCSRF()
             ]);
         }
     } catch (PDOException $e) {
+        error_log("[SGE] Erro em get_usuario_logado: " . $e->getMessage());
         echo json_encode([
-            "status" => "success",
-            "nome" => $_SESSION['usuario_nome'],
-            "email" => $_SESSION['usuario_email'],
-            "cargo" => "Funcionário"
+            "status"     => "success",
+            "nome"       => $_SESSION['usuario_nome'] ?? 'Usuário',
+            "email"      => $_SESSION['usuario_email'] ?? '',
+            "cargo"      => "Funcionário",
+            "csrf_token" => gerarTokenCSRF()
         ]);
     }
 } else if (isset($_SESSION['usuario_nome'])) {
     echo json_encode([
-        "status" => "success",
-        "nome" => $_SESSION['usuario_nome'],
-        "email" => $_SESSION['usuario_email'],
-        "cargo" => "Usuário de Simulação"
+        "status"     => "success",
+        "nome"       => $_SESSION['usuario_nome'],
+        "email"      => $_SESSION['usuario_email'] ?? '',
+        "cargo"      => "Funcionário",
+        "csrf_token" => gerarTokenCSRF()
     ]);
 } else {
+    http_response_code(401);
     echo json_encode([
-        "status" => "error",
+        "status"  => "error",
         "message" => "Usuário não autenticado."
     ]);
 }

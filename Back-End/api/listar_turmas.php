@@ -1,24 +1,19 @@
 <?php
-session_start();
-require_once '../conexao.php';
+require_once __DIR__ . '/../auth_guard.php';
+require_once __DIR__ . '/../conexao.php';
 
-header('Content-Type: application/json');
+verificarAutenticacao();
 
 if (!$pdo) {
-    echo json_encode(["status" => "error", "message" => "Erro de conexão com o banco de dados."]);
+    http_response_code(503);
+    echo json_encode(["status" => "error", "message" => "Serviço temporariamente indisponível."]);
     exit;
 }
 
 try {
     $sql = "
         SELECT 
-            t.id,
-            t.nome,
-            t.periodo,
-            t.serie,
-            t.sala,
-            t.capacidade,
-            t.horario,
+            t.id, t.nome, t.periodo, t.serie, t.sala, t.capacidade, t.horario,
             (SELECT COUNT(*) FROM aluno_turma atu WHERE atu.turmas_id = t.id AND atu.data_fim IS NULL) as qtd_alunos,
             (SELECT COUNT(*) FROM professor_turma ptu WHERE ptu.turmas_id = t.id) as qtd_professores,
             GROUP_CONCAT(DISTINCT f.nome SEPARATOR ', ') as professores,
@@ -29,12 +24,11 @@ try {
         GROUP BY t.id, t.nome, t.periodo, t.serie, t.sala, t.capacidade, t.horario
         ORDER BY t.nome ASC
     ";
-    
     $stmt = $pdo->query($sql);
     $turmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode(["status" => "success", "data" => $turmas]);
 } catch (PDOException $e) {
-    echo json_encode(["status" => "error", "message" => "Erro ao buscar turmas.", "error" => $e->getMessage()]);
+    tratarErroBanco($e, 'listar_turmas');
 }
 ?>

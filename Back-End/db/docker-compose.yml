@@ -6,15 +6,16 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: BancoSGE
-      MYSQL_USER: fatec
+      MYSQL_USER: ${MYSQL_USER:-fatec}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "3308:3306"
+      # Restringido ao localhost — não acessível externamente
+      - "127.0.0.1:3308:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
       # Importa o banco de dados automaticamente na primeira inicialização:
       - ./DatabaseSGE.sql:/docker-entrypoint-initdb.d/init.sql:ro
-      
+
   php:
     build:
       context: ..
@@ -22,12 +23,22 @@ services:
     container_name: php-SGE
     ports:
       - "8000:8000"
+    environment:
+      # Passa credenciais do banco via variáveis de ambiente (não hardcoded no código)
+      DB_HOST: mariadb
+      DB_PORT: "3306"
+      DB_NAME: BancoSGE
+      DB_USER: ${MYSQL_USER:-fatec}
+      DB_PASS: ${MYSQL_PASSWORD}
     volumes:
-      # Mapeia a pasta raiz SGE inteira para servir o Front-end e o Back-End juntos:
-      - ../../:/app
+      # Mapeia apenas o necessário — não expõe .git nem .env
+      - ../:/app/Back-End:ro
+      - ../../Front-end:/app/Front-end:ro
     working_dir: /app
     depends_on:
       - mariadb
+    # ATENÇÃO: O servidor PHP built-in NÃO é para produção.
+    # Em produção, use Apache/Nginx com PHP-FPM.
     command: php -S 0.0.0.0:8000
 
 volumes:
